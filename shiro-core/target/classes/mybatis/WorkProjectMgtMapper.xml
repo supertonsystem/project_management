@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.WorkProjectMgtMapper">
+	<resultMap id="wm" type="com.suteng.shiro.persistence.beans.WorkProjectMgt">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="title" jdbcType="VARCHAR" column="title"/>
+		<result property="registerUserId" jdbcType="BIGINT" column="register_userId"/>
+		<result property="ownerDepId" jdbcType="BIGINT" column="owner_depId"/>
+		<result property="ownerUserId" jdbcType="BIGINT" column="owner_userId"/>
+		<result property="checkDepId" jdbcType="BIGINT" column="check_depId"/>
+		<result property="content" jdbcType="VARCHAR" column="content"/>
+		<result property="plannedTime" jdbcType="TIMESTAMP" column="planned_time"/>
+		<result property="progress" jdbcType="TINYINT" column="progress"/>
+		<result property="price" jdbcType="DECIMAL" column="price"/>
+		<result property="gmOpinion" jdbcType="VARCHAR" column="gm_opinion"/>
+		<result property="officeOpinion" jdbcType="VARCHAR" column="office_opinion"/>
+		<result property="delayReason" jdbcType="VARCHAR" column="delay_reason"/>
+		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+		<result property="finishTime" jdbcType="TIMESTAMP" column="finish_time"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="processInstanceId" jdbcType="BIGINT" column="process_instance_id"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.ProjectMgtConditionVO" resultMap="wm">
+		SELECT
+		wp.*
+		FROM
+		work_projectmgt wp
+		WHERE
+		1 = 1
+		<if test="keywords !=null and keywords != ''">
+			AND (
+			wp.title LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
+			)
+		</if>
+		<!-- 查询用户信息 -->
+		<if test="projectMgt != null">
+			<if test="projectMgt.id!=null and projectMgt.id !=''">
+				AND wp.id = #{projectMgt.id}
+			</if>
+			<if test="projectMgt.status!=null">
+				AND wp.status = #{projectMgt.status}
+			</if>
+			<if test="projectMgt.title!=null and projectMgt.title !=''">
+				AND wp.title LIKE CONCAT('%',#{projectMgt.title, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="projectMgt.registerUserId!=null">
+				AND wp.register_userId = #{projectMgt.registerUserId}
+			</if>
+			<if test="projectMgt.ownerUserId!=null">
+				AND wp.owner_userId = #{projectMgt.ownerUserId}
+			</if>
+		</if>
+
+		ORDER by
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				wp.create_time ${sortOrder},
+			</if>
+			<if test="sortName=='ownerDepName'||sortName=='ownerDepId'">
+				wp.owner_depId ${sortOrder},
+			</if>
+		</if>
+		wp.status ASC,
+		wp.id DESC
+	</select>
+
+	<select id="findMyPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.ProjectMgtConditionVO" resultMap="wm">
+		SELECT
+		wp.*
+		FROM
+		work_projectmgt wp
+		WHERE
+		1 = 1
+		<if test="keywords !=null and keywords != ''">
+			AND (
+			wp.title LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
+			)
+		</if>
+		<if test="projectMgt != null">
+			<if test="projectMgt.id!=null and projectMgt.id !=''">
+				AND wp.id = #{projectMgt.id}
+			</if>
+			<if test="projectMgt.status!=null">
+				AND wp.status = #{projectMgt.status}
+			</if>
+			<if test="projectMgt.title!=null and projectMgt.title !=''">
+				AND wp.title LIKE CONCAT('%',#{projectMgt.title, jdbcType=VARCHAR},'%')
+			</if>
+			<if test="projectMgt.registerUserId!=null">
+				AND wp.register_userId = #{projectMgt.registerUserId}
+			</if>
+			<if test="projectMgt.ownerUserId!=null">
+				AND wp.owner_userId = #{projectMgt.ownerUserId}
+			</if>
+			<if test="projectMgt.ownerDepId!=null">
+				or (
+				wp.owner_userId is null and wp.owner_depId=#{projectMgt.ownerDepId}
+				)
+			</if>
+		</if>
+		ORDER by
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				wp.create_time ${sortOrder},
+			</if>
+			<if test="sortName=='ownerDepName'||sortName=='ownerDepId'">
+				wp.owner_depId ${sortOrder},
+			</if>
+		</if>
+		wp.status ASC,
+		wp.id DESC
+	</select>
+
+	<select id="findByProcessInstanceIds" resultMap="wm" parameterType="java.util.List">
+		select * from work_projectmgt where process_instance_id in
+		<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		ORDER by
+		id DESC
+	</select>
+</mapper>
+

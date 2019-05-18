@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.CustPersonMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.CustPerson">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="name" jdbcType="VARCHAR" column="name"/>
+		<result property="sex" jdbcType="TINYINT" column="sex"/>
+		<result property="post" jdbcType="VARCHAR" column="post"/>
+		<result property="companyName" jdbcType="VARCHAR" column="company_name"/>
+		<result property="companyNature" jdbcType="VARCHAR" column="company_nature"/>
+		<result property="industry" jdbcType="VARCHAR" column="industry"/>
+		<result property="companyScale" jdbcType="VARCHAR" column="company_scale"/>
+		<result property="companyAddress" jdbcType="VARCHAR" column="company_address"/>
+		<result property="phone" jdbcType="VARCHAR" column="phone"/>
+		<result property="homeAddress" jdbcType="VARCHAR" column="home_address"/>
+		<result property="mobile" jdbcType="VARCHAR" column="mobile"/>
+		<result property="email" jdbcType="VARCHAR" column="email"/>
+		<result property="fax" jdbcType="VARCHAR" column="fax"/>
+		<result property="companyWebsite" jdbcType="VARCHAR" column="company_website"/>
+		<result property="source" jdbcType="VARCHAR" column="source"/>
+		<result property="credit" jdbcType="VARCHAR" column="credit"/>
+		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
+		SELECT
+			ci.*
+		FROM
+			cust_info ci
+		WHERE
+			1 = 1
+		<if test="keywords != null and keywords != '' ">
+			AND
+			(
+			ci.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%') or
+			)
+		</if>
+
+		<if test="custPersonEntity != null">
+			<if test="custPersonEntity.id!=null">
+				AND ci.id = #{custInfoEntity.id}
+			</if>
+		</if>
+		ORDER BY
+			ci.id ASC,
+			ci.create_time DESC
+	</select>
+</mapper>
+

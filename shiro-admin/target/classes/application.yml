@@ -1,0 +1,88 @@
+# SPRING PROFILES
+spring:
+    profiles:
+        active: dev
+    activiti:
+        check-process-definitions: false #自动检查、部署流程定义文件
+        database-schema-update: true #自动更新数据库结构
+        process-definition-location-prefix: classpath*:/processes/
+    application:
+        name: shiro-admin
+    freemarker:
+        allow-request-override: false
+        allow-session-override: false
+        cache: false
+        charset: UTF-8
+        check-template-location: true
+        content-type: text/html
+        enabled: true
+        expose-request-attributes: false
+        expose-session-attributes: false
+        expose-spring-macro-helpers: true
+        prefer-file-system-access: true
+        suffix: .ftl
+        template-loader-path: classpath:/templates/
+        settings:
+            template_update_delay: 0
+            default_encoding: UTF-8
+            classic_compatible: true
+    # HTTP ENCODING
+    http:
+        multipart:
+            max-file-size: 2MB
+            max-request-size: 10MB
+        encoding:
+            enabled: true
+            charset: UTF-8
+            force: true
+    messages:
+        encoding: UTF-8
+    jmx:
+        enabled: true
+        default-domain: agentservice
+    resources:
+        chain:
+            strategy:
+                content:
+                    enabled: true
+                    paths: /**
+    # redis缓存服务配置
+    session:
+        store-type: redis
+# MyBatis
+mybatis:
+    type-aliases-package: com.suteng.shiro.persistence.beans
+    mapper-locations: classpath:/mybatis/*.xml
+    configuration:
+      map-underscore-to-camel-case: true
+# mapper
+mapper:
+    mappers:
+        - com.suteng.shiro.plugin.BaseMapper
+    not-empty: false
+    identity: MYSQL
+# pagehelper
+pagehelper:
+    helper-dialect: mysql
+    reasonable: true
+    support-methods-arguments: true
+    params: count=countSql
+banner:
+    charset: UTF-8
+
+################################### 程序自定义配置 ###################################
+suteng:
+    druid:
+        # druid访问用户名（默认：suteng-druid）
+        username: suteng-druid
+        # druid访问密码（默认：suteng-druid）
+        password: suteng-druid
+        # druid访问地址（默认：/druid/*）
+        servletPath: /druid/*
+        # 启用重置功能（默认false）
+        resetEnable: false
+        # 白名单(非必填)， list
+        allowIps[0]:
+        # 黑名单(非必填)， list
+        denyIps[0]:
+
