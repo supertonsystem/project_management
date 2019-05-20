@@ -159,22 +159,22 @@
             }, {
                 field: 'name',
                 title: '资源名',
-                editable: true
+                editable: false
             }, {
                 field: 'type',
                 title: '资源类型',
-                editable: true,
+                editable: false,
                 formatter: function (code) {
                     return code == 'menu' ? '菜单' : '按钮';
                 }
             }, {
                 field: 'url',
                 title: '资源地址',
-                editable: true
+                editable: false
             }, {
                 field: 'permission',
                 title: '资源权限',
-                editable: true
+                editable: false
             }, {
                 field: 'parent.name',
                 title: '父级资源',
@@ -182,11 +182,11 @@
             }, {
                 field: 'icon',
                 title: '资源图标',
-                editable: true
+                editable: false
             }, {
                 field: 'sort',
                 title: '排序',
-                editable: true
+                editable: false
             }, {
                 field: 'external',
                 title: '外部资源',
@@ -194,7 +194,7 @@
             }, {
                 field: 'available',
                 title: '可用',
-                editable: true
+                editable: false
             }, {
                 field: 'operate',
                 title: '操作',

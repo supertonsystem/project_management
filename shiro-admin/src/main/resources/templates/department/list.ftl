@@ -113,15 +113,15 @@
                 },{
                     field: 'name',
                     title: '部门名称',
-                    editable: false,
+                    editable: false
                 }, {
                     field: 'parent.name',
                     title: '父级部门',
-                    editable: true
+                    editable: false
                 }, {
                     field: 'sort',
                     title: '排序',
-                    editable: true
+                    editable: false
                 },{
                     field: 'operate',
                     title: '操作',

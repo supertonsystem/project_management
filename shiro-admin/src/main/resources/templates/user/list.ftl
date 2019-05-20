@@ -175,11 +175,11 @@
                 }, {
                     field: 'username',
                     title: '用户名',
-                    editable: false,
+                    editable: false
                 },{
                     field: 'depName',
                     title: '部门名称',
-                    editable: false,
+                    editable: false
                 },{
                     field: 'post',
                     title: '职位',
@@ -197,15 +197,15 @@
                 }, {
                     field: 'nickname',
                     title: '昵称',
-                    editable: true
+                    editable: false
                 }, {
                     field: 'email',
                     title: '邮箱',
-                    editable: true
+                    editable: false
                 }, {
                     field: 'qq',
                     title: 'qq',
-                    editable: true
+                    editable: false
                 }, {
                     field: 'userType',
                     title: '用户类型',

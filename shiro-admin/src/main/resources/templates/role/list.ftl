@@ -119,15 +119,15 @@
             }, {
                 field: 'name',
                 title: '角色名',
-                editable: false,
+                editable: false
             }, {
                 field: 'description',
                 title: '角色描述',
-                editable: false,
+                editable: false
             }, {
                 field: 'available',
                 title: '是否可用',
-                editable: true,
+                editable: false,
                 formatter: function (code) {
                     return code ? '可用' : '不可用';
                 }
