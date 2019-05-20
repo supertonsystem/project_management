@@ -488,11 +488,11 @@
 
         $(function () {
             var options = {
-                url: "/custmgt/list",
-                getInfoUrl: "/custmgt/get/{id}",
-                updateUrl: "/custmgt/edit",
-                removeUrl: "/custmgt/remove",
-                createUrl: "/custmgt/add",
+                url: "/custmgt/person/list",
+                getInfoUrl: "/custmgt/person/get/{id}",
+                updateUrl: "/custmgt/person/edit",
+                removeUrl: "/custmgt/person/remove",
+                createUrl: "/custmgt/person/add",
                 columns: [
                     {
                         field: 'id',
@@ -655,7 +655,7 @@
                 $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("添加" + options.modalName);
                 $(".addOrUpdateBtn").unbind('click');
                 $(".addOrUpdateBtn").click(function () {
-                    var name = $('#name').val();
+                    var name = $('#addOrUpdateForm #name').val();
                     if(name==null||name==''){
                         alert('客户名称不能为空');
                         return;

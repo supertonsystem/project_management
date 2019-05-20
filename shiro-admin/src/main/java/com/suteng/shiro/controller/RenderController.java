@@ -69,9 +69,9 @@ public class RenderController {
         return new ModelAndView("projectmgt/list", model);
     }
 
-    @RequiresPermissions("custmgt:infos")
-    @GetMapping("/custmgt/infos")
+    @RequiresPermissions("custmgt:persons")
+    @GetMapping("/custmgt/persons")
     public ModelAndView custinfos() {
-        return ResultUtil.view("custmgt/list");
+        return ResultUtil.view("custmgt/person");
     }
 }

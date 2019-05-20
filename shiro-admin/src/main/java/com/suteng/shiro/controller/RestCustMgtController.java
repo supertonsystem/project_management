@@ -29,15 +29,15 @@ public class RestCustMgtController {
     @Autowired
     private CustPersonService custPersonService;
 
-    @RequiresPermissions("custmgt:infos")
-    @PostMapping("/list")
+    @RequiresPermissions("custmgt:persons")
+    @PostMapping("/person/list")
     public PageResult list(CustPersonConditionVo vo) {
         PageInfo<CustPersonEntity> pageInfo = custPersonService.findPageBreakByCondition(vo);
         return ResultUtil.tablePage(pageInfo);
     }
 
-    @RequiresPermissions("custmgt:add")
-    @PostMapping(value = "/add")
+    @RequiresPermissions("custmgt:person:add")
+    @PostMapping(value = "/person/add")
     public ResponseVO add(CustPersonEntity entity) {
         try {
             Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
@@ -50,8 +50,8 @@ public class RestCustMgtController {
         }
     }
 
-    @RequiresPermissions(value = {"user:batchDelete", "user:delete"}, logical = Logical.OR)
-    @PostMapping(value = "/remove")
+    @RequiresPermissions(value = {"custmgt:person:batchDelete", "custmgt:person:delete"}, logical = Logical.OR)
+    @PostMapping(value = "/person/remove")
     public ResponseVO remove(Long[] ids) {
         if (null == ids) {
             return ResultUtil.error(500, "请至少选择一条记录");
@@ -62,14 +62,14 @@ public class RestCustMgtController {
         return ResultUtil.success("成功删除 [" + ids.length + "] 个客户");
     }
 
-    @RequiresPermissions("custmgt:edit")
-    @PostMapping("/get/{id}")
+    @RequiresPermissions("custmgt:person:edit")
+    @PostMapping("/person/get/{id}")
     public ResponseVO get(@PathVariable Long id) {
         return ResultUtil.success(null, this.custPersonService.getByPrimaryKey(id));
     }
 
-    @RequiresPermissions("custmgt:edit")
-    @PostMapping("/edit")
+    @RequiresPermissions("custmgt:person:edit")
+    @PostMapping("/person/edit")
     public ResponseVO edit(CustPersonEntity entity) {
         try {
             custPersonService.updateSelective(entity);

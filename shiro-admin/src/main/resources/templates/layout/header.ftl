@@ -24,8 +24,8 @@
     <link href="/assets/css/bootstrap-spinner.css" rel="stylesheet">
     <link href="/assets/css/fileinput/fileinput.min.css" rel="stylesheet">
     <link href="/assets/css/fileinput/theme.css" rel="stylesheet">
-    <link href="/assets/css/validator/bootstrapValidator.min.css">
-    <link href="/assets/css/x-editable/bootstrap-editable.css">
+    <link href="/assets/css/validator/bootstrapValidator.css" rel="stylesheet">
+    <link href="/assets/css/x-editable/bootstrap-editable.css" rel="stylesheet">
 </head>
 <body class="nav-md">
 <div class="container body">

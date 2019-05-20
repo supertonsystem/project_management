@@ -28,26 +28,26 @@
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
 		SELECT
-			ci.*
+			cp.*
 		FROM
-			cust_info ci
+			cust_person cp
 		WHERE
 			1 = 1
 		<if test="keywords != null and keywords != '' ">
 			AND
 			(
-			ci.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%') or
+			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%') or
 			)
 		</if>
 
 		<if test="custPersonEntity != null">
 			<if test="custPersonEntity.id!=null">
-				AND ci.id = #{custInfoEntity.id}
+				AND cp.id = #{custInfoEntity.id}
 			</if>
 		</if>
 		ORDER BY
-			ci.id ASC,
-			ci.create_time DESC
+			cp.id ASC,
+			cp.create_time DESC
 	</select>
 </mapper>
 
