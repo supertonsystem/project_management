@@ -207,6 +207,16 @@
                                     <div id="required_title" style="position: absolute;top: 23px;left: 730px;"> <span class="required" style="color: red">*</span></div>
                                 </div>
                             </div>
+                            <div class="row"  style="padding-left: 5%;">
+                                <div class="item form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="control-label col-md-1 col-sm-1 col-xs-1" style="width: 12%;padding-right: 16px;" for="name">项目编号: </label>
+                                    <div class="col-md-9 col-sm-9 col-xs-9" style="position: relative">
+                                        <input type="text" class="form-control" name="number" id="number" required="required"  style="width: 605px;"
+                                               placeholder="请输入项目编号"/>
+                                    </div>
+                                    <div id="required_number" style="position: absolute;top: 23px;left: 730px;"> <span class="required" style="color: red">*</span></div>
+                                </div>
+                            </div>
                             <div class="row" style="padding-left: 5%;">
                                 <div class="item form-group col-md-6 col-sm-6 col-xs-6" id="createTime-group" style="display: none">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-3" for="createTime">登记时间:&nbsp;&nbsp;</label>
@@ -417,8 +427,13 @@
                         field: 'id',
                         title: '序号',
                         editable: false,
-                        width: 40
+                        visible: false
                     }, {
+                        field: 'number',
+                        title: '项目编号',
+                        editable: false,
+                        width: 80
+                    },{
                         field: 'createTime',
                         title: '登记时间',
                         editable: false,
@@ -609,6 +624,7 @@
                         $('#myTab a:last').tab('show');
                         $("#historicActivityImageLi").show();
                         $("#required_checkDepId").hide();
+                        $("#required_number").hide();
                         $("#required_title").hide();
                         $("#required_ownerDepId").hide();
                     },
@@ -1095,6 +1111,7 @@
             $("#createTime-group").hide();
             $("#required_checkDepId").show();
             $("#required_title").show();
+            $("#required_number").show();
             $("#required_ownerDepId").show();
             $("#historicActivityImageLi").hide();
             $(".rollbacksubmit").hide();

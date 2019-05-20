@@ -19,6 +19,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Table(name="work_projectmgt")
 public class WorkProjectMgt extends AbstractDO {
+        /**
+         * 项目编号
+         */
+        private String number;
+        /**
+         * 项目标题
+         */
         private String title;
         //登记人Id
         @Column(name="register_userId")

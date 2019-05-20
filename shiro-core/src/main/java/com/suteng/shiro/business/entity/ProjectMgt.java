@@ -47,6 +47,13 @@ public class ProjectMgt {
         this.workProjectMgt.setId(id);
     }
 
+    public String getNumber() {
+        return this.workProjectMgt.getNumber();
+    }
+
+    public void setNumber(String number) {
+        this.workProjectMgt.setNumber(number);
+    }
     public String getTitle() {
         return this.workProjectMgt.getTitle();
     }

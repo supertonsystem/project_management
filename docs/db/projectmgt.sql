@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS `work_projectmgt`;
 CREATE TABLE `work_projectmgt` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) DEFAULT NULL COMMENT '标题',
+  `number` varchar(100) DEFAULT NULL COMMENT '编号',
   `register_userId` bigint(20) unsigned NOT NULL COMMENT '登记人Id',
   `owner_depId` bigint(20) unsigned NOT NULL COMMENT '责任部门Id',
   `owner_userId` bigint(20)  COMMENT '责任人Id',

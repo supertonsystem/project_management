@@ -5,6 +5,7 @@
 	<resultMap id="wm" type="com.suteng.shiro.persistence.beans.WorkProjectMgt">
 		<result property="id" jdbcType="BIGINT" column="id"/>
 		<result property="title" jdbcType="VARCHAR" column="title"/>
+		<result property="number" jdbcType="VARCHAR" column="number"/>
 		<result property="registerUserId" jdbcType="BIGINT" column="register_userId"/>
 		<result property="ownerDepId" jdbcType="BIGINT" column="owner_depId"/>
 		<result property="ownerUserId" jdbcType="BIGINT" column="owner_userId"/>

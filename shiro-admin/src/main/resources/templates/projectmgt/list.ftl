@@ -160,6 +160,13 @@
                                                                                              id="title"></span></td>
                                     </tr>
                                     <tr>
+                                        <td style="text-align: right;line-height: 30px;"><span class="control-label title"
+                                                                                               for="name">项目编号:</span>
+                                        </td>
+                                        <td colspan="3" style="vertical-align: middle"><span class="control-label"
+                                                                                             id="number"></span></td>
+                                    </tr>
+                                    <tr>
                                         <td style="width: 12%;text-align: right;"><span
                                                 class="control-label title">登记时间:</span></td>
                                         <td style="width: 38%"><span class="control-label" id="createTime"></span></td>
@@ -288,7 +295,12 @@
                         field: 'id',
                         title: '序号',
                         editable: false,
-                        width: 40
+                        visible: false
+                    }, {
+                        field: 'number',
+                        title: '项目编号',
+                        editable: false,
+                        width: 80
                     }, {
                         field: 'createTime',
                         title: '登记时间',
