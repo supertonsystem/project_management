@@ -2,9 +2,12 @@ package com.suteng.shiro.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.suteng.shiro.business.entity.CustPersonEntity;
+import com.suteng.shiro.business.entity.CustProjectEntity;
 import com.suteng.shiro.business.enums.ResponseStatus;
 import com.suteng.shiro.business.service.CustPersonService;
+import com.suteng.shiro.business.service.CustProjectService;
 import com.suteng.shiro.business.vo.CustPersonConditionVo;
+import com.suteng.shiro.business.vo.CustProjectConditionVo;
 import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.ResultUtil;
@@ -28,17 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestCustMgtController {
     @Autowired
     private CustPersonService custPersonService;
-
+    @Autowired
+    private CustProjectService custProjectService;
     @RequiresPermissions("custmgt:persons")
     @PostMapping("/person/list")
-    public PageResult list(CustPersonConditionVo vo) {
+    public PageResult personList(CustPersonConditionVo vo) {
         PageInfo<CustPersonEntity> pageInfo = custPersonService.findPageBreakByCondition(vo);
         return ResultUtil.tablePage(pageInfo);
     }
 
     @RequiresPermissions("custmgt:person:add")
     @PostMapping(value = "/person/add")
-    public ResponseVO add(CustPersonEntity entity) {
+    public ResponseVO personAdd(CustPersonEntity entity) {
         try {
             Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
             entity.setRegister(userId);
@@ -52,7 +56,7 @@ public class RestCustMgtController {
 
     @RequiresPermissions(value = {"custmgt:person:batchDelete", "custmgt:person:delete"}, logical = Logical.OR)
     @PostMapping(value = "/person/remove")
-    public ResponseVO remove(Long[] ids) {
+    public ResponseVO personRemove(Long[] ids) {
         if (null == ids) {
             return ResultUtil.error(500, "请至少选择一条记录");
         }
@@ -64,15 +68,67 @@ public class RestCustMgtController {
 
     @RequiresPermissions("custmgt:person:edit")
     @PostMapping("/person/get/{id}")
-    public ResponseVO get(@PathVariable Long id) {
+    public ResponseVO personGet(@PathVariable Long id) {
         return ResultUtil.success(null, this.custPersonService.getByPrimaryKey(id));
     }
 
     @RequiresPermissions("custmgt:person:edit")
     @PostMapping("/person/edit")
-    public ResponseVO edit(CustPersonEntity entity) {
+    public ResponseVO personEdit(CustPersonEntity entity) {
         try {
             custPersonService.updateSelective(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("修改失败！");
+        }
+        return ResultUtil.success(ResponseStatus.SUCCESS);
+    }
+
+
+    @RequiresPermissions("custmgt:projects")
+    @PostMapping("/project/list")
+    public PageResult projectList(CustProjectConditionVo vo) {
+        PageInfo<CustProjectEntity> pageInfo = custProjectService.findPageBreakByCondition(vo);
+        return ResultUtil.tablePage(pageInfo);
+    }
+
+    @RequiresPermissions("custmgt:project:add")
+    @PostMapping(value = "/project/add")
+    public ResponseVO projectAdd(CustProjectEntity entity) {
+        try {
+            Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+            entity.setRegister(userId);
+            custProjectService.insert(entity);
+            return ResultUtil.success("成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("error");
+        }
+    }
+
+    @RequiresPermissions(value = {"custmgt:project:batchDelete", "custmgt:project:delete"}, logical = Logical.OR)
+    @PostMapping(value = "/project/remove")
+    public ResponseVO projectRemove(Long[] ids) {
+        if (null == ids) {
+            return ResultUtil.error(500, "请至少选择一条记录");
+        }
+        for (Long id : ids) {
+            custProjectService.removeByPrimaryKey(id);
+        }
+        return ResultUtil.success("成功删除 [" + ids.length + "] 个项目");
+    }
+
+    @RequiresPermissions("custmgt:project:edit")
+    @PostMapping("/project/get/{id}")
+    public ResponseVO projectGet(@PathVariable Long id) {
+        return ResultUtil.success(null, this.custProjectService.getByPrimaryKey(id));
+    }
+
+    @RequiresPermissions("custmgt:project:edit")
+    @PostMapping("/project/edit")
+    public ResponseVO projectEdit(CustProjectEntity entity) {
+        try {
+            custProjectService.updateSelective(entity);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.error("修改失败！");

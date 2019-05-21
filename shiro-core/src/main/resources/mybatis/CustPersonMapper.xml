@@ -42,7 +42,7 @@
 
 		<if test="custPersonEntity != null">
 			<if test="custPersonEntity.id!=null">
-				AND cp.id = #{custInfoEntity.id}
+				AND cp.id = #{custPersonEntity.id}
 			</if>
 		</if>
 		ORDER BY

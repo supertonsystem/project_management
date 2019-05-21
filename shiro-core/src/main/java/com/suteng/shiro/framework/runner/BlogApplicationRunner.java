@@ -18,9 +18,10 @@ public class BlogApplicationRunner implements ApplicationRunner {
 
     @Value("${server.port}")
     private int port;
-
+    @Value("${server.address}")
+    private String address;
     @Override
     public void run(ApplicationArguments applicationArguments) {
-        log.info("程序部署完成，访问地址：http://localhost:" + port);
+        log.info("程序部署完成，访问地址：http://"+address+":" + port);
     }
 }

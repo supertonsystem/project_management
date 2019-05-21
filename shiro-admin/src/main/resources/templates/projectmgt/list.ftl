@@ -306,21 +306,14 @@
                         title: '登记时间',
                         sortable: true,
                         editable: false,
-                        width: 90,
-                        formatter: function (data) {
-                            if (data != null) {
-                                return new Date(data).format("yyyy-MM-dd")
-                            }
-                            return "";
-                        }
+                        width: 90
                     }, {
                         field: 'title',
                         title: '标题',
                         editable: false,
                         width: 220,
-                        class: 'colStyle',
                         formatter: function (data) {
-                            var html = "<em title='" + data + "'>" + data + "</em>";
+                            var html = "<div style='width: 210px' class='colStyle'  title='" + data + "'>" + data + "</div>";
                             return html;
                         }
                     }, {
@@ -351,32 +344,19 @@
                         field: 'plannedTime',
                         title: '计划时间',
                         editable: false,
-                        width: 90,
-                        formatter: function (data) {
-                            if (data != null) {
-                                return new Date(data).format("yyyy-MM-dd")
-                            }
-                            return "";
-                        }
+                        width: 90
                     }, {
                         field: 'finishTime',
                         title: '完成时间',
                         editable: false,
-                        width: 90,
-                        formatter: function (data) {
-                            if (data != null) {
-                                return new Date(data).format("yyyy-MM-dd")
-                            }
-                            return "";
-                        }
+                        width: 90
                     }, {
                         field: 'remark',
                         title: '备注',
                         editable: false,
                         width: 120,
-                        class: 'colStyle',
                         formatter: function (data) {
-                            var html = "<em title='" + data + "'>" + data + "</em>";
+                            var html = "<div style='width: 110px' class='colStyle'  title='" + data + "'>" + data + "</div>";
                             return html;
                         }
                     }, {

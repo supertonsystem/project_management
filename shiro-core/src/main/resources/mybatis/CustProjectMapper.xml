@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.CustProjectMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.CustProject">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="number" jdbcType="VARCHAR" column="number"/>
+		<result property="companyName" jdbcType="VARCHAR" column="company_name"/>
+		<result property="area" jdbcType="VARCHAR" column="area"/>
+		<result property="province" jdbcType="VARCHAR" column="province"/>
+		<result property="address" jdbcType="VARCHAR" column="address"/>
+		<result property="startTime" jdbcType="TIMESTAMP" column="start_Time"/>
+		<result property="endTime" jdbcType="TIMESTAMP" column="end_time"/>
+		<result property="period" jdbcType="VARCHAR" column="period"/>
+		<result property="owner" jdbcType="VARCHAR" column="owner"/>
+		<result property="ownerDepartment" jdbcType="VARCHAR" column="ownerDepartment"/>
+		<result property="department" jdbcType="BIGINT" column="department"/>
+		<result property="pm" jdbcType="BIGINT" column="pm"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustProjectConditionVo" resultMap="rm">
+		SELECT
+			cp.*
+		FROM
+			cust_project cp
+		WHERE
+			1 = 1
+		<if test="keywords != null and keywords != '' ">
+			AND
+			(
+			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%') or
+			)
+		</if>
+
+		<if test="custProjectEntity != null">
+			<if test="custProjectEntity.id!=null">
+				AND cp.id = #{custProjectEntity.id}
+			</if>
+		</if>
+		ORDER BY
+			cp.id ASC,
+			cp.create_time DESC
+	</select>
+</mapper>
+

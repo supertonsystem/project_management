@@ -17,7 +17,7 @@
 </head>
 <body>
 <div id="main">
-    <h2><span>项目【${project}】已结束，请及时查阅。<a href="http://192.168.0.52:8080/">点击前往</a></span></h2>
+    <h2><span>项目【${project}】已结束，请及时查阅。<a href="http://192.168.0.216:8080/">点击前往</a></span></h2>
 </div>
 </body>
 </html>

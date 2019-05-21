@@ -57,13 +57,13 @@ public class RenderController {
 
     @RequiresPermissions("projectmgt:projects")
     @GetMapping("/projectmgt/projects")
-    public ModelAndView list() {
+    public ModelAndView projects() {
         return ResultUtil.view("projectmgt/list");
     }
 
     @RequiresPermissions("projectmgt:myproject")
     @GetMapping("/projectmgt/myproject")
-    public ModelAndView myList() {
+    public ModelAndView myProjects() {
         Map<String, String> model = new HashMap<String, String>();
         model.put("type", "mylist");
         return new ModelAndView("projectmgt/list", model);
@@ -71,7 +71,13 @@ public class RenderController {
 
     @RequiresPermissions("custmgt:persons")
     @GetMapping("/custmgt/persons")
-    public ModelAndView custinfos() {
+    public ModelAndView custPersons() {
         return ResultUtil.view("custmgt/person");
+    }
+
+    @RequiresPermissions("custmgt:projects")
+    @GetMapping("/custmgt/projects")
+    public ModelAndView custProjects() {
+        return ResultUtil.view("custmgt/project");
     }
 }

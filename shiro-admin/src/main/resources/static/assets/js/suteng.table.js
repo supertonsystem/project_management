@@ -92,6 +92,7 @@
                     $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("添加" + options.modalName);
 
                     if ($("#password") && $("#password")[0]) {
+                        $("#div_password").show();
                         $("#password").attr("required", "required");
                     }
                     if ($("#username") && $("#username")[0]) {

@@ -189,7 +189,7 @@ public class ProjectMgt {
         this.workProjectMgt.setRemark(remark);
     }
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     public Date getCreateTime() {
         return this.workProjectMgt.getCreateTime();
     }

@@ -39,7 +39,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <ol class="breadcrumb">
             <li><a href="/">首页</a></li>
-            <li class="active">客户列表</li>
+            <li class="active">项目 列表</li>
         </ol>
         <div class="x_panel">
             <div class="panel panel-default" style="margin-bottom:0px">
@@ -47,9 +47,9 @@
                 <div>
                     <form id="formSearch" class="form-horizontal">
                         <div class="form-group" style="margin-top:15px">
-                            <label class="control-label col-sm-1" for="txt_search_title">姓名</label>
+                            <label class="control-label col-sm-1" for="txt_search_title">名称</label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="title" name="title">
+                                <input type="text" class="form-control" id="name" name="name">
                             </div>
                             <div class="col-sm-4" style="text-align:left;">
                                 <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查&nbsp;&nbsp;&nbsp;&nbsp;询</button>
@@ -61,12 +61,12 @@
             <div class="x_content">
                 <div class="<#--table-responsive-->">
                     <div class="btn-group hidden-xs" id="toolbar">
-                    <@shiro.hasPermission name="custmgt:person:add">
-                        <button id="btn_add" type="button" class="btn btn-default" title="新增客户">
+                    <@shiro.hasPermission name="custmgt:project:add">
+                        <button id="btn_add" type="button" class="btn btn-default" title="新增">
                             <i class="fa fa-plus"></i> 新增
                         </button>
                     </@shiro.hasPermission>
-                    <@shiro.hasPermission name="custmgt:person:batchDelete">
+                    <@shiro.hasPermission name="custmgt:project:batchDelete">
                         <button id="btn_delete_ids" type="button" class="btn btn-default" title="删除选中">
                             <i class="fa fa-trash-o"></i> 批量删除
                         </button>
@@ -99,28 +99,23 @@
                         <form id="addOrUpdateForm">
                             <input type="hidden" name="id" id="id">
                             <div class="table-responsive">
-                                <h3 align="center">客户信息</h3>
+                                <h3 align="center">项目信息</h3>
                                 <table class="table">
                                     <tbody>
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
-                                            <span class="control-label title">姓&nbsp;&nbsp;&nbsp;&nbsp;名:</span></td>
+                                            <span class="control-label title">编&nbsp;&nbsp;&nbsp;&nbsp;号:</span></td>
                                         <td>
                                             <input type="text" style="width: 200px;float: left;" class="form-control"
-                                                   name="name" id="name"/>
+                                                   name="number" id="number"/>
                                             <em style="color: red;float: left;padding-left: 5px;padding-top: 12px;">*<em/>
                                         </td>
                                         <td class="title_td" style="vertical-align:middle;width: 10%"><span
-                                                class="control-label title">性&nbsp;&nbsp;&nbsp;&nbsp;别: </span></td>
+                                                class="control-label title">名&nbsp;&nbsp;&nbsp;&nbsp;称: </span></td>
                                         <td style="vertical-align:middle">
-                                            <div>
-                                                <label class="radio-inline" style="padding-left: 0px;">
-                                                    <input type="radio" name="sex" id="sex" value="0" checked> 男
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" name="sex" id="sex" value="1"> 女
-                                                </label>
-                                            </div>
+                                            <input type="text" style="width: 200px;float: left;" class="form-control" name="name"
+                                                   id="name"/>
+                                            <em style="color: red;float: left;padding-left: 5px;padding-top: 12px;">*<em/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -129,101 +124,105 @@
                                         <td><input type="text" style="width: 200px" class="form-control"
                                                    name="companyName" id="companyName"/></td>
                                         <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">职&nbsp;&nbsp;&nbsp;&nbsp;位: </span></td>
+                                                class="control-label title">区&nbsp;&nbsp;&nbsp;&nbsp;域: </span></td>
                                         <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="post"
-                                                   id="post"/>
+                                            <input type="text" style="width: 200px" class="form-control" name="area"
+                                                   id="area"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">公司性质:</span></td>
+                                                class="control-label title">省&nbsp;&nbsp;&nbsp;&nbsp;份:</span></td>
                                         <td><input type="text" style="width: 200px" class="form-control"
-                                                   name="companyNature" id="companyNature"/></td>
+                                                   name="province" id="province"/></td>
                                         <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">所属行业: </span></td>
+                                                class="control-label title">地&nbsp;&nbsp;&nbsp;&nbsp;址: </span></td>
                                         <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="industry"
-                                                   id="industry"/>
+                                            <input type="text" style="width: 200px" class="form-control" name="address"
+                                                   id="address"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">公司规模:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control"
-                                                   name="companyScale" id="companyScale"/></td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">公司地址: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control"
-                                                   name="companyAddress" id="companyAddress"/>
+                                                class="control-label title">开工日期:</span></td>
+                                        <td>
+                                            <div style="width: 200px;">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class='input-group date' id='startTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
+                                                        <input type='text' class="form-control" name="startTime" id="startTime" />
+                                                        <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">联系电话:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control" name="phone"
-                                                   id="phone"/></td>
                                         <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">手机电话: </span></td>
+                                                class="control-label title">完工日期: </span></td>
                                         <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="mobile"
-                                                   id="mobile"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">家庭地址:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control"
-                                                   name="homeAddress" id="homeAddress"/></td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">单位网址: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control"
-                                                   name="companyWebsite" id="companyWebsite"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">电子邮箱:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control" name="email"
-                                                   id="email"/></td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">传&nbsp;&nbsp;&nbsp;&nbsp;真: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="fax"
-                                                   id="fax"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">客户来源:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control" name="source"
-                                                   id="source"/></td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">信用状况: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <div>
-                                                <label class="radio-inline" style="padding-left: 0px;">
-                                                    <input type="radio" name="credit" id="credit" value="0" checked> 优秀
-                                                </label>
-                                                <label class="radio-inline" style="padding-left: 0px;">
-                                                    <input type="radio" name="credit" id="credit" value="1"> 良好
-                                                </label>
-                                                <label class="radio-inline" style="padding-left: 0px;">
-                                                    <input type="radio" name="credit" id="credit" value="2"> 一般
-                                                </label>
-                                                <label class="radio-inline" style="padding-left: 0px;">
-                                                    <input type="radio" name="credit" id="credit" value="3"> 较差
-                                                </label>
+                                            <div style="width: 200px;">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class='input-group date' id='endTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
+                                                        <input type='text' class="form-control"  name="endTime" id="endTime"/>
+                                                        <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">备&nbsp;&nbsp;&nbsp;&nbsp;注:</span></td>
-                                        <td colspan="3"><textarea id="remark" name="remark" rows="6"
-                                                                  style="width: 550px"></textarea></td>
+                                                class="control-label title">工&nbsp;&nbsp;&nbsp;&nbsp;期:</span></td>
+                                        <td><input type="text" style="width: 200px" class="form-control" name="period"
+                                                   id="period"/></td>
+                                        <td class="title_td" style="vertical-align:middle"><span
+                                                class="control-label title">甲方部门: </span></td>
+                                        <td style="vertical-align:middle">
+                                            <input type="text" style="width: 200px" class="form-control" name="owner_department"
+                                                   id="owner_department"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
+                                                class="control-label title">甲方负责人:</span></td>
+                                        <td><input type="text" style="width: 200px" class="form-control"
+                                                   name="owner" id="owner"/></td>
+                                        <td class="title_td" style="vertical-align:middle"><span
+                                                class="control-label title">部&nbsp;&nbsp;&nbsp;&nbsp;门：</span></td>
+                                        <td style="vertical-align:middle">
+                                            <select id="department" name="department" class="form-control col-md-5 col-xs-5"
+                                                    placeholder="请选择部门" style="width: 200px;">
+                                                <option value="">请选择</option>
+                                            <@customTag method="availableDepartments">
+                                                <#if availableDepartments?? && availableDepartments?size gt 0>
+                                                    <#list availableDepartments as item>
+                                                        <option value="${item.id?c}">${item.name}</option>
+                                                        <#if item.nodes?? && item.nodes?size gt 0>
+                                                            <#list item.nodes as node>
+                                                                <option value="${node.id?c}">&nbsp;&nbsp;|-${node.name}</option>
+                                                            </#list>
+                                                        </#if>
+                                                    </#list>
+                                                <#else>
+                                                    <option value="">无</option>
+                                                </#if>
+                                            </@customTag>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
+                                                class="control-label title">项目经理:</span></td>
+                                        <td><input type="text" style="width: 200px" class="form-control" name="pm"
+                                                   id="pm"/></td>
+                                        <td class="title_td" style="vertical-align:middle"><span
+                                                class="control-label title">关联客户: </span></td>
+                                        <td style="vertical-align:middle">
+                                            <input type="text" style="width: 200px" class="form-control" name="personId"
+                                                   id="personId"/>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -252,7 +251,7 @@
                         <form id="viewForm">
                             <input type="hidden" name="id" id="id">
                             <div class="table-responsive">
-                                <h3 align="center">客户信息</h3>
+                                <h3 align="center">项目信息</h3>
                                 <table class="table">
                                     <tbody>
                                     <tr id="tr_registerInfo">
@@ -396,102 +395,52 @@
                     </div>
                 </div>
             </div>
-                <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseOne">
-                                点击我进行展开，再次点击我进行折叠。第 1 部分--hide 方法
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseTwo">
-                                点击我进行展开，再次点击我进行折叠。第 2 部分--show 方法
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseTwo" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseThree">
-                                点击我进行展开，再次点击我进行折叠。第 3 部分--toggle 方法
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseFour">
-                                点击我进行展开，再次点击我进行折叠。第 4 部分--options 方法
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 
 
 <script>
+
+    $('#pm').selectPage({
+        showField: 'nickname',
+        keyField: 'id',
+        data: '/user/ajaxlist',
+        searchField: 'keywords',
+        //ajax请求后服务端返回的数据格式处理
+        //返回的数据里必须包含list（Array）和totalRow（number|string）两个节点
+        eAjaxSuccess: function (d) {
+            var result;
+            if (d) result = d.data;
+            else result = undefined;
+            return result;
+        },
+        params: function(){
+            var ownerDepId = $("#department").val();
+            return {'user.depId': ownerDepId};
+        }
+    });
+
         function operateFormatter(code, row, index) {
             var currentUserId = '${user.id}';
             var trUserId = row.register;
             var id=row.id;
             var operateBtn = [
-                '<@shiro.hasPermission name="custmgt:person:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>编辑</a></@shiro.hasPermission>'
+                '<@shiro.hasPermission name="custmgt:project:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>编辑</a></@shiro.hasPermission>'
             ];
             if (currentUserId == trUserId) {
-                operateBtn.push('<@shiro.hasPermission name="custmgt:person:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>删除</a></@shiro.hasPermission>');
+                operateBtn.push('<@shiro.hasPermission name="custmgt:project:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>删除</a></@shiro.hasPermission>');
             }
             return operateBtn.join('');
         }
 
         $(function () {
             var options = {
-                url: "/custmgt/person/list",
-                getInfoUrl: "/custmgt/person/get/{id}",
-                updateUrl: "/custmgt/person/edit",
-                removeUrl: "/custmgt/person/remove",
-                createUrl: "/custmgt/person/add",
+                url: "/custmgt/project/list",
+                getInfoUrl: "/custmgt/project/get/{id}",
+                updateUrl: "/custmgt/project/edit",
+                removeUrl: "/custmgt/project/remove",
+                createUrl: "/custmgt/project/add",
                 columns: [
                     {
                         field: 'id',
@@ -507,7 +456,7 @@
                         title: '登记时间',
                         sortable: true,
                         editable: false,
-                        width: 70,
+                        width: 60,
                         formatter: function (data) {
                             if (data != null) {
                                 return new Date(data).format("yyyy-MM-dd")
@@ -515,36 +464,18 @@
                             return "";
                         }
                     }, {
-                        field: 'name',
-                        title: '姓名',
+                        field: 'number',
+                        title: '编号',
                         width: 50,
                         formatter: function (data,row) {
                             return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
                         }
                     }, {
-                        field: 'sex',
-                        title: '性别',
-                        editable: false,
-                        width: 30,
-                        formatter: function (data) {
-                            if(data==0){
-                                return '男';
-                            }else if(data==1){
-                                return '女';
-                            }
-                            return '';
-                        }
-                    }, {
-                        field: 'post',
-                        title: '职位',
-                        width: 40,
-                        editable: {
-                            type: 'text',
-                            title: '用户名',
-                            validate: function (v) {
-                                if (!v) return '用户名不能为空';
-
-                            }
+                        field: 'name',
+                        title: '名称',
+                        width: 50,
+                        formatter: function (data,row) {
+                            return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
                         }
                     }, {
                         field: 'companyName',
@@ -552,7 +483,7 @@
                         editable: false,
                         width: 120
                     }, {
-                        field: 'companyAddress',
+                        field: 'address',
                         title: '公司地址',
                         editable: false,
                         width: 120,
@@ -562,32 +493,30 @@
                             return html;
                         }
                     }, {
-                        field: 'phone',
-                        title: '联系电话',
+                        field: 'startTime',
+                        title: '开工日期',
                         editable: false,
-                        width: 70
+                        width: 50
                     }, {
-                        field: 'email',
-                        title: '电子邮箱',
+                        field: 'endTime',
+                        title: '完工日期',
                         editable: false,
-                        width: 90
+                        width: 50
                     }, {
-                        field: 'credit',
-                        title: '信用',
+                        field: 'period',
+                        title: '工期',
                         editable: false,
-                        width: 40,
-                        formatter: function (data) {
-                            if(data==0){
-                                return '<span  class="btn-success btn-xs">优秀</span>'
-                            }else if(data==1){
-                                return '<span  class="btn-info btn-xs">良好</span>'
-                            }else if(data==2){
-                                return '<span class="btn-warning btn-xs">一般</span>'
-                            }else if(data==3){
-                                return '<span class="btn-danger btn-xs">较差</span>'
-                            }
-                            return '';
-                        }
+                        width: 30
+                    }, {
+                        field: 'owner',
+                        title: '甲方负责人',
+                        editable: false,
+                        width: 50
+                    }, {
+                        field: 'pm',
+                        title: '项目经理',
+                        editable: false,
+                        width: 50
                     }, {
                         field: 'operate',
                         title: '操作',
@@ -656,7 +585,12 @@
                 $(".addOrUpdateBtn").click(function () {
                     var name = $('#addOrUpdateForm #name').val();
                     if(name==null||name==''){
-                        alert('客户名称不能为空');
+                        alert('项目名称不能为空');
+                        return;
+                    }
+                    var number = $('#addOrUpdateForm #number').val();
+                    if(number==null||number==''){
+                        alert('项目编号不能为空');
                         return;
                     }
                     $.ajax({
@@ -742,7 +676,7 @@
             $.ajax({
                 type: "post",
                 async: false,
-                url: "/custmgt/person/get/"+id,
+                url: "/custmgt/get/"+id,
                 success: function (json) {
                     var data = json.data;
                     resetViewForm(data);
@@ -751,6 +685,22 @@
                 error: $.tool.ajaxError
             });
         }
+
+        //日期空间init
+        $('#startTime_datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            showClear: true,
+            showClose: true,
+            focusOnShow: true,
+            locale: moment.locale('zh-cn')
+        });
+        $('#endTime_datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            showClear: true,
+            showClose: true,
+            focusOnShow: true,
+            locale: moment.locale('zh-cn')
+        });
 
         function queryParams(params) {
             params = $.extend({}, params);
@@ -832,4 +782,11 @@
             });
             $('.modal.in:visible:last').focus().next('.modal-backdrop.in').removeClass('hidden');
         }
+
+        $(function () { $('#collapseFour').collapse({
+            toggle: false
+        })});
+        $(function () { $('#collapseTwo').collapse('show')});
+        $(function () { $('#collapseThree').collapse('toggle')});
+        $(function () { $('#collapseOne').collapse('hide')});
     </script>

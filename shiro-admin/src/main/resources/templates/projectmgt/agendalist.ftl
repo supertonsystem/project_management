@@ -221,13 +221,13 @@
                                 <div class="item form-group col-md-6 col-sm-6 col-xs-6" id="createTime-group" style="display: none">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-3" for="createTime">登记时间:&nbsp;&nbsp;</label>
                                     <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <input type="text" class="form-control" id="createTime"/>
+                                        <input type="text" class="form-control" id="createTime" />
                                     </div>
                                 </div>
                                 <div class="item form-group col-md-6 col-sm-6 col-xs-6" id="registerUserName-group" style="display: none">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-3" for="registerUserName">登&nbsp;记&nbsp;&nbsp;人:</label>
                                     <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <input type="text" class="form-control" id="registerUserName"/>
+                                        <input type="text" class="form-control" id="registerUserName" />
                                     </div>
                                 </div>
                             </div>
@@ -438,21 +438,14 @@
                         title: '登记时间',
                         editable: false,
                         sortable: true,
-                        width: 80,
-                        formatter: function (data) {
-                            if(data!=null){
-                                return new Date(data).format("yyyy-MM-dd")
-                            }
-                            return "";
-                        }
+                        width: 80
                     }, {
                         field: 'title',
                         title: '标题',
                         editable: false,
                         width: 250,
-                        class:'colStyle',
                         formatter: function (data) {
-                            var html="<em title='"+data+"'>"+data+"</em>";
+                            var html="<div style='width: 240px' class='colStyle'  title='"+data+"'>"+data+"</div>";
                             return html;
                         }
                     }, {
@@ -1139,6 +1132,8 @@
             $("#officeOpinion").attr('readonly',true);
             $("#gmOpinion").attr('readonly',true);
             $("#remark").attr('readonly',true);
+            $("#registerUserName").attr('readonly',true);
+            $("#createTime").attr('readonly',true);
             $(".rollbacksubmit").hide();
             $('#officeOpinionModalBtn').hide();
             $('#gmOpinionModalBtn').hide();
