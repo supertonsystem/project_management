@@ -1,11 +1,14 @@
 package com.suteng.shiro.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.suteng.shiro.business.entity.CustContactEntity;
 import com.suteng.shiro.business.entity.CustPersonEntity;
 import com.suteng.shiro.business.entity.CustProjectEntity;
 import com.suteng.shiro.business.enums.ResponseStatus;
+import com.suteng.shiro.business.service.CustContactService;
 import com.suteng.shiro.business.service.CustPersonService;
 import com.suteng.shiro.business.service.CustProjectService;
+import com.suteng.shiro.business.vo.CustContactConditionVo;
 import com.suteng.shiro.business.vo.CustPersonConditionVo;
 import com.suteng.shiro.business.vo.CustProjectConditionVo;
 import com.suteng.shiro.framework.object.PageResult;
@@ -33,6 +36,10 @@ public class RestCustMgtController {
     private CustPersonService custPersonService;
     @Autowired
     private CustProjectService custProjectService;
+    @Autowired
+    private CustContactService custContactService;
+
+
     @RequiresPermissions("custmgt:persons")
     @PostMapping("/person/list")
     public PageResult personList(CustPersonConditionVo vo) {
@@ -63,7 +70,7 @@ public class RestCustMgtController {
         for (Long id : ids) {
             custPersonService.removeByPrimaryKey(id);
         }
-        return ResultUtil.success("成功删除 [" + ids.length + "] 个客户");
+        return ResultUtil.success("成功删除 [" + ids.length + "] 个客户信息");
     }
 
     @RequiresPermissions("custmgt:person:edit")
@@ -115,7 +122,7 @@ public class RestCustMgtController {
         for (Long id : ids) {
             custProjectService.removeByPrimaryKey(id);
         }
-        return ResultUtil.success("成功删除 [" + ids.length + "] 个项目");
+        return ResultUtil.success("成功删除 [" + ids.length + "] 个项目信息");
     }
 
     @RequiresPermissions("custmgt:project:edit")
@@ -129,6 +136,57 @@ public class RestCustMgtController {
     public ResponseVO projectEdit(CustProjectEntity entity) {
         try {
             custProjectService.updateSelective(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("修改失败！");
+        }
+        return ResultUtil.success(ResponseStatus.SUCCESS);
+    }
+
+    @RequiresPermissions("custmgt:contacts")
+    @PostMapping("/contact/list")
+    public PageResult contactList(CustContactConditionVo vo) {
+        PageInfo<CustContactEntity> pageInfo = custContactService.findPageBreakByCondition(vo);
+        return ResultUtil.tablePage(pageInfo);
+    }
+
+    @RequiresPermissions("custmgt:contact:add")
+    @PostMapping(value = "/contact/add")
+    public ResponseVO contactAdd(CustContactEntity entity) {
+        try {
+            Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+            entity.setRegister(userId);
+            custContactService.insert(entity);
+            return ResultUtil.success("成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("error");
+        }
+    }
+
+    @RequiresPermissions(value = {"custmgt:contact:batchDelete", "custmgt:contact:delete"}, logical = Logical.OR)
+    @PostMapping(value = "/contact/remove")
+    public ResponseVO contactRemove(Long[] ids) {
+        if (null == ids) {
+            return ResultUtil.error(500, "请至少选择一条记录");
+        }
+        for (Long id : ids) {
+            custContactService.removeByPrimaryKey(id);
+        }
+        return ResultUtil.success("成功删除 [" + ids.length + "] 个联系信息");
+    }
+
+    @RequiresPermissions("custmgt:contact:edit")
+    @PostMapping("/contact/get/{id}")
+    public ResponseVO contactGet(@PathVariable Long id) {
+        return ResultUtil.success(null, this.custContactService.getByPrimaryKey(id));
+    }
+
+    @RequiresPermissions("custmgt:contact:edit")
+    @PostMapping("/contact/edit")
+    public ResponseVO contactEdit(CustContactEntity entity) {
+        try {
+            custContactService.updateSelective(entity);
         } catch (Exception e) {
             e.printStackTrace();
             return ResultUtil.error("修改失败！");

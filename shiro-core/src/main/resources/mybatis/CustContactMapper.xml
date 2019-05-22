@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.CustContactMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.CustContact">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="meetTime" jdbcType="TIMESTAMP" column="meet_time"/>
+		<result property="meetAddress" jdbcType="VARCHAR" column="meet_address"/>
+		<result property="activityMode" jdbcType="VARCHAR" column="activity_mode"/>
+		<result property="expenses" jdbcType="DECIMAL" column="expenses"/>
+		<result property="participant" jdbcType="VARCHAR" column="participant"/>
+		<result property="peopleNum" jdbcType="INTEGER" column="people_num"/>
+		<result property="chat" jdbcType="VARCHAR" column="chat"/>
+		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustContactConditionVo" resultMap="rm">
+		SELECT
+			cc.*
+		FROM
+			cust_contact cc
+		WHERE
+			1 = 1
+		<if test="custContactEntity != null">
+			<if test="custContactEntity.id!=null">
+				AND cc.id = #{custContactEntity.id}
+			</if>
+		</if>
+		ORDER BY
+			cc.id ASC,
+			cc.create_time DESC
+	</select>
+</mapper>
+

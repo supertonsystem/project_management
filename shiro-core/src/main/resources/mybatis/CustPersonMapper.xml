@@ -36,7 +36,7 @@
 		<if test="keywords != null and keywords != '' ">
 			AND
 			(
-			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%') or
+			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
 			)
 		</if>
 

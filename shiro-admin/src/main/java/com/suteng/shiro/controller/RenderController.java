@@ -72,12 +72,24 @@ public class RenderController {
     @RequiresPermissions("custmgt:persons")
     @GetMapping("/custmgt/persons")
     public ModelAndView custPersons() {
-        return ResultUtil.view("custmgt/person");
+        return ResultUtil.view("custmgt/personlist");
     }
 
     @RequiresPermissions("custmgt:projects")
     @GetMapping("/custmgt/projects")
     public ModelAndView custProjects() {
-        return ResultUtil.view("custmgt/project");
+        return ResultUtil.view("custmgt/projectlist");
+    }
+
+    @RequiresPermissions("custmgt:contacts")
+    @GetMapping("/custmgt/contacts")
+    public ModelAndView custContacts() {
+        return ResultUtil.view("custmgt/contactlist");
+    }
+
+    @RequiresPermissions("giftmgt:types")
+    @GetMapping("/giftmgt/types")
+    public ModelAndView giftTypes() {
+        return ResultUtil.view("giftmgt/typelist");
     }
 }

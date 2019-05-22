@@ -3,6 +3,7 @@ package com.suteng.shiro.business.entity;
 import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.suteng.shiro.business.util.DepartmentUtil;
 import com.suteng.shiro.business.util.UserUtil;
 import com.suteng.shiro.persistence.beans.CustProject;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -140,7 +141,9 @@ public class CustProjectEntity {
     public Long getDepartment() {
         return custProject.getDepartment();
     }
-
+    public String getDepartmentName(){
+        return DepartmentUtil.getDepartmentName(this.custProject.getDepartment());
+    }
     public void setDepartment(Long department) {
         this.custProject.setDepartment(department);
     }
@@ -152,7 +155,9 @@ public class CustProjectEntity {
     public void setPm(Long pm) {
         this.custProject.setPm(pm);
     }
-
+    public String getPmName(){
+        return UserUtil.getUserNickName(this.custProject.getPm());
+    }
     public Long getPersonId() {
         return custProject.getPersonId();
     }
@@ -163,7 +168,7 @@ public class CustProjectEntity {
 
 
 
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     public Date getCreateTime() {
         return this.custProject.getCreateTime();
     }
