@@ -63,4 +63,5 @@ public class WorkProjectMgt extends AbstractDO {
         @Column(name="process_instance_id")
         private String processInstanceId;
 
+        private Integer focus;
 }

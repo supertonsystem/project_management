@@ -131,11 +131,12 @@ public class WorkProjectMgtActivitiServiceImpl implements WorkProjectMgtActiviti
         Map<String, Object> variables = new HashMap<String, Object>();
         //下一个节点assignee赋值
         if ("登记".equals(task.getName())) {
+            variables.put("depAuditId", operatorId);
+        } else if ("部门审批".equals(task.getName())) {
             variables.put("officeId", operatorId);
         } else if ("办公室".equals(task.getName())) {
             variables.put("gmId", operatorId);
         } else if ("总经理".equals(task.getName())) {
-            //任务结束
             projectMgt.setStatus(ProjectMgtStatusEnum.FINISH.getStatus());
         }
         workProjectMgtService.updateSelective(projectMgt);
@@ -150,6 +151,8 @@ public class WorkProjectMgtActivitiServiceImpl implements WorkProjectMgtActiviti
         Map<String, Object> variables = new HashMap<String, Object>();
         //下一个节点assignee赋值
         if ("登记".equals(task.getName())) {
+            variables.put("depAuditId", operatorId);
+        } else if ("部门审批".equals(task.getName())) {
             variables.put("officeId", operatorId);
         } else if ("办公室".equals(task.getName())) {
             variables.put("gmId", operatorId);
@@ -278,12 +281,18 @@ public class WorkProjectMgtActivitiServiceImpl implements WorkProjectMgtActiviti
             List<HistoricActivityInstanceCopy> list = findHistoryActivity(processInstanceId);
             //目前没有好的办法 获取之前的节点。
             //待选节点数
-            if ("办公室".equals(task.getName())) {
+            if ("部门审批".equals(task.getName())) {
                 if (!CollectionUtils.isEmpty(list)) {
+                    tasks.add(list.stream().filter(b -> b.getActivityName().equals("登记")).findFirst().get());
+                }
+            } else if ("办公室".equals(task.getName())) {
+                if (!CollectionUtils.isEmpty(list)) {
+                    tasks.add(list.stream().filter(b -> b.getActivityName().equals("部门审批")).findFirst().get());
                     tasks.add(list.stream().filter(b -> b.getActivityName().equals("登记")).findFirst().get());
                 }
             } else if ("总经理".equals(task.getName())) {
                 if (!CollectionUtils.isEmpty(list)) {
+                    tasks.add(list.stream().filter(b -> b.getActivityName().equals("部门审批")).findFirst().get());
                     tasks.add(list.stream().filter(b -> b.getActivityName().equals("登记")).findFirst().get());
                     tasks.add(list.stream().filter(b -> b.getActivityName().equals("办公室")).findFirst().get());
                 }

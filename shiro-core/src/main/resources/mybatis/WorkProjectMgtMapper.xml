@@ -22,6 +22,7 @@
 		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
 		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
 		<result property="processInstanceId" jdbcType="BIGINT" column="process_instance_id"/>
+		<result property="focus" jdbcType="TINYINT" column="focus"/>
 	</resultMap>
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.ProjectMgtConditionVO" resultMap="wm">
@@ -52,6 +53,9 @@
 			</if>
 			<if test="projectMgt.ownerUserId!=null">
 				AND wp.owner_userId = #{projectMgt.ownerUserId}
+			</if>
+			<if test="projectMgt.focus!=null">
+				AND wp.focus = #{projectMgt.focus}
 			</if>
 		</if>
 

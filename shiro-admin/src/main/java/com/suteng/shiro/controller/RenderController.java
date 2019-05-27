@@ -69,27 +69,53 @@ public class RenderController {
         return new ModelAndView("projectmgt/list", model);
     }
 
+    @RequiresPermissions("projectmgt:focusprojects")
+    @GetMapping("/projectmgt/focusprojects")
+    public ModelAndView focusProjects() {
+        Map<String, String> model = new HashMap<String, String>();
+        model.put("type", "focus");
+        return new ModelAndView("projectmgt/list", model);
+    }
+
     @RequiresPermissions("custmgt:persons")
     @GetMapping("/custmgt/persons")
     public ModelAndView custPersons() {
-        return ResultUtil.view("custmgt/personlist");
+        return ResultUtil.view("custmgt/person_list");
     }
 
     @RequiresPermissions("custmgt:projects")
     @GetMapping("/custmgt/projects")
     public ModelAndView custProjects() {
-        return ResultUtil.view("custmgt/projectlist");
+        return ResultUtil.view("custmgt/project_list");
     }
 
     @RequiresPermissions("custmgt:contacts")
     @GetMapping("/custmgt/contacts")
     public ModelAndView custContacts() {
-        return ResultUtil.view("custmgt/contactlist");
+        return ResultUtil.view("custmgt/contact_list");
     }
 
     @RequiresPermissions("giftmgt:types")
     @GetMapping("/giftmgt/types")
     public ModelAndView giftTypes() {
-        return ResultUtil.view("giftmgt/typelist");
+        return ResultUtil.view("giftmgt/type_list");
+    }
+
+    @RequiresPermissions("giftmgt:repertorys")
+    @GetMapping("/giftmgt/repertorys")
+    public ModelAndView giftRepertorys() {
+        return ResultUtil.view("giftmgt/repertory_list");
+    }
+
+    @RequiresPermissions("giftmgt:consumes")
+    @GetMapping("/giftmgt/consumes")
+    public ModelAndView giftConsumes() {
+        return ResultUtil.view("giftmgt/consume_list");
+    }
+
+    @RequiresPermissions("giftmgt:consumeDetails")
+    @GetMapping("/giftmgt/consumeDetails")
+    public ModelAndView giftConsumeDetails() {
+        return ResultUtil.view("giftmgt/consume_detail_list");
     }
 }

@@ -73,6 +73,9 @@
 			<if test="user.depId!=null">
 				AND s.dep_id = #{user.depId}
 			</if>
+			<if test="user.post!=null">
+				AND s.post = #{user.post}
+			</if>
 		</if>
 		ORDER BY
 			s.id ASC,

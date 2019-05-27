@@ -255,6 +255,14 @@ public class ProjectMgt {
         this.taskName = taskName;
     }
 
+    public void setFocus(Integer focus){
+        this.workProjectMgt.setFocus(focus);
+    }
+
+    public Integer getFocus(){
+        return this.workProjectMgt.getFocus();
+    }
+
     public String getProcessInstanceId() {
         return this.workProjectMgt.getProcessInstanceId();
     }

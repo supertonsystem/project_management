@@ -19,7 +19,7 @@ Date: 2018-05-17 13:56:52
 DROP TABLE IF EXISTS `work_projectmgt`;
 CREATE TABLE `work_projectmgt` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) DEFAULT NULL COMMENT '标题',
+  `title` varchar(100) DEFAULT NULL COMMENT '名称',
   `number` varchar(100) DEFAULT NULL COMMENT '编号',
   `register_userId` bigint(20) unsigned NOT NULL COMMENT '登记人Id',
   `owner_depId` bigint(20) unsigned NOT NULL COMMENT '责任部门Id',
@@ -38,6 +38,7 @@ CREATE TABLE `work_projectmgt` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `status` tinyint DEFAULT '0' COMMENT '状态',
   `process_instance_id` varchar(255) DEFAULT NULL  COMMENT '流程实例Id',
+  `focus` tinyint DEFAULT '0' COMMENT '关注',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 -- ----------------------------

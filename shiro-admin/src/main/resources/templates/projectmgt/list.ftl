@@ -26,8 +26,24 @@
         display: block;
         background-repeat: no-repeat;
         background-position: 0px -100px;
-        width: 500px;
+        width: 600px;
         height: 170px;
+    }
+    .focus {
+        display: block;
+        background-image: url('/assets/images/focus.png');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        float: left;
+    }
+    .unfocus{
+        display: block;
+        background-image: url('/assets/images/unfocus.png');
+        background-repeat: no-repeat;
+        width: 16px;
+        height: 16px;
+        float: left;
     }
 
     .title{
@@ -200,20 +216,9 @@
                                     <tr>
                                         <td style="text-align: right;"><span class="control-label title">实际进度:</span></td>
                                         <td colspan="3">
-                                            <div class="input-group spinner col-md-4 col-sm-4 col-xs-4"
-                                                 data-trigger="spinner" id="div_progress" style="padding-left:0px">
-                                                <input type="text" class="form-control text-center" name="progress"
-                                                       id="progress" value="0"
-                                                       data-min="0" data-max="100" data-step="1">
-                                                <span class="input-group-addon" id="progress-input-group-addon">
-                                        <a href="javascript:;" class="spin-up" data-spin="up"><i
-                                                class="fa fa-caret-up"></i></a>
-                                        <a href="javascript:;" class="spin-down" data-spin="down"><i
-                                                class="fa fa-caret-down"></i></a>
-                                    </span>
-                                            </div>
-                                            <div data-trigger="spinner" id="div_static_progress">
-                                                <label class="control-label" id="static_progress"></label>
+                                            <div class="input-group col-md-4 col-sm-4 col-xs-4">
+                                                <input type="number" class="form-control text-center" name="progress" id="progress" value="0"
+                                                       min="0" max="100" step="1">
                                             </div>
                                         </td>
                                     </tr>
@@ -257,7 +262,7 @@
         </div>
     </div>
     <script>
-
+        //focus、mylist
         var type='${type}';
         /**
          * 操作按钮
@@ -284,8 +289,9 @@
         $(function () {
             var options = {
                 url: "/projectmgt/list",
-                myurl: "/projectmgt/mylist",
+                myurl: "/projectmgt/mylist?projectMgt.ownerUserId="+${user.id},
                 allurl: "/projectmgt/list",
+                focusurl: "/projectmgt/focuslist?projectMgt.focus=1",
                 getInfoUrl: "/projectmgt/get/{id}",
                 updateUrl: "/projectmgt/edit",
                 exportExcelUrl: "/projectmgt/exportExcel",
@@ -300,7 +306,14 @@
                         field: 'number',
                         title: '项目编号',
                         editable: false,
-                        width: 80
+                        width: 90,
+                        formatter: function (value, row, index) {
+                            if(row.focus==1){
+                                return "<@shiro.hasPermission name='projectmgt:focus'><i class='focus' title='取消关注' onclick='focusOperate(\""+row.id+"\",\""+0+"\");'></i></@shiro.hasPermission><i style='float: left'>"+value+"</i>";
+                            }else {
+                                return "<@shiro.hasPermission name='projectmgt:focus'><i class='unfocus' title='点击关注' onclick='focusOperate(\""+row.id+"\",\""+1+"\");'></i></@shiro.hasPermission><i style='float: left'>"+value+"</i>";
+                            }
+                        }
                     }, {
                         field: 'createTime',
                         title: '登记时间',
@@ -368,7 +381,7 @@
                         field: 'statusName',
                         title: '状态',
                         editable: false,
-                        width: 80
+                        width: 70
                     }, {
                         field: 'operate',
                         title: '操作',
@@ -380,6 +393,8 @@
             };
             if(type=='mylist'){
                 options.url=options.myurl;
+            }else if(type=='focus'){
+                options.url=options.focusurl;
             }else{
                 options.url=options.allurl;
             }
@@ -406,28 +421,6 @@
                 searchOnEnterKey: false,            // 设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                 minimumCountColumns: 1,             //最少允许的列数
                 showRefresh: false,                  //是否显示刷新按钮
-                onEditableSave: function (field, row, oldValue, $el) {
-                    if (options.updateUrl) {
-                        $.ajax({
-                            type: "post",
-                            url: options.updateUrl,
-                            data: {strJson: JSON.stringify(row)},
-                            success: function (json) {
-                                if (json.status == 200) {
-                                    $.tool.alert(json.message);
-                                } else {
-                                    $.tool.alertError(json.message);
-                                }
-                            },
-                            error: function () {
-                                $.tool.alertError("网络超时！");
-                            }
-                        });
-                    } else {
-                        $.tool.alertError("无效的请求地址！");
-                        return;
-                    }
-                },
                 rowStyle: function (row, index) {
                     //按需求设置不同的样式：5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
                     if (row.status == 1 && row.remindGrade != '') {
@@ -487,6 +480,13 @@
                 $(".addOrUpdateBtn").unbind('click');
                 $(".addOrUpdateBtn").click(function () {
                     if (validator.checkAll($("#addOrUpdateForm"))) {
+                        var pVal=$("#progress").val();
+                        if(pVal!=null && pVal!=""){
+                            if(pVal<0||pVal>100){
+                                alert('实际进度数值不合法');
+                                return;
+                            }
+                        }
                         $.ajax({
                             type: "post",
                             url: options.updateUrl,
@@ -525,6 +525,9 @@
                 var url=options.exportExcelUrl + "?projectMgt.title=" + title + "&projectMgt.status=" + status+"&pageSize="+100000;
                 if(type=='mylist'){
                     url+="&projectMgt.ownerUserId=" + currentUserId;
+                }
+                if(type=='focus'){
+                    url+="&projectMgt.focus=1";
                 }
                 window.location.href =url;
             });
@@ -571,6 +574,20 @@
             });
         });
 
+
+        function focusOperate(id,focus) {
+            $.ajax({
+                type: "post",
+                url: "/projectmgt/edit",
+                data: "id="+id+"&focus="+focus,
+                success: function (json) {
+                    $.tool.ajaxSuccess(json);
+                    $.tableUtil.refresh();
+                },
+                error: $.tool.ajaxError
+            });
+        }
+
         function queryParams(params) {
             params = $.extend({}, params);
             //获取搜索框的值
@@ -578,10 +595,10 @@
             params = $.extend(params, title);
             var status = {'projectMgt.status': $("#status").val()};
             params = $.extend(params, status);
-            if(type=='mylist'){
-                var currentUserId = {'projectMgt.ownerUserId': ${user.id}};
-                params = $.extend(params, currentUserId);
-            }
+            <#--if(type=='mylist'){-->
+                <#--var currentUserId = {'projectMgt.ownerUserId': ${user.id}};-->
+                <#--params = $.extend(params, currentUserId);-->
+            <#--}-->
             return params;
         }
 

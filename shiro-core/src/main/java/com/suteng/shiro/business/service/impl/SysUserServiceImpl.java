@@ -266,4 +266,33 @@ public class SysUserServiceImpl implements SysUserService {
         return mapList;
     }
 
+    @Override
+    public List<Map<String, Object>> listZtreeByDepartmentId(Long depId,int post) {
+        List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
+        if(depId==null){
+                return mapList;
+        }
+        UserConditionVO vo=new UserConditionVO();
+        vo.getUser().setDepId(depId.intValue());
+        vo.getUser().setPost(post);
+        List<SysUser> sysUser = sysUserMapper.findPageBreakByCondition(vo);
+        if (CollectionUtils.isEmpty(sysUser)) {
+            return mapList;
+        }
+        //部门父节点 只作展现。
+        Map<String, Object> department = new HashMap<String, Object>(3);
+        int pdepId=99999;
+        department.put("id", pdepId);
+        department.put("pId", 0);
+        department.put("name", DepartmentUtil.getDepartmentName(depId));
+        mapList.add(department);
+        for (SysUser user : sysUser) {
+            Map<String, Object> map = new HashMap<String, Object>(3);
+            map.put("id", user.getId());
+            map.put("pId", pdepId);
+            map.put("name", user.getNickname());
+            mapList.add(map);
+        }
+        return mapList;
+    }
 }

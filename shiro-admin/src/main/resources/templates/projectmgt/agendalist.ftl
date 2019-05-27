@@ -7,7 +7,7 @@
         display: block;
         background-repeat: no-repeat;
         background-position: 0px -100px;
-        width: 500px;
+        width: 600px;
         height: 170px;
     }
     .colStyle {
@@ -330,14 +330,9 @@
                             <div class="row"  style="padding-left: 5%;">
                                 <div class="item form-group  col-md-9 col-sm-9 col-xs-9">
                                     <label class="control-label col-md-2 col-sm-2 col-xs-2" for="progress">实际进度:&nbsp;&nbsp;&nbsp;</label>
-                                    <div class="input-group spinner col-md-4 col-sm-4 col-xs-4" data-trigger="spinner">
-                                        <input type="text" class="form-control text-center" name="progress" id="progress" value="0"
-                                               data-min="0" data-max="100" data-step="1">
-                                        <span class="input-group-addon" id="progress-input-group-addon">
-                                <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>
-                                <a href="javascript:;" class="spin-down" data-spin="down"><i
-                                        class="fa fa-caret-down"></i></a>
-                            </span>
+                                    <div class="input-group col-md-4 col-sm-4 col-xs-4">
+                                        <input type="number" class="form-control text-center" name="progress" id="progress" value="0"
+                                               min="0" max="100" step="1">
                                     </div>
                                 </div>
                             </div>
@@ -555,7 +550,7 @@
                         if(row.remindGrade=='danger'){
                             return {css:{'background-color':'#D24D57',"color":'#FFFFFF'}};
                         }else if(row.remindGrade=='warning'){
-                           return {css:{'background-color':'#EB7347',"color":'#FFFFFF'}};
+                            return {css:{'background-color':'#EB7347',"color":'#FFFFFF'}};
                         }else if(row.remindGrade=='info'){
                             return {css:{'background-color':'#3399CC',"color":'#FFFFFF'}};
                         }
@@ -567,12 +562,18 @@
             /* 新增 */
             $("#btn_add").click(function () {
                 addElementInfo();
-                initZtree();
                 resetForm();
                 $("#addOrUpdateModal").modal('show');
                 $(".addOrUpdateBtn").unbind('click');
                 $(".addOrUpdateBtn").click(function () {
                     if (validator.checkAll($("#addOrUpdateForm"))) {
+                        var pVal=$("#progress").val();
+                        if(pVal!=null && pVal!=""){
+                            if(pVal<0||pVal>100){
+                                alert('实际进度数值不合法');
+                                return;
+                            }
+                        }
                         $.ajax({
                             type: "post",
                             url: options.startUrl,
@@ -587,6 +588,23 @@
                     }
                 });
                 options.chooseUrl=options.completeUrl;
+            });
+
+            $(".processsubmit").unbind('click');
+            $(".processsubmit").click(function () {
+                if (validator.checkAll($("#addOrUpdateForm"))) {
+                    $.ajax({
+                        type: "post",
+                        url: options.chooseUrl,
+                        data: $("#addOrUpdateForm").serialize(),
+                        success: function (json) {
+                            $.tool.ajaxSuccess(json);
+                            $("#addOrUpdateModal").modal('hide');
+                            $.tableUtil.refresh();
+                        },
+                        error: $.tool.ajaxError
+                    });
+                }
             });
 
             /* 处理*/
@@ -630,6 +648,13 @@
                     $(".addOrUpdateBtn").unbind('click');
                     $(".addOrUpdateBtn").click(function () {
                         if (validator.checkAll($("#addOrUpdateForm"))) {
+                            var pVal=$("#progress").val();
+                            if(pVal!=null && pVal!=""){
+                                if(pVal<0 || pVal>100){
+                                    alert('实际进度数值不合法');
+                                    return;
+                                }
+                            }
                             $.ajax({
                                 type: "post",
                                 url: options.updateUrl,
@@ -644,6 +669,14 @@
                         }
                     });
                     saveElementInfo();
+                }else if(taskInfo.name=="部门审批"){
+                    $(".addOrUpdateBtn").hide();
+                    forbidElementInfo();
+                    $('#officeOpinionModalBtn').hide();
+                    $('#gmOpinionModalBtn').hide();
+                    //退回按钮
+                    $(".rollbacksubmit").show();
+                    rollback();
                 }else if(taskInfo.name=="办公室"){
                     $(".addOrUpdateBtn").show();
                     $(".addOrUpdateBtn").unbind('click');
@@ -783,7 +816,7 @@
                 $.ajax({
                     async: false,
                     type: "POST",
-                    data: {taskId:  $("#taskId").val()},
+                    data: {taskId:  $("#taskId").val(),ownerDepId:$("#ownerDepId").val()},
                     url: options.optSelectUrl,
                     dataType: 'json',
                     success: function (json) {
@@ -814,23 +847,6 @@
                             $(".processsubmit").click(function () {
                                 if (validator.checkAll($("#addOrUpdateForm"))) {
                                     $('#selectOperator').modal('show');
-                                }
-                            });
-                        }else{
-                            $(".processsubmit").unbind('click');
-                            $(".processsubmit").click(function () {
-                                if (validator.checkAll($("#addOrUpdateForm"))) {
-                                    $.ajax({
-                                        type: "post",
-                                        url: options.chooseUrl,
-                                        data: $("#addOrUpdateForm").serialize(),
-                                        success: function (json) {
-                                            $.tool.ajaxSuccess(json);
-                                            $("#addOrUpdateModal").modal('hide');
-                                            $.tableUtil.refresh();
-                                        },
-                                        error: $.tool.ajaxError
-                                    });
                                 }
                             });
                         }
@@ -937,6 +953,7 @@
             //联动
             $("#ownerDepId").change(function(){
                 $('#ownerUserId').selectPageClear();
+                initZtree();
             });
 
             //tag 点击事件

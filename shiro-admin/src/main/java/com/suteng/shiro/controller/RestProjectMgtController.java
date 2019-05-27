@@ -116,10 +116,16 @@ public class RestProjectMgtController {
      */
     @PostMapping("/mylist")
     public PageResult myList(ProjectMgtConditionVO vo) {
-        Long userId=vo.getProjectMgt().getOwnerUserId();
-        User user=UserUtil.getUserbyId(userId);
+        Long userId = vo.getProjectMgt().getOwnerUserId();
+        User user = UserUtil.getUserbyId(userId);
         vo.getProjectMgt().setOwnerDepId(Long.valueOf(user.getDepId()));
         PageInfo<ProjectMgt> projectMgts = workProjectMgtService.findMyPageBreakByCondition(vo);
+        return ResultUtil.tablePage(projectMgts);
+    }
+
+    @PostMapping("/focuslist")
+    public PageResult focusList(ProjectMgtConditionVO vo) {
+        PageInfo<ProjectMgt> projectMgts = workProjectMgtService.findPageBreakByCondition(vo);
         return ResultUtil.tablePage(projectMgts);
     }
 
@@ -258,13 +264,13 @@ public class RestProjectMgtController {
     public void exportExcel(HttpServletResponse response, ProjectMgtConditionVO vo) {
         vo.setSortName("ownerDepId");
         vo.setSortOrder("ASC");
-        PageInfo<ProjectMgt> projectMgts=null;
-        if(vo.getProjectMgt().getOwnerUserId()!=null){
-            User user=UserUtil.getUserbyId(vo.getProjectMgt().getOwnerUserId());
+        PageInfo<ProjectMgt> projectMgts = null;
+        if (vo.getProjectMgt().getOwnerUserId() != null) {
+            User user = UserUtil.getUserbyId(vo.getProjectMgt().getOwnerUserId());
             vo.getProjectMgt().setOwnerDepId(Long.valueOf(user.getDepId()));
-            projectMgts=workProjectMgtService.findMyPageBreakByCondition(vo);
-        }else {
-            projectMgts=workProjectMgtService.findPageBreakByCondition(vo);
+            projectMgts = workProjectMgtService.findMyPageBreakByCondition(vo);
+        } else {
+            projectMgts = workProjectMgtService.findPageBreakByCondition(vo);
         }
         List<ProjectMgtExcel> list = new ArrayList<>();
         if (projectMgts != null) {
@@ -349,14 +355,23 @@ public class RestProjectMgtController {
     }
 
     @PostMapping(value = "/operatorSelect")
-    public ResponseVO operatorSelect(String taskId) {
+    public ResponseVO operatorSelect(String taskId, Long ownerDepId) {
         List<Map<String, Object>> result = null;
         if (StringUtils.isEmpty(taskId)) {
-            //默认处理人列表
-            result = userService.listZtreeByDepartmentId(DepartmentUtil.getDepartmentId(ProjectConst.DEFAULT_DEPARTMENTNAME));
+            //任务未开始，直接提交至部门审批环节
+            result = userService.listZtreeByDepartmentId(ownerDepId, 2);
+            if (result == null || result.isEmpty()) {
+                result = userService.listZtreeByDepartmentId(DepartmentUtil.getDepartmentId(ProjectConst.DEFAULT_DEPARTMENTNAME));
+            }
         } else {
             Task task = workProjectMgtActivitiService.queryActivityTask(taskId);
             if ("登记".equals(task.getName())) {
+                //部门领导
+                result = userService.listZtreeByDepartmentId(ownerDepId, 2);
+                if (result == null || result.isEmpty()) {
+                    result = userService.listZtreeByDepartmentId(DepartmentUtil.getDepartmentId(ProjectConst.DEFAULT_DEPARTMENTNAME));
+                }
+            } else if ("部门审批".equals(task.getName())) {
                 Department department = DepartmentUtil.getDepartmentbyName("办公室");
                 result = userService.listZtreeByDepartmentId(department.getId());
             } else if ("办公室".equals(task.getName())) {
@@ -364,13 +379,14 @@ public class RestProjectMgtController {
                 result = userService.listZtreeByDepartmentId(department.getId());
             }
         }
+
         return ResultUtil.success("成功", result);
     }
 
     @PostMapping(value = "/complete")
     public ResponseVO complete(ProjectMgt projectMgt, String taskId, String operatorId) {
         try {
-            //直接提交至办公室
+            //直接提交至部门审批
             if (projectMgt.getId() == null && StringUtils.isEmpty(taskId)) {
                 Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
                 projectMgt.setRegisterUserId(userId);
@@ -409,6 +425,7 @@ public class RestProjectMgtController {
 
     /**
      * 可退回任务列表
+     *
      * @param processInstanceId
      * @param currentTaskId
      * @return
