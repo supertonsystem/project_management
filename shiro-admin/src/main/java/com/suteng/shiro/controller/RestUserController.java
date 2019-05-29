@@ -50,11 +50,15 @@ public class RestUserController {
      * @return
      */
     @PostMapping("/ajaxlist")
-    public ResponseVO listByAjax(UserConditionVO vo,String searchKey,Long searchValue) {
+    public ResponseVO listByAjax(UserConditionVO vo,String searchKey,String searchValue) {
         //selectPage.js参数专用
         if(searchValue!=null){
             if("id".equals(searchKey)){
-                vo.getUser().setId(searchValue);
+                if(searchValue.indexOf(",")>0){
+                    vo.setUserIds(searchValue);
+                }else{
+                    vo.getUser().setId(Long.valueOf(searchValue));
+                }
             }
         }
         PageInfo<User> pageInfo = userService.findPageBreakByCondition(vo);

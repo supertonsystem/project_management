@@ -116,8 +116,9 @@ public class RestProjectMgtController {
      */
     @PostMapping("/mylist")
     public PageResult myList(ProjectMgtConditionVO vo) {
-        Long userId = vo.getProjectMgt().getOwnerUserId();
+        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
         User user = UserUtil.getUserbyId(userId);
+        //同部门且责任为空也能看到，所以这里需要传值
         vo.getProjectMgt().setOwnerDepId(Long.valueOf(user.getDepId()));
         PageInfo<ProjectMgt> projectMgts = workProjectMgtService.findMyPageBreakByCondition(vo);
         return ResultUtil.tablePage(projectMgts);
@@ -208,18 +209,6 @@ public class RestProjectMgtController {
         if (projectMgts != null) {
             agendaCount += projectMgts.size();
         }
-        //已结束的任务
-        ProjectMgt vo = new ProjectMgt();
-        Integer finishCount = 0;
-        vo.setStatus(ProjectMgtStatusEnum.FINISH.getStatus());
-        //责任人为当前登陆用户
-        vo.setOwnerUserId(userId);
-        List<ProjectMgt> finish = workProjectMgtService.listByEntity(vo);
-        if (finish != null) {
-            finishCount += finish.size();
-        }
-        //已结束
-        result.put("finishCount", finishCount);
         //待办
         result.put("agendaCount", agendaCount);
         //今日新增项目
@@ -229,44 +218,13 @@ public class RestProjectMgtController {
         return ResultUtil.success(null, result);
     }
 
-    /**
-     * 导入待办的项目
-     *
-     * @param response
-     */
-    @RequestMapping("exportExcelByAgenda")
-    public void exportExcelByAgenda(HttpServletResponse response) {
-        List<ProjectMgt> result = new ArrayList<>();
-        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
-        //2、待办的任务
-        List<ProjectMgt> projectMgts = workProjectMgtActivitiService.queryGendaTask(String.valueOf(userId));
-        if (projectMgts != null) {
-            result.addAll(projectMgts);
-        }
-        List<ProjectMgtExcel> list = new ArrayList<>();
-        for (ProjectMgt p : result) {
-            ProjectMgtExcel excel = new ProjectMgtExcel();
-            try {
-                BeanUtils.copyProperties(p.getWorkProjectMgt(), excel);
-                excel.setCheckDepName(DepartmentUtil.getDepartmentName(p.getCheckDepId()));
-                excel.setOwnerDepName(DepartmentUtil.getDepartmentName(p.getOwnerDepId()));
-                excel.setOwnerUserName(UserUtil.getUserName(p.getOwnerUserId()));
-                list.add(excel);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        //导出操作
-        ExcelUtil.exportExcel(list, ProjectMgtExcel.class, "项目管理.xls", response);
-    }
-
     @RequestMapping("exportExcel")
     public void exportExcel(HttpServletResponse response, ProjectMgtConditionVO vo) {
         vo.setSortName("ownerDepId");
         vo.setSortOrder("ASC");
         PageInfo<ProjectMgt> projectMgts = null;
         if (vo.getProjectMgt().getOwnerUserId() != null) {
-            User user = UserUtil.getUserbyId(vo.getProjectMgt().getOwnerUserId());
+            User user = UserUtil.getUserbyId(Long.valueOf(vo.getProjectMgt().getOwnerUserId()));
             vo.getProjectMgt().setOwnerDepId(Long.valueOf(user.getDepId()));
             projectMgts = workProjectMgtService.findMyPageBreakByCondition(vo);
         } else {
@@ -280,7 +238,17 @@ public class RestProjectMgtController {
                     BeanUtils.copyProperties(p.getWorkProjectMgt(), excel);
                     excel.setCheckDepName(DepartmentUtil.getDepartmentName(p.getCheckDepId()));
                     excel.setOwnerDepName(DepartmentUtil.getDepartmentName(p.getOwnerDepId()));
-                    excel.setOwnerUserName(UserUtil.getUserNickName(p.getOwnerUserId()));
+                    String userIds=p.getOwnerUserId();
+                    if(userIds.indexOf(",")>0){
+                        StringBuilder userName=new StringBuilder();
+                        String [] userIdArray=userIds.split(",");
+                        for(String userId:userIdArray){
+                            userName.append(UserUtil.getUserNickName(Long.valueOf(userId))+",");
+                        }
+                        excel.setOwnerUserName(userName.deleteCharAt(userName.length()-1).toString());
+                    }else {
+                        excel.setOwnerUserName(UserUtil.getUserNickName(Long.valueOf(userIds)));
+                    }
                     list.add(excel);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -355,19 +323,19 @@ public class RestProjectMgtController {
     }
 
     @PostMapping(value = "/operatorSelect")
-    public ResponseVO operatorSelect(String taskId, Long ownerDepId) {
+    public ResponseVO operatorSelect(String taskId) {
         List<Map<String, Object>> result = null;
         if (StringUtils.isEmpty(taskId)) {
-            //任务未开始，直接提交至部门审批环节
-            result = userService.listZtreeByDepartmentId(ownerDepId, 2);
+            //任务未开始，直接提交至部门审批环节(所有部门领导勾选)
+            result = userService.listZtreeUserLeader();
             if (result == null || result.isEmpty()) {
                 result = userService.listZtreeByDepartmentId(DepartmentUtil.getDepartmentId(ProjectConst.DEFAULT_DEPARTMENTNAME));
             }
         } else {
             Task task = workProjectMgtActivitiService.queryActivityTask(taskId);
             if ("登记".equals(task.getName())) {
-                //部门领导
-                result = userService.listZtreeByDepartmentId(ownerDepId, 2);
+                //所有部门领导
+                result = userService.listZtreeUserLeader();
                 if (result == null || result.isEmpty()) {
                     result = userService.listZtreeByDepartmentId(DepartmentUtil.getDepartmentId(ProjectConst.DEFAULT_DEPARTMENTNAME));
                 }

@@ -8,7 +8,7 @@
 		<result property="number" jdbcType="VARCHAR" column="number"/>
 		<result property="registerUserId" jdbcType="BIGINT" column="register_userId"/>
 		<result property="ownerDepId" jdbcType="BIGINT" column="owner_depId"/>
-		<result property="ownerUserId" jdbcType="BIGINT" column="owner_userId"/>
+		<result property="ownerUserId" jdbcType="VARCHAR" column="owner_userId"/>
 		<result property="checkDepId" jdbcType="BIGINT" column="check_depId"/>
 		<result property="content" jdbcType="VARCHAR" column="content"/>
 		<result property="plannedTime" jdbcType="TIMESTAMP" column="planned_time"/>
@@ -52,7 +52,7 @@
 				AND wp.register_userId = #{projectMgt.registerUserId}
 			</if>
 			<if test="projectMgt.ownerUserId!=null">
-				AND wp.owner_userId = #{projectMgt.ownerUserId}
+				AND wp.owner_userId LIKE CONCAT('%',#{projectMgt.ownerUserId, jdbcType=VARCHAR},'%')
 			</if>
 			<if test="projectMgt.focus!=null">
 				AND wp.focus = #{projectMgt.focus}
@@ -98,7 +98,7 @@
 				AND wp.register_userId = #{projectMgt.registerUserId}
 			</if>
 			<if test="projectMgt.ownerUserId!=null">
-				AND wp.owner_userId = #{projectMgt.ownerUserId}
+				AND wp.owner_userId LIKE CONCAT('%',#{projectMgt.ownerUserId, jdbcType=VARCHAR},'%')
 			</if>
 			<if test="projectMgt.ownerDepId!=null">
 				or (

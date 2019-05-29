@@ -8,14 +8,17 @@ import java.util.Map;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.suteng.shiro.business.entity.Department;
 import com.suteng.shiro.business.entity.User;
 import com.suteng.shiro.business.enums.UserStatusEnum;
+import com.suteng.shiro.business.service.SysDepartmentService;
 import com.suteng.shiro.business.service.SysRoleService;
 import com.suteng.shiro.business.service.SysUserService;
 import com.suteng.shiro.business.util.DepartmentUtil;
 import com.suteng.shiro.business.vo.UserConditionVO;
 import com.suteng.shiro.framework.exception.SupertonActivitiException;
 import com.suteng.shiro.framework.holder.RequestHolder;
+import com.suteng.shiro.persistence.beans.SysDepartment;
 import com.suteng.shiro.persistence.beans.SysUser;
 import com.suteng.shiro.persistence.mapper.SysUserMapper;
 import com.suteng.shiro.util.IpUtil;
@@ -37,7 +40,8 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @Service
 public class SysUserServiceImpl implements SysUserService {
-
+    @Autowired
+    private SysDepartmentService sysDepartmentService;
     @Autowired
     private SysUserMapper sysUserMapper;
 
@@ -266,32 +270,65 @@ public class SysUserServiceImpl implements SysUserService {
         return mapList;
     }
 
+    /**
+     * 树列表
+     * @return
+     */
     @Override
-    public List<Map<String, Object>> listZtreeByDepartmentId(Long depId,int post) {
+    public List<Map<String, Object>> listZtreeUserLeader() {
         List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-        if(depId==null){
-                return mapList;
-        }
-        UserConditionVO vo=new UserConditionVO();
-        vo.getUser().setDepId(depId.intValue());
-        vo.getUser().setPost(post);
-        List<SysUser> sysUser = sysUserMapper.findPageBreakByCondition(vo);
-        if (CollectionUtils.isEmpty(sysUser)) {
-            return mapList;
-        }
         //部门父节点 只作展现。
-        Map<String, Object> department = new HashMap<String, Object>(3);
-        int pdepId=99999;
-        department.put("id", pdepId);
+        Map<String, Object> department = new HashMap<String, Object>();
+        int top=99999;
+        department.put("id", top);
         department.put("pId", 0);
-        department.put("name", DepartmentUtil.getDepartmentName(depId));
+        department.put("name", "部门列表");
         mapList.add(department);
-        for (SysUser user : sysUser) {
-            Map<String, Object> map = new HashMap<String, Object>(3);
-            map.put("id", user.getId());
-            map.put("pId", pdepId);
-            map.put("name", user.getNickname());
-            mapList.add(map);
+        List<Department> departments= sysDepartmentService.listAllAvailableMenu();
+        for(Department d:departments){
+            UserConditionVO vo=new UserConditionVO();
+            vo.getUser().setDepId(d.getId().intValue());
+            vo.getUser().setPost(2);
+            List<SysUser> sysUsers = sysUserMapper.findPageBreakByCondition(vo);
+            String id=null;
+            if (!CollectionUtils.isEmpty(sysUsers)) {
+                department = new HashMap<>();
+                id="0_"+d.getId();
+                department.put("id", id);
+                department.put("pId", top);
+                department.put("name", d.getName());
+                mapList.add(department);
+               for(SysUser s:sysUsers){
+                   Map<String, Object> user = new HashMap<>();
+                   user.put("id", s.getId());
+                   user.put("pId", id);
+                   user.put("name", s.getNickname());
+                   mapList.add(user);
+               }
+            }
+            if(!d.getNodes().isEmpty()){
+                for(SysDepartment n:d.getNodes()){
+                    vo=new UserConditionVO();
+                    vo.getUser().setDepId(n.getId().intValue());
+                    vo.getUser().setPost(2);
+                    sysUsers = sysUserMapper.findPageBreakByCondition(vo);
+                    if (!CollectionUtils.isEmpty(sysUsers)) {
+                        department = new HashMap<>();
+                        String _id="0_"+n.getId();
+                        department.put("id", _id);
+                        department.put("pId", id);
+                        department.put("name", n.getName());
+                        mapList.add(department);
+                        for(SysUser s:sysUsers){
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("id", s.getId());
+                            user.put("pId", _id);
+                            user.put("name", s.getNickname());
+                            mapList.add(user);
+                        }
+                    }
+                }
+            }
         }
         return mapList;
     }

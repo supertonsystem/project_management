@@ -86,11 +86,11 @@ public class ProjectMgt {
         return DepartmentUtil.getDepartmentName(this.workProjectMgt.getOwnerDepId());
     }
 
-    public Long getOwnerUserId() {
+    public String getOwnerUserId() {
         return this.workProjectMgt.getOwnerUserId();
     }
 
-    public void setOwnerUserId(Long ownerUserId) {
+    public void setOwnerUserId(String ownerUserId) {
         this.workProjectMgt.setOwnerUserId(ownerUserId);
     }
 
@@ -98,7 +98,17 @@ public class ProjectMgt {
         if(this.workProjectMgt.getOwnerUserId()==null){
             return getOwnerDepName();
         }
-        return UserUtil.getUserNickName(this.workProjectMgt.getOwnerUserId());
+        String userIds=workProjectMgt.getOwnerUserId();
+        if(userIds.indexOf(",")>0) {
+            StringBuilder userName = new StringBuilder();
+            String[] userIdArray = userIds.split(",");
+            for (String userId : userIdArray) {
+                userName.append(UserUtil.getUserNickName(Long.valueOf(userId)) + ",");
+            }
+            return userName.deleteCharAt(userName.length()-1).toString();
+        }else{
+            return UserUtil.getUserNickName(Long.valueOf(userIds));
+        }
     }
 
     public Long getCheckDepId() {

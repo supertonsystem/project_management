@@ -256,11 +256,12 @@
                                     </div>
                                     <div id="required_ownerDepId" style="position: absolute;top: 23px;left: 306px;"> <span class="required" style="color: red">*</span></div>
                                 </div>
-                                <div class="item form-group col-md-6 col-sm-6 col-xs-6">
-                                    <label class="control-label col-md-3 col-sm-3 col-xs-3" for="ownerUserId">责&nbsp;&nbsp;任&nbsp;人:</label>
-                                    <div class="col-md-6 col-sm-6 col-xs-6" title="请选择责任人">
-                                        <input type="text" class="form-control ownerUserId" name="ownerUserId" id="ownerUserId"
-                                               placeholder="请选择责任人" />
+                            </div>
+                            <div class="row"  style="padding-left: 2%;">
+                                <div class="item form-group col-md-10 col-sm-10 col-xs-10">
+                                    <label class="control-label col-md-2 col-sm-2 col-xs-2"  style="padding-right: 14px;" for="ownerUserId">责&nbsp;任&nbsp;人:</label>
+                                    <div class="col-md-8 col-sm-8 col-xs-8" style="margin-left: 10px;" title="请选择责任人">
+                                        <input type="text" class="form-control ownerUserId" name="ownerUserId" id="ownerUserId"/>
                                     </div>
                                 </div>
                             </div>
@@ -387,6 +388,26 @@
         </div>
     </div>
     <script>
+        $('#ownerUserId').selectPage({
+            showField: 'nickname',
+            keyField: 'id',
+            data: '/user/ajaxlist',
+            searchField: 'keywords',
+            //启用多选模式
+            multiple : true,
+            //限制最多选中三个项目
+            maxSelectLimit : 10,
+            //设置选中项目后不关闭列表
+            selectToCloseList : false,
+            //ajax请求后服务端返回的数据格式处理
+            //返回的数据里必须包含list（Array）和totalRow（number|string）两个节点
+            eAjaxSuccess: function (d) {
+                var result;
+                if (d) result = d.data;
+                else result = undefined;
+                return result;
+            }
+        });
         /**
          * 操作按钮
          * @param code
@@ -409,7 +430,6 @@
                 getInfoUrl: "/projectmgt/handle/{id}",
                 updateUrl: "/projectmgt/edit",
                 removeUrl: "/projectmgt/remove",
-                // exportExcelUrl: "/projectmgt/exportExcelByAgenda",//待办导出
                 startUrl: "/projectmgt/start",
                 completeUrl: "/projectmgt/complete",//流程提交
                 optSelectUrl: "/projectmgt/operatorSelect",//处理人
@@ -588,6 +608,7 @@
                     }
                 });
                 options.chooseUrl=options.completeUrl;
+                initZtree();
             });
 
             $(".processsubmit").unbind('click');
@@ -816,7 +837,7 @@
                 $.ajax({
                     async: false,
                     type: "POST",
-                    data: {taskId:  $("#taskId").val(),ownerDepId:$("#ownerDepId").val()},
+                    data: {taskId:  $("#taskId").val()},
                     url: options.optSelectUrl,
                     dataType: 'json',
                     success: function (json) {
@@ -932,29 +953,7 @@
                 }
             });
 
-            $('#ownerUserId').selectPage({
-                showField: 'nickname',
-                keyField: 'id',
-                data: '/user/ajaxlist',
-                searchField: 'keywords',
-                //ajax请求后服务端返回的数据格式处理
-                //返回的数据里必须包含list（Array）和totalRow（number|string）两个节点
-                eAjaxSuccess: function (d) {
-                    var result;
-                    if (d) result = d.data;
-                    else result = undefined;
-                    return result;
-                },
-                params: function(){
-                    var ownerDepId = $("#ownerDepId").val();
-                    return {'user.depId': ownerDepId};
-                }
-            });
-            //联动
-            $("#ownerDepId").change(function(){
-                $('#ownerUserId').selectPageClear();
-                initZtree();
-            });
+
 
             //tag 点击事件
             $("#officeAgree").click(function () {
@@ -964,7 +963,7 @@
                         "</span>";
                 $("#officeOpinion").append(html);
             });
-            $(".sp_container").css("width","180px");
+            $(".sp_container").css("width","300px");
         });
 
 
@@ -973,7 +972,9 @@
                 var $this = $(this);
                 clearText($this, this.type, info);
             });
-
+            if(!info){
+                $('#ownerUserId').selectPageClear();
+            }
         }
 
         function clearText($this, type, info) {
@@ -1001,7 +1002,7 @@
                 if (type === 'radio' || type === 'checkbox') {
                     $this.iCheck('uncheck');
                 } else {
-                    $this.val('');
+                        $this.val('');
                 }
             }
         }

@@ -57,12 +57,9 @@ public interface SysUserService extends AbstractService<User, Long> {
     List<Map<String, Object>> listZtreeByDepartmentId(Long depId);
 
     /**
-     * 根据职位
-     * 返回用户树结构
-     * @param depId
-     * @param post
+     * 返回领导用户树结构
      * @return
      */
-    public List<Map<String, Object>> listZtreeByDepartmentId(Long depId,int post);
+    public List<Map<String, Object>> listZtreeUserLeader();
 
 }

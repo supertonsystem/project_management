@@ -5,7 +5,7 @@
             <div role="main">
                 <div class="">
                     <div class="row top_tiles">
-                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
                             <div class="tile-stats">
                                 <div class="icon"><i class="fa fa-plus-square"></i></div>
                                 <div class="count"  id="todayAddCount">0</div>
@@ -13,7 +13,7 @@
                                 <p>今日新增的项目.</p>
                             </div>
                         </div>
-                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
                             <div id="agenda" class="tile-stats">
                                 <div class="icon"><i class="fa fa-list-ol"></i></div>
                                 <div class="count"><a id="agendaCount" href="/projectmgt/agenda" >0</a></div>
@@ -21,20 +21,12 @@
                                 <p>待处理的项目.</p>
                             </div>
                         </div>
-                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
                             <div class="tile-stats">
                                 <div class="icon"><i class="fa fa-calendar"></i></div>
                                 <div class="count" id="delayCount">0</div>
                                 <h3>延期</h3>
                                 <p>超过1天未处理的项目.</p>
-                            </div>
-                        </div>
-                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                            <div class="tile-stats">
-                                <div class="icon"><i class="fa fa-check-square-o"></i></div>
-                                <div class="count" id="finishCount">0</div>
-                                <h3>结束</h3>
-                                <p>已结束的项目.</p>
                             </div>
                         </div>
                     </div>
@@ -61,7 +53,6 @@
                     var data=json.data;
                     $("#agendaCount").html(data.agendaCount);
                     $("#delayCount").html(data.delayCount);
-                    $("#finishCount").html(data.finishCount);
                     $("#todayAddCount").html(data.todayAddCount);
                 } else {
                     $.tool.alertError(json.message);

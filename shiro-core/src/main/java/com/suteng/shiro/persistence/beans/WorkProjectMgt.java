@@ -35,7 +35,7 @@ public class WorkProjectMgt extends AbstractDO {
         private Long ownerDepId;
         //责任人
         @Column(name="owner_userId")
-        private Long ownerUserId;
+        private String ownerUserId;
         //核实部门
         @Column(name="check_depId")
         private Long checkDepId;

@@ -47,6 +47,12 @@
 			s.email LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
 			)
 		</if>
+		<if test="userIds != null and userIds != '' ">
+			AND s.id in
+			<foreach item="item" index="index" collection="userIds.split(',')"  open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
 		<!-- 查询用户信息 -->
 		<if test="user != null">
 			<if test="user.id!=null">

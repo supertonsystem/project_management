@@ -66,16 +66,20 @@ public class ProjectMgtMailTask {
                         uv.getUser().setPost(2);
                         uv.getUser().setDepId(projectMgt.getOwnerDepId().intValue());
                         PageInfo<User> users = userService.findPageBreakByCondition(uv);
-                        if(users!=null&& !users.getList().isEmpty()){
-                            for(User user:users.getList()){
+                        if (users != null && !users.getList().isEmpty()) {
+                            for (User user : users.getList()) {
                                 String to = StringUtils.isEmpty(user.getEmail()) ? MailConst.MAIL_DEFAULT_TO : user.getEmail();
                                 mailService.sendProjectRemind(to, "项目【" + projectMgt.getTitle() + "】到期提醒", projectMgt.getTitle());
                             }
                         }
                     } else {
-                        User user = userService.getByPrimaryKey(projectMgt.getOwnerUserId());
-                        String to = StringUtils.isEmpty(user.getEmail()) ? MailConst.MAIL_DEFAULT_TO : user.getEmail();
-                        mailService.sendProjectRemind(to, "项目【" + projectMgt.getTitle() + "】到期提醒", projectMgt.getTitle());
+                        String userIds = projectMgt.getOwnerUserId();
+                        String[] userIdArray = userIds.split(",");
+                        for (String userId : userIdArray) {
+                            User user = userService.getByPrimaryKey(Long.valueOf(userId));
+                            String to = StringUtils.isEmpty(user.getEmail()) ? MailConst.MAIL_DEFAULT_TO : user.getEmail();
+                            mailService.sendProjectRemind(to, "项目【" + projectMgt.getTitle() + "】到期提醒", projectMgt.getTitle());
+                        }
                     }
                 }
             }
@@ -100,7 +104,7 @@ public class ProjectMgtMailTask {
             if (plannedTime == null) {
                 return false;
             }
-            if (projectMgt.getFinishTime()==null||projectMgt.getFinishTime().before(plannedTime)) {
+            if (projectMgt.getFinishTime() == null || projectMgt.getFinishTime().before(plannedTime)) {
                 return false;
             }
 

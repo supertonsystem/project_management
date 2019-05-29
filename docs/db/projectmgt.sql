@@ -23,7 +23,7 @@ CREATE TABLE `work_projectmgt` (
   `number` varchar(100) DEFAULT NULL COMMENT '编号',
   `register_userId` bigint(20) unsigned NOT NULL COMMENT '登记人Id',
   `owner_depId` bigint(20) unsigned NOT NULL COMMENT '责任部门Id',
-  `owner_userId` bigint(20)  COMMENT '责任人Id',
+  `owner_userId` varchar(255)  COMMENT '责任人Id',
   `check_depId` bigint(20) unsigned NOT NULL COMMENT '核实部门Id',
   `content` varchar(255) DEFAULT NULL COMMENT '任务内容',
   `planned_time` date DEFAULT NULL COMMENT '计划时间',
