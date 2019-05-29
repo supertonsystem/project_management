@@ -29,7 +29,7 @@ CREATE TABLE `work_projectmgt` (
   `planned_time` date DEFAULT NULL COMMENT '计划时间',
   `progress` tinyint DEFAULT '0' COMMENT '实际进度',
   `finish_time` date DEFAULT NULL COMMENT '完成时间',
-  `price` DECIMAL(19,2)  DEFAULT NULL COMMENT '奖金',
+  `price` varchar(255)  DEFAULT NULL COMMENT '奖金',
   `delay_reason` varchar(255) DEFAULT NULL COMMENT '延期原因',
   `office_opinion` varchar(255) DEFAULT NULL COMMENT '办公室意见',
   `gm_opinion` varchar(255) DEFAULT NULL COMMENT '总经理意见',

@@ -13,7 +13,7 @@
 		<result property="content" jdbcType="VARCHAR" column="content"/>
 		<result property="plannedTime" jdbcType="TIMESTAMP" column="planned_time"/>
 		<result property="progress" jdbcType="TINYINT" column="progress"/>
-		<result property="price" jdbcType="DECIMAL" column="price"/>
+		<result property="price" jdbcType="VARCHAR" column="price"/>
 		<result property="gmOpinion" jdbcType="VARCHAR" column="gm_opinion"/>
 		<result property="officeOpinion" jdbcType="VARCHAR" column="office_opinion"/>
 		<result property="delayReason" jdbcType="VARCHAR" column="delay_reason"/>

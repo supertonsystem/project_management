@@ -306,7 +306,7 @@
                         field: 'number',
                         title: '项目编号',
                         editable: false,
-                        width: 90,
+                        width: 120,
                         formatter: function (value, row, index) {
                             if(row.focus==1){
                                 return "<@shiro.hasPermission name='projectmgt:focus'><i class='focus' title='取消关注' onclick='focusOperate(\""+row.id+"\",\""+0+"\");'></i></@shiro.hasPermission><i style='float: left'>"+value+"</i>";
@@ -363,15 +363,6 @@
                         title: '完成时间',
                         editable: false,
                         width: 90
-                    }, {
-                        field: 'remark',
-                        title: '备注',
-                        editable: false,
-                        width: 120,
-                        formatter: function (data) {
-                            var html = "<div style='width: 110px' class='colStyle'  title='" + data + "'>" + data + "</div>";
-                            return html;
-                        }
                     }, {
                         field: 'taskName',
                         title: '当前环节',

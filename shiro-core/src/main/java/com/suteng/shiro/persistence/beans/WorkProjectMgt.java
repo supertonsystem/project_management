@@ -48,7 +48,7 @@ public class WorkProjectMgt extends AbstractDO {
         //完成时间
         private Date finishTime;
         //绩效奖金
-        private Double price;
+        private String price;
         //延期原因
         private String delayReason;
         //办公室意见

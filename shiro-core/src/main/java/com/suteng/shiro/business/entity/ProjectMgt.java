@@ -149,11 +149,11 @@ public class ProjectMgt {
         this.workProjectMgt.setFinishTime(finishTime);
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return this.workProjectMgt.getPrice();
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.workProjectMgt.setPrice(price);
     }
 

@@ -292,7 +292,7 @@
                                 <div class="item form-group col-md-6 col-sm-6 col-xs-6">
                                     <label class="control-label col-md-3 col-sm-3 col-xs-3" for="price">绩效奖金:</label>
                                     <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <input type="number" class="form-control" name="price" id="price" min="1"/>
+                                        <input type="text" class="form-control" name="price" id="price"/>
                                     </div>
                                 </div>
                             </div>
