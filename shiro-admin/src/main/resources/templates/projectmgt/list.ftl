@@ -216,9 +216,12 @@
                                     <tr>
                                         <td style="text-align: right;"><span class="control-label title">实际进度:</span></td>
                                         <td colspan="3">
-                                            <div class="input-group col-md-4 col-sm-4 col-xs-4">
+                                            <div id="div_progress" class="input-group col-md-4 col-sm-4 col-xs-4">
                                                 <input type="number" class="form-control text-center" name="progress" id="progress" value="0"
-                                                       min="0" max="100" step="1">
+                                                       min="0" max="100" step="1" >
+                                            </div>
+                                            <div id="div_static_progress">
+                                                <label class="control-label" id="static_progress"></label>
                                             </div>
                                         </td>
                                     </tr>
@@ -492,16 +495,16 @@
                     }
                 });
                 $("#div_delayReason").html('<textarea class="form-control" rows="8" name="delayReason" id="delayReason" >' + data.delayReason + '</textarea>');
-                $("#div_progress").show();
                 $("#progress").val(data.progress);
                 $("#div_static_progress").hide();
+                $("#div_progress").show();
             }
 
             function viewBtn(data) {
                 $(".addOrUpdateBtn").hide();
                 $("#div_delayReason").html('<p class="form-control-static" id="delayReason">' + data.delayReason + '</p>');
-                $("#div_static_progress").show();
                 $("#static_progress").html(data.progress);
+                $("#div_static_progress").show();
                 $("#div_progress").hide();
             }
 
