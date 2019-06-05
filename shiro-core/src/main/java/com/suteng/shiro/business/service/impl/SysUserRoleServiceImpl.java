@@ -1,7 +1,13 @@
 package com.suteng.shiro.business.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.suteng.shiro.business.entity.User;
 import com.suteng.shiro.business.entity.UserRole;
 import com.suteng.shiro.business.service.SysUserRoleService;
+import com.suteng.shiro.business.service.SysUserService;
 import com.suteng.shiro.persistence.beans.SysUserRole;
 import com.suteng.shiro.persistence.mapper.SysUserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +18,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 用户角色
@@ -28,6 +30,8 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
 
     @Autowired
     private SysUserRoleMapper resourceMapper;
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 保存一个实体，null的属性不会保存，会使用数据库默认值
@@ -205,5 +209,36 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId", userId);
         resourceMapper.deleteByExample(example);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = {Exception.class})
+    public void removeByRoleId(Long roleId) {
+        Example example = new Example(SysUserRole.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("roleId", roleId);
+        resourceMapper.deleteByExample(example);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = {Exception.class})
+    public void addAllUserRole(Long roleId) {
+        UserRole u = new UserRole();
+        if (StringUtils.isEmpty(roleId)) {
+            return;
+        }
+        List<UserRole> roles = new ArrayList<>();
+        List<User> users = sysUserService.listAll();
+        if (users == null) {
+            return;
+        }
+        for (User user : users) {
+            u = new UserRole();
+            u.setUserId(user.getId());
+            u.setRoleId(roleId);
+            roles.add(u);
+        }
+        u.setRoleId(roleId);
+        insertList(roles);
     }
 }

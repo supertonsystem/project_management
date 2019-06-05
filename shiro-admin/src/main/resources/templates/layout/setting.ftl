@@ -1,12 +1,12 @@
 <div class="top_nav">
     <div class="nav_menu">
         <nav>
-            <div class="nav toggle">
+            <div class="nav toggle" style="padding-top:5px">
                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
             </div>
             <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <li>
+                    <a href="javascript:;" style="line-height: 1px" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                        <#if user?exists>${user.nickname?if_exists}<#else>管理员</#if>
                         <span class=" fa fa-angle-down"></span>
                     </a>

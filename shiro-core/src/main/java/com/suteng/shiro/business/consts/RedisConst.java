@@ -8,6 +8,8 @@ package com.suteng.shiro.business.consts;
 public class RedisConst {
     //项目管理KEY
     public static final String PROJECTMGT_KEY="PROJECTMGT_KEY_";
+    //项目管理KEY
+    public static final String PERSON_VISIT_KEY="PERSON_VISIT_KEY_";
     //默认过期时间
     public static Long DEFULT_TIMEOUT=24*60*60*1000L;
 

@@ -50,13 +50,21 @@
             var _formatter = column.formatter;
             column.formatter = function (value, row, index) {
                 var result = _formatter ? _formatter(value, row, index) : value;
-
-                return ['<a href="javascript:void(0)"',
-                    ' data-name="' + column.field + '"',
-                    ' data-pk="' + row[that.options.idField] + '"',
-                    ' data-value="' + result + '"',
-                    '>' + '</a>'
-                ].join('');
+                var str='<a href="javascript:void(0)"'+
+                    ' data-name="' + column.field + '"'+
+                ' data-pk="' + row['rowId'] + '"'+
+                ' data-value="' + result + '"'+
+                '>' + '</a>';
+                // if(column.field==='repertoryId' && value!==null && value!==''){
+                //     str+="   <a href='javascript:void(0)' onclick='detailView(\""+column.field+"\",\""+value+"\");'><i class='fa fa-chevron-right'></i></a>";
+                // }
+                if(column.field==='personId' && value!==null && value!==''){
+                    str+="   <a href='javascript:void(0)' onclick='viewPerson(\""+value+"\");'><i class='fa fa-chevron-right'></i></a>";
+                }
+                if(column.field==='projectId'&& value!==null && value!==''){
+                    str+="   <a href='javascript:void(0)' onclick='viewPorject(\""+value+"\");'><i class='fa fa-chevron-right'></i></a>";
+                }
+                return [str].join('');
             };
         });
     };

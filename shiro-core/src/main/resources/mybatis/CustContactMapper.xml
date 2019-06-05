@@ -15,23 +15,65 @@
 		<result property="peopleNum" jdbcType="INTEGER" column="people_num"/>
 		<result property="chat" jdbcType="VARCHAR" column="chat"/>
 		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+		<result property="personId" jdbcType="BIGINT" column="person_id"/>
 	</resultMap>
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustContactConditionVo" resultMap="rm">
 		SELECT
 			cc.*
 		FROM
-			cust_contact cc
+			cust_contact cc left JOIN cust_person cp
+		on cc.person_id=cp.id
 		WHERE
 			1 = 1
+		<if test="personName!=null and personName!=''">
+			and cp.name LIKE CONCAT('%',#{personName , jdbcType=VARCHAR},'%')
+		</if>
 		<if test="custContactEntity != null">
 			<if test="custContactEntity.id!=null">
 				AND cc.id = #{custContactEntity.id}
 			</if>
+			<if test="custContactEntity.register!=null">
+				AND cc.register = #{custContactEntity.register}
+			</if>
 		</if>
 		ORDER BY
-			cc.id ASC,
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				cc.create_time ${sortOrder},
+			</if>
+		</if>
+			cc.id desc,
 			cc.create_time DESC
 	</select>
+
+	<select id="findPageChooseContact" resultMap="rm">
+		SELECT
+		cc.*
+		FROM
+		cust_contact cc
+		WHERE
+		1 = 1
+		and ISNULL(person_id)
+		<if test="custContactEntity != null">
+			<if test="custContactEntity.register!=null">
+				AND cc.register = #{custContactEntity.register}
+			</if>
+		</if>
+		<if test="excludeIds != null and excludeIds != '' ">
+			AND cc.id not in
+			<foreach item="item" index="index" collection="excludeIds.split(',')"  open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY
+		cc.id desc,
+		cc.create_time DESC
+	</select>
+
+	<update id="deletePersonRelation" parameterType="Long">
+		update cust_contact set person_id=null
+		where person_id=#{personId}
+	</update>
 </mapper>
 

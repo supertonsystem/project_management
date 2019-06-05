@@ -45,11 +45,11 @@
             <div class="panel panel-default" style="margin-bottom:0px">
                 <div class="panel-heading">查询条件</div>
                 <div>
-                    <form id="formSearch" class="form-horizontal">
+                    <form id="person_formSearch" class="form-horizontal">
                         <div class="form-group" style="margin-top:15px">
                             <label class="control-label col-sm-1" for="txt_search_title">姓名</label>
                             <div class="col-sm-3">
-                                <input type="text" class="form-control" id="title" name="title">
+                                <input type="text" class="form-control" id="name" name="name">
                             </div>
                             <div class="col-sm-4" style="text-align:left;">
                                 <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查&nbsp;&nbsp;&nbsp;&nbsp;询</button>
@@ -80,10 +80,29 @@
     </div>
 </div>
 <#include "/layout/footer.ftl"/>
+<div class="modal fade" style="width: 1000px;height: 500px;border-radius: 5px"  tabindex="-1" role="dialog" id="choose_list" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script>
+    var addProjectList = [];
+    var addContactList = [];
+    var addPersonList = [];
+    $('#choose_list').on('show.bs.modal', function (e) {
+        var modalWidth = $("#choose_list").width();
+        var modalHeight = $("#choose_list").height();
+        var left=($(window).width()- parseInt(modalWidth))/2+ "px";
+        var top=($(window).height()- parseInt(modalHeight))/2+ "px";
+        $("#choose_list").css({"margin-left":left,"margin-top":top});
+    });
+</script>
 <!--项目新增/编辑弹框-->
 <div class="modal fade" id="addOrUpdateModal" tabindex="-1" role="dialog"
      style="overflow: auto" data-backdrop="static">
-    <div class="modal-dialog" style="width: 850px; " role="document">
+    <div class="modal-dialog" style="width: 1000px; " role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 5px">
                 <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
@@ -221,6 +240,22 @@
                                     </tr>
                                     <tr>
                                         <td class="title" style="vertical-align:middle;text-align: right"><span
+                                                class="control-label title">拜访日期:</span></td>
+                                        <td>
+                                            <div style="width: 200px;">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class='input-group date' id='visitTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
+                                                        <input type='text' class="form-control" name="visitTime" id="visitTime" />
+                                                        <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title" style="vertical-align:middle;text-align: right"><span
                                                 class="control-label title">备&nbsp;&nbsp;&nbsp;&nbsp;注:</span></td>
                                         <td colspan="3"><textarea id="remark" name="remark" rows="6"
                                                                   style="width: 550px"></textarea></td>
@@ -232,254 +267,88 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<!--项目查看弹框-->
-
-<div class="modal fade" id="viewModal" tabindex="-1" role="dialog"
-     style="overflow: auto">
-    <div class="modal-dialog" style="width: 850px; " role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="padding: 5px">
-                <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
-                        data-dismiss="modal">返回
-                </button>
-            </div>
-                <div class="tab-content">
-                <div class="tab-pane fade in active" id="info">
-                    <div class="modal-body" style="padding-top: 0px;">
-                        <form id="viewForm">
-                            <input type="hidden" name="id" id="id">
-                            <div class="table-responsive">
-                                <h3 align="center">客户信息</h3>
-                                <table class="table">
-                                    <tbody>
-                                    <tr id="tr_registerInfo">
-                                        <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
-                                            <span class="control-label title">登记时间:</span>
-                                        </td>
-                                        <td style="width: 38%">
-                                            <span class="form-control-static" id="createTime"></span>
-                                        </td>
-                                        <td class="title_td" style="padding-left: 15px;">
-                                            <span class="control-label title">登记人:&nbsp;&nbsp; </span>
-                                        </td>
-                                        <td style="width: 38%">
-                                            <span class="form-control-static" id="registerUserName"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
-                                            <span class="control-label title">姓&nbsp;&nbsp;&nbsp;&nbsp;名:&nbsp;&nbsp;&nbsp;</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="name"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;width: 10%;padding-left: 15px;">
-                                            <span class="control-label title">性&nbsp;&nbsp;&nbsp;&nbsp;别: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="sexName"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">公司名称:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="companyName"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">职&nbsp;&nbsp;&nbsp;&nbsp;位: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="post"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">公司性质:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="companyNature"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">所属行业: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="industry"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">公司规模:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="companyScale"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">公司地址: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="companyAddress"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">联系电话:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="phone"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">手机电话: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="mobile"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">家庭地址:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="homeAddress"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">单位网址: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="companyWebsite"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">电子邮箱:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="email"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">传&nbsp;&nbsp;真: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="fax"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">客户来源:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="source"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;">
-                                            <span class="control-label title">信用状况: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="creditName"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">备&nbsp;&nbsp;&nbsp;&nbsp;注:</span>
-                                        </td>
-                                        <td colspan="3">
-                                            <textarea style="max-height: 200px;min-height: 100px;" class="control-label" id="remark" readonly="readonly"></textarea>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-                <div class="panel-group" id="accordion">
+        <@shiro.hasRole name="role:custmgt">
+            <div class="panel-group" id="accordion" style="padding: 0px 15px">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
+                         href="#collapseOne">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion"
                                href="#collapseOne">
-                                点击我进行展开，再次点击我进行折叠。第 1 部分--hide 方法
+                                项目信息
                             </a>
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
+                        <div class="panel-body" style="padding: 0px 5px;">
+                             <#include "/custmgt/project_addUpdate.ftl"/>
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-success">
-                    <div class="panel-heading">
+                    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
+                         href="#collapseTwo">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion"
                                href="#collapseTwo">
-                                点击我进行展开，再次点击我进行折叠。第 2 部分--show 方法
+                                联系信息
                             </a>
                         </h4>
                     </div>
                     <div id="collapseTwo" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
+                        <div class="panel-body" style="padding: 0px 5px;">
+                            <#include "/custmgt/contact_addUpdate.ftl"/>
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-info">
-                    <div class="panel-heading">
+                    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
+                         href="#collapseThree">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion"
                                href="#collapseThree">
-                                点击我进行展开，再次点击我进行折叠。第 3 部分--toggle 方法
+                                关联人员
                             </a>
                         </h4>
                     </div>
                     <div id="collapseThree" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-warning">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseFour">
-                                点击我进行展开，再次点击我进行折叠。第 4 部分--options 方法
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred
-                            nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo.
+                        <div class="panel-body" style="padding: 0px 5px;">
+                        <#include "/custmgt/person_addUpdate.ftl"/>
                         </div>
                     </div>
                 </div>
             </div>
+        </@shiro.hasRole>
         </div>
     </div>
 </div>
 
-
 <script>
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+    $(function () { $('#collapseTwo').collapse('hide')});
+    $(function () { $('#collapseThree').collapse('hide')});
+    $(function () { $('#collapseOne').collapse('show')});
+
         function operateFormatter(code, row, index) {
             var currentUserId = '${user.id}';
             var trUserId = row.register;
             var id=row.id;
             var operateBtn = [
-                '<@shiro.hasPermission name="custmgt:person:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>&nbsp;编辑</a></@shiro.hasPermission>'
             ];
             if (currentUserId == trUserId) {
+                operateBtn.push('<@shiro.hasPermission name="custmgt:person:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>&nbsp;编辑</a></@shiro.hasPermission>');
                 operateBtn.push('<@shiro.hasPermission name="custmgt:person:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>&nbsp;删除</a></@shiro.hasPermission>');
             }
             return operateBtn.join('');
@@ -487,7 +356,7 @@
 
         $(function () {
             var options = {
-                url: "/custmgt/person/list",
+                url: "/custmgt/person/list"+"?custPersonEntity.register="+${user.id},
                 getInfoUrl: "/custmgt/person/get/{id}",
                 updateUrl: "/custmgt/person/edit",
                 removeUrl: "/custmgt/person/remove",
@@ -531,15 +400,7 @@
                     }, {
                         field: 'post',
                         title: '职位',
-                        width: 40,
-                        editable: {
-                            type: 'text',
-                            title: '用户名',
-                            validate: function (v) {
-                                if (!v) return '用户名不能为空';
-
-                            }
-                        }
+                        width: 40
                     }, {
                         field: 'companyName',
                         title: '公司名称',
@@ -638,10 +499,11 @@
             });
 
             $("#btn_add").click(function () {
-//                var _data = {
-//                    "name" : name
-//                    }
-//                $("#tablelist").bootstrapTable('prepend', _data);
+                <@shiro.hasRole name="role:custmgt">
+                addUpdateProjectTable(-1,'');
+                addUpdateContactTable(-1,'');
+                addUpdatePersonTable(-1,'');
+                </@shiro.hasRole>
                 resetForm();
                 $("#addOrUpdateModal").modal('show');
                 $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("添加" + options.modalName);
@@ -652,10 +514,11 @@
                         alert('客户名称不能为空');
                         return;
                     }
+                    $(this).off();
                     $.ajax({
                         type: "post",
                         url: options.createUrl,
-                        data: $("#addOrUpdateForm").serialize(),
+                        data: $("#addOrUpdateForm").serialize()+"&addProjectIds="+addProjectList.join(",")+"&addContactIds="+addContactList.join(",")+"&addPersonIds="+addPersonList.join(","),
                         success: function (json) {
                             $.tool.ajaxSuccess(json);
                             $("#addOrUpdateModal").modal('hide');
@@ -677,16 +540,22 @@
                     success: function (json) {
                         var info = json.data;
                         resetForm(info);
+                        <@shiro.hasRole name="role:custmgt">
+                        addUpdateProjectTable(id,'');
+                        addUpdateContactTable(id,'');
+                        addUpdatePersonTable(id,'');
+                        </@shiro.hasRole>
                         $("#addOrUpdateModal").modal('show');
                         $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("修改" + options.modalName);
 
                         $(".addOrUpdateBtn").unbind('click');
                         $(".addOrUpdateBtn").click(function () {
                             if (validator.checkAll($("#addOrUpdateForm"))) {
+                                $(this).off();
                                 $.ajax({
                                     type: "post",
                                     url: options.updateUrl,
-                                    data: $("#addOrUpdateForm").serialize(),
+                                    data: $("#addOrUpdateForm").serialize()+"&addProjectIds="+addProjectList.join(",")+"&addContactIds="+addContactList.join(",")+"&addPersonIds="+addPersonList.join(","),
                                     success: function (json) {
                                         $.tool.ajaxSuccess(json);
                                         $("#addOrUpdateModal").modal('hide');
@@ -732,26 +601,24 @@
         });
 
         function view(id) {
-            $.ajax({
-                type: "post",
-                async: false,
-                url: "/custmgt/person/get/"+id,
-                success: function (json) {
-                    var data = json.data;
-                    resetViewForm(data);
-                    $("#viewModal").modal('show');
-                },
-                error: $.tool.ajaxError
-            });
+            window.open("/custmgt/person/view/"+id);
         }
 
         function queryParams(params) {
             params = $.extend({}, params);
             //获取搜索框的值
-            var title = {'projectMgt.title': $("#title").val()};
+            var title = {'custPersonEntity.name': $("#person_formSearch #name").val()};
             params = $.extend(params, title);
             return params;
         }
+    //日期空间init
+        $('#visitTime_datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD',
+            showClear: true,
+            showClose: true,
+            focusOnShow: true,
+            locale: moment.locale('zh-cn')
+        });
 
         function resetViewForm(info) {
             $("#viewModal form span,#viewModal form textarea").each(function () {

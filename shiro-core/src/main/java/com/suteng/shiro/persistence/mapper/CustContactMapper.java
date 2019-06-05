@@ -22,4 +22,19 @@ public interface CustContactMapper extends BaseMapper<CustContact> {
      * @return
      */
     List<CustContact> findPageBreakByCondition(CustContactConditionVo vo);
+
+
+    /**
+     * 過濾ids的联系记录
+     * @param vo
+     * @return
+     */
+    List<CustContact> findPageChooseContact(CustContactConditionVo vo);
+
+    /**
+     * 删除关联
+     * @param personId
+     */
+    void deletePersonRelation(Long personId);
+
 }

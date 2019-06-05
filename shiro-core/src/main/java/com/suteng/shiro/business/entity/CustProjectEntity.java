@@ -15,6 +15,24 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 public class CustProjectEntity {
     private CustProject custProject;
+    private Long personId;
+    private String addPersonIds;
+
+    public String getAddPersonIds() {
+        return addPersonIds;
+    }
+
+    public void setAddPersonIds(String addPersonIds) {
+        this.addPersonIds = addPersonIds;
+    }
+
+    public Long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(Long personId) {
+        this.personId = personId;
+    }
 
     public CustProjectEntity() {
         this.custProject = new CustProject();
@@ -158,15 +176,6 @@ public class CustProjectEntity {
     public String getPmName(){
         return UserUtil.getUserNickName(this.custProject.getPm());
     }
-    public Long getPersonId() {
-        return custProject.getPersonId();
-    }
-
-    public void setPersonId(Long personId) {
-        this.custProject.setPersonId(personId);
-    }
-
-
 
     @JSONField(format = "yyyy-MM-dd")
     public Date getCreateTime() {

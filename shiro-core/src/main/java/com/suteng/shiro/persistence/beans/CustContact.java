@@ -51,5 +51,10 @@ public class CustContact extends AbstractDO {
      */
     private String remark;
 
+    /**
+     * 关联客户
+     */
+    private Long personId;
+
 }
 

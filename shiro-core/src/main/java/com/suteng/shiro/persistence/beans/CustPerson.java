@@ -1,5 +1,7 @@
 package com.suteng.shiro.persistence.beans;
 
+import java.util.Date;
+
 import com.suteng.shiro.framework.object.AbstractDO;
 import lombok.Data;
 
@@ -87,5 +89,11 @@ public class CustPerson extends AbstractDO {
      */
     private String remark;
 
+
+
+    /**
+     * 拜访日期
+     */
+    private Date visitTime;
 }
 

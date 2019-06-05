@@ -124,12 +124,13 @@ public class CustContactServiceImpl implements CustContactService {
 
     @Override
     public List<CustContactEntity> listByEntity(CustContactEntity entity) {
+        List<CustContactEntity> CustContactEntities = new ArrayList<>();
         Assert.notNull(entity, "entity不可为空！");
         List<CustContact> CustContacts = CustContactMapper.select(entity.getCustContact());
         if (CollectionUtils.isEmpty(CustContacts)) {
-            return null;
+            return CustContactEntities;
         }
-        List<CustContactEntity> CustContactEntities = new ArrayList<>();
+
         for (CustContact CustContact : CustContacts) {
             CustContactEntities.add(new CustContactEntity(CustContact));
         }
@@ -156,5 +157,26 @@ public class CustContactServiceImpl implements CustContactService {
         PageInfo bean = new PageInfo<CustContact>(CustContacts);
         bean.setList(entities);
         return bean;
+    }
+
+    @Override
+    public PageInfo<CustContactEntity> findPageChooseContact(CustContactConditionVo vo) {
+        PageHelper.startPage(vo.getPageNumber(), vo.getPageSize());
+        List<CustContact> CustContacts = CustContactMapper.findPageChooseContact(vo);
+        if (CollectionUtils.isEmpty(CustContacts)) {
+            return null;
+        }
+        List<CustContactEntity> entities = new ArrayList<>();
+        for (CustContact CustContact : CustContacts) {
+            entities.add(new CustContactEntity(CustContact));
+        }
+        PageInfo bean = new PageInfo<CustContact>(CustContacts);
+        bean.setList(entities);
+        return bean;
+    }
+
+    @Override
+    public void deletePersonRelation(Long personId) {
+        CustContactMapper.deletePersonRelation(personId);
     }
 }

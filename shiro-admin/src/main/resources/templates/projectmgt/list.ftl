@@ -474,6 +474,7 @@
                 $(".addOrUpdateBtn").unbind('click');
                 $(".addOrUpdateBtn").click(function () {
                     if (validator.checkAll($("#addOrUpdateForm"))) {
+                        $(this).off();
                         var pVal=$("#progress").val();
                         if(pVal!=null && pVal!=""){
                             if(pVal<0||pVal>100){

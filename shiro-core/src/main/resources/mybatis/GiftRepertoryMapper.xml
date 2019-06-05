@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.GiftRepertoryMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.GiftRepertory">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="name" jdbcType="VARCHAR" column="name"/>
+		<result property="typeId" jdbcType="BIGINT" column="type_id"/>
+		<result property="sum" jdbcType="BIGINT" column="sum"/>
+		<result property="repertory" jdbcType="BIGINT" column="repertory"/>
+		<result property="amount" jdbcType="DECIMAL" column="amount"/>
+		<result property="unit" jdbcType="DECIMAL" column="unit"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<association property="giftType" javaType="com.suteng.shiro.persistence.beans.GiftType">
+			<result property="id" jdbcType="BIGINT" column="type_id"/>
+			<result property="type" jdbcType="VARCHAR" column="type_type"/>
+		</association>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.GiftRepertoryConditionVo" resultMap="rm">
+		SELECT
+			gr.*,gt.id as type_id,gt.type as type_type
+		FROM
+			gift_repertory gr
+		left JOIN gift_type gt ON gr.type_id= gt.id
+		WHERE
+			1 = 1
+		<if test="giftRepertoryEntity != null">
+			<if test="giftRepertoryEntity.name!=null and giftRepertoryEntity.name!=''">
+				and gr.name LIKE CONCAT('%',#{giftRepertoryEntity.name , jdbcType=VARCHAR},'%')
+			</if>
+		</if>
+		ORDER BY
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				gr.create_time ${sortOrder},
+			</if>
+		</if>
+			gr.id desc
+	</select>
+
+	<select id="availableRepertoryList" resultMap="rm">
+		SELECT
+		gr.*,gt.id as type_id,gt.type as type_type
+		FROM
+		gift_repertory gr
+		left JOIN gift_type gt ON gr.type_id= gt.id
+		WHERE
+		gr.repertory >0
+		ORDER BY
+		gr.id desc
+	</select>
+
+	<select id="findGiftRepertoryByLock" parameterType="Long" resultMap="rm">
+		SELECT * FROM gift_repertory WHERE id =#{d} for update
+	</select>
+
+</mapper>
+

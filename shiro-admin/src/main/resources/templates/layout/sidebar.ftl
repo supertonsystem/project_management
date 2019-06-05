@@ -15,7 +15,13 @@
                                     <#list item.nodes as node>
                                         <#if node.type=="menu">
                                         <@shiro.hasPermission name="${node.permission?if_exists}">
-                                        <li><a href="${node.url?if_exists}" ${(node.external?exists && node.external)?string('target="_blank"','')}><i class="${node.icon?if_exists}"></i>${node.name?if_exists}</a></li>
+                                            <#if node.name=="项目信息"||node.name=="联系信息"||node.name=="礼品领用"||node.name=="送礼记录"||node.name=="礼品库存"||node.name=="礼品类别">
+                                                <@shiro.hasRole name="role:custmgt">
+                                                    <li><a href="${node.url?if_exists}" ${(node.external?exists && node.external)?string('target="_blank"','')}><i class="${node.icon?if_exists}"></i>${node.name?if_exists}</a></li>
+                                                </@shiro.hasRole>
+                                            <#else>
+                                                <li><a href="${node.url?if_exists}" ${(node.external?exists && node.external)?string('target="_blank"','')}><i class="${node.icon?if_exists}"></i>${node.name?if_exists}</a></li>
+                                            </#if>
                                         </@shiro.hasPermission>
                                         </#if>
                                     </#list>

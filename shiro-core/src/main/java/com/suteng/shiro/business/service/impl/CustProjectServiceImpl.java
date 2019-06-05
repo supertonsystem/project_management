@@ -7,11 +7,14 @@ import java.util.List;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.suteng.shiro.business.entity.CustProjectEntity;
+import com.suteng.shiro.business.entity.CustProjectRelationEntity;
+import com.suteng.shiro.business.service.CustProjectRelationService;
 import com.suteng.shiro.business.service.CustProjectService;
 import com.suteng.shiro.business.vo.CustProjectConditionVo;
 import com.suteng.shiro.persistence.beans.CustProject;
 import com.suteng.shiro.persistence.mapper.CustProjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +33,8 @@ public class CustProjectServiceImpl implements CustProjectService {
 
     @Autowired
     private CustProjectMapper custProjectMapper;
+    @Autowired
+    private CustProjectRelationService custProjectRelationService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -38,7 +43,20 @@ public class CustProjectServiceImpl implements CustProjectService {
         entity.setUpdateTime(new Date());
         entity.setCreateTime(new Date());
         custProjectMapper.insertSelective(entity.getCustProject());
+        addRelation(entity.getId(),entity);
         return entity;
+    }
+
+    private void addRelation(Long projectId,CustProjectEntity entity){
+        if(StringUtils.isNotEmpty(entity.getAddPersonIds())){
+            String [] ids=entity.getAddPersonIds().split(",");
+            for(String id:ids){
+                CustProjectRelationEntity custProjectRelationEntity=new CustProjectRelationEntity();
+                custProjectRelationEntity.setProjectId(projectId);
+                custProjectRelationEntity.setPersonId(Long.valueOf(id));
+                custProjectRelationService.insert(custProjectRelationEntity);
+            }
+        }
     }
 
     @Override
@@ -63,7 +81,11 @@ public class CustProjectServiceImpl implements CustProjectService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeByPrimaryKey(Long primaryKey) {
-        return custProjectMapper.deleteByPrimaryKey(primaryKey) > 0;
+        boolean result=custProjectMapper.deleteByPrimaryKey(primaryKey) > 0;
+        if(result) {
+            custProjectRelationService.deleteProjectRelationByProjectId(primaryKey);
+        }
+        return result;
     }
 
     @Override
@@ -79,6 +101,7 @@ public class CustProjectServiceImpl implements CustProjectService {
     public boolean updateSelective(CustProjectEntity entity) {
         Assert.notNull(entity, "entity不可为空！");
         entity.setUpdateTime(new Date());
+        addRelation(entity.getId(),entity);
         return custProjectMapper.updateByPrimaryKeySelective(entity.getCustProject()) > 0;
     }
 
@@ -124,12 +147,13 @@ public class CustProjectServiceImpl implements CustProjectService {
 
     @Override
     public List<CustProjectEntity> listByEntity(CustProjectEntity entity) {
+        List<CustProjectEntity> custProjectEntities = new ArrayList<>();
         Assert.notNull(entity, "entity不可为空！");
         List<CustProject> custProjects = custProjectMapper.select(entity.getCustProject());
         if (CollectionUtils.isEmpty(custProjects)) {
-            return null;
+            return custProjectEntities;
         }
-        List<CustProjectEntity> custProjectEntities = new ArrayList<>();
+
         for (CustProject custProject : custProjects) {
             custProjectEntities.add(new CustProjectEntity(custProject));
         }
@@ -156,5 +180,36 @@ public class CustProjectServiceImpl implements CustProjectService {
         PageInfo bean = new PageInfo<CustProject>(custProjects);
         bean.setList(entities);
         return bean;
+    }
+
+    @Override
+    public PageInfo<CustProjectEntity> findPageChooseProject(CustProjectConditionVo vo) {
+        PageHelper.startPage(vo.getPageNumber(), vo.getPageSize());
+        List<CustProject> custProjects = custProjectMapper.findPageChooseProject(vo);
+        if (CollectionUtils.isEmpty(custProjects)) {
+            return null;
+        }
+        List<CustProjectEntity> entities = new ArrayList<>();
+        for (CustProject custProject : custProjects) {
+            entities.add(new CustProjectEntity(custProject));
+        }
+        PageInfo bean = new PageInfo<CustProject>(custProjects);
+        bean.setList(entities);
+        return bean;
+    }
+
+    @Override
+    public List<CustProjectEntity> findProjectRelationList(Long personId) {
+        List<CustProjectEntity> entities = new ArrayList<>();
+        List<CustProject> custPeople = custProjectMapper.findProjectRelationList(personId);
+        if (CollectionUtils.isEmpty(custPeople)) {
+            return entities;
+        }
+        for (CustProject custPerson : custPeople) {
+            CustProjectEntity custPersonEntity=new CustProjectEntity(custPerson);
+            custPersonEntity.setPersonId(personId);
+            entities.add(custPersonEntity);
+        }
+        return entities;
     }
 }

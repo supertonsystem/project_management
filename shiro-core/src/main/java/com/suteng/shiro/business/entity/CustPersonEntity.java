@@ -6,6 +6,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.suteng.shiro.business.enums.CustEnum;
 import com.suteng.shiro.business.util.UserUtil;
 import com.suteng.shiro.persistence.beans.CustPerson;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * @Author:louyi
@@ -14,6 +15,55 @@ import com.suteng.shiro.persistence.beans.CustPerson;
  */
 public class CustPersonEntity {
     private CustPerson custPerson;
+
+    private String addProjectIds;
+    private String addContactIds;
+    private String addPersonIds;
+    private Long sourceId;
+    /**
+     * 项目关联列表用
+     */
+    private Long currProjectId;
+
+    public Long getCurrProjectId() {
+        return currProjectId;
+    }
+
+    public void setCurrProjectId(Long currProjectId) {
+        this.currProjectId = currProjectId;
+    }
+
+    public Long getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(Long sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getAddContactIds() {
+        return addContactIds;
+    }
+
+    public void setAddContactIds(String addContactIds) {
+        this.addContactIds = addContactIds;
+    }
+
+    public String getAddProjectIds() {
+        return addProjectIds;
+    }
+
+    public void setAddProjectIds(String addProjectIds) {
+        this.addProjectIds = addProjectIds;
+    }
+
+    public String getAddPersonIds() {
+        return addPersonIds;
+    }
+
+    public void setAddPersonIds(String addPersonIds) {
+        this.addPersonIds = addPersonIds;
+    }
 
     public CustPersonEntity() {
         this.custPerson = new CustPerson();
@@ -208,5 +258,14 @@ public class CustPersonEntity {
 
     public void setUpdateTime(Date updateTime) {
         this.getCustPerson().setUpdateTime(updateTime);
+    }
+
+    @JSONField(format = "yyyy-MM-dd")
+    public Date getVisitTime() {
+        return getCustPerson().getVisitTime();
+    }
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    public void setVisitTime(Date visitTime) {
+        this.getCustPerson().setVisitTime(visitTime);
     }
 }

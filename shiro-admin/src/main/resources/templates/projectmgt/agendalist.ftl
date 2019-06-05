@@ -594,6 +594,7 @@
                                 return;
                             }
                         }
+                        $(this).off();
                         $.ajax({
                             type: "post",
                             url: options.startUrl,
@@ -614,6 +615,7 @@
             $(".processsubmit").unbind('click');
             $(".processsubmit").click(function () {
                 if (validator.checkAll($("#addOrUpdateForm"))) {
+                    $(this).off();
                     $.ajax({
                         type: "post",
                         url: options.chooseUrl,
@@ -630,6 +632,7 @@
 
             /* 处理*/
             $('#tablelist').on('click', '.btn-update', function () {
+                $(this).off();
                 var $this = $(this);
                 var id = $this.attr("data-id");
                 var projectmgt;
@@ -676,6 +679,7 @@
                                     return;
                                 }
                             }
+                            $(this).off();
                             $.ajax({
                                 type: "post",
                                 url: options.updateUrl,
@@ -703,6 +707,7 @@
                     $(".addOrUpdateBtn").unbind('click');
                     $(".addOrUpdateBtn").click(function () {
                         if (validator.checkAll($("#addOrUpdateForm"))) {
+                            $(this).off();
                             $.ajax({
                                 type: "post",
                                 url: options.updateUrl,
@@ -754,6 +759,7 @@
                     alert('请选择处理人');
                     return;
                 }
+                $(this).off();
                 var ids = new Array();
                 for (var i = 0; i < nodes.length; i++) {
                     //获取选中节点的值
@@ -787,6 +793,7 @@
                                 $(".rollbacksubmit").click(function () {
                                     $.tool.confirm("确定退回吗？", function () {
                                         if (validator.checkAll($("#addOrUpdateForm"))) {
+                                            $(this).off();
                                             $.ajax({
                                                 type: "post",
                                                 url: options.rollbackUrl+"?taskId="+task.taskId,
@@ -813,6 +820,7 @@
                                 }
                                 $(".rollbacktasksubmit").click(function () {
                                     var checkValue=$("#rollbackTaskSelect").val();
+                                    $(this).off();
                                     $.ajax({
                                         type: "post",
                                         url: options.rollbackUrl+"?taskId="+checkValue,
@@ -1011,6 +1019,7 @@
          * 意见相关
          */
         $('#officeOpinionModalBtn').on('click',function () {
+            $(this).off();
             $("#opinionContent").val('');
             $('#opinionModal').modal('show');
             $('#opinionModalSubmit').unbind('click');
@@ -1035,6 +1044,7 @@
         });
 
         $('#gmOpinionModalBtn').on('click',function () {
+            $(this).off();
             $("#opinionContent").val('');
             $('#opinionModal').modal('show');
             $('#opinionModalSubmit').unbind('click');

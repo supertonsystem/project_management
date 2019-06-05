@@ -24,6 +24,8 @@
 		<result property="source" jdbcType="VARCHAR" column="source"/>
 		<result property="credit" jdbcType="VARCHAR" column="credit"/>
 		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+		<result property="sourceId" jdbcType="BIGINT" column="sourceId"/>
+		<result property="visitTime" jdbcType="TIMESTAMP" column="visit_time"/>
 	</resultMap>
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
@@ -33,21 +35,124 @@
 			cust_person cp
 		WHERE
 			1 = 1
-		<if test="keywords != null and keywords != '' ">
-			AND
-			(
-			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
-			)
-		</if>
-
 		<if test="custPersonEntity != null">
 			<if test="custPersonEntity.id!=null">
 				AND cp.id = #{custPersonEntity.id}
 			</if>
+			<if test="custPersonEntity.register!=null">
+				AND cp.register = #{custPersonEntity.register}
+			</if>
+			<if test="custPersonEntity.name!=null and custPersonEntity.name != ''">
+				and cp.name LIKE CONCAT('%',#{custPersonEntity.name, jdbcType=VARCHAR},'%')
+			</if>
+		</if>
+		<if test="deptId!=null and deptId!=0 ">
+			AND cp.register in (select id from sys_user where dep_id=#{deptId})
 		</if>
 		ORDER BY
-			cp.id ASC,
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				cp.create_time ${sortOrder},
+			</if>
+		</if>
+			cp.id desc,
 			cp.create_time DESC
 	</select>
+
+	<select id="findPageChoosePerson" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
+		SELECT
+		cp.*
+		FROM
+		cust_person cp
+		WHERE
+		1 = 1
+		<if test="deptId!=null and deptId!=0 ">
+			AND cp.register in (select id from sys_user where dep_id=#{deptId})
+		</if>
+		<if test="sourceId != null and sourceId != '' ">
+			and cp.id not in (select dest_id from cust_person_relation where source_id=#{sourceId})
+			and cp.id != #{sourceId}
+		</if>
+		<if test="custPersonEntity != null">
+			<if test="custPersonEntity.id!=null">
+				AND cp.id = #{custPersonEntity.id}
+			</if>
+			<if test="custPersonEntity.register!=null">
+				AND cp.register = #{custPersonEntity.register}
+			</if>
+			<if test="custPersonEntity.name!=null and custPersonEntity.name != ''">
+				AND cp.name = #{custPersonEntity.name}
+			</if>
+		</if>
+		<if test="excludeIds != null and excludeIds != '' ">
+			AND cp.id not in
+			<foreach item="item" index="index" collection="excludeIds.split(',')"  open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY
+		cp.id desc,
+		cp.create_time DESC
+	</select>
+
+
+	<select id="findPageChoosePersonByProject" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
+		SELECT
+		cp.*
+		FROM
+		cust_person cp
+		WHERE
+		1 = 1
+		<if test="deptId!=null and deptId!=0 ">
+			AND cp.register in (select id from sys_user where dep_id=#{deptId})
+		</if>
+		<if test="projectId != null and projectId != '' ">
+			and cp.id not in (select person_id from cust_project_relation where project_id=#{projectId})
+		</if>
+		<if test="custPersonEntity != null">
+			<if test="custPersonEntity.id!=null">
+				AND cp.id = #{custPersonEntity.id}
+			</if>
+			<if test="custPersonEntity.register!=null">
+				AND cp.register = #{custPersonEntity.register}
+			</if>
+			<if test="custPersonEntity.name!=null and custPersonEntity.name != ''">
+				AND cp.name = #{custPersonEntity.name}
+			</if>
+		</if>
+		<if test="excludeIds != null and excludeIds != '' ">
+			AND cp.id not in
+			<foreach item="item" index="index" collection="excludeIds.split(',')"  open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY
+		cp.id desc,
+		cp.create_time DESC
+	</select>
+
+
+	<select id="findPersonRelationList" resultMap="rm"  parameterType="Long">
+		SELECT
+			cp.*
+		FROM
+			cust_person cp where id in (select dest_id from cust_person_relation where source_id=#{id})
+	</select>
+
+	<select id="findPersonRelationListByProjectId" resultMap="rm" parameterType="Long">
+		SELECT
+		cp.*
+		FROM
+		cust_person cp where id in (select person_id from cust_project_relation where project_id=#{projectId})
+	</select>
+
+	<select id="findVisitPersonList" resultMap="rm"  parameterType="Long">
+		SELECT
+		cp.*
+		FROM
+		cust_person cp where register=#{userId}
+		 <![CDATA[ and cp.visit_time <=date_add(NOW(), interval 30 day) and to_days(cp.visit_time)>=to_days(NOW())]]>
+	</select>
+
 </mapper>
 

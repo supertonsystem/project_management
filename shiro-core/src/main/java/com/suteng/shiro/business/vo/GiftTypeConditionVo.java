@@ -2,6 +2,7 @@ package com.suteng.shiro.business.vo;
 
 import com.suteng.shiro.business.entity.GiftTypeEntity;
 import com.suteng.shiro.framework.object.BaseConditionVO;
+import lombok.Data;
 
 /**
  * 礼品类别
@@ -10,6 +11,7 @@ import com.suteng.shiro.framework.object.BaseConditionVO;
  * @Description：
  * @Date:Create in 9:41 2019/5/17
  */
+@Data
 public class GiftTypeConditionVo extends BaseConditionVO {
     private String searchText;
     public GiftTypeConditionVo() {
@@ -24,9 +26,5 @@ public class GiftTypeConditionVo extends BaseConditionVO {
 
     public void setSearchText(String searchText) {
         this.searchText = searchText;
-    }
-
-    public GiftTypeEntity getGiftTypeEntity() {
-        return giftTypeEntity;
     }
 }

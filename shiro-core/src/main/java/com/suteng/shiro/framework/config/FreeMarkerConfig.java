@@ -2,17 +2,19 @@ package com.suteng.shiro.framework.config;
 
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
+
 import com.jagregory.shiro.freemarker.ShiroTags;
 import com.suteng.shiro.business.util.DepartmentUtil;
+import com.suteng.shiro.framework.tag.CustMgtTag;
 import com.suteng.shiro.framework.tag.CustomTagDirective;
+import com.suteng.shiro.framework.tag.GiftMgtTag;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
-
-import javax.annotation.PostConstruct;
 
 /**
  * freemarker配置类
@@ -28,6 +30,10 @@ public class FreeMarkerConfig {
     @Autowired
     protected CustomTagDirective customTagDirective;
     @Autowired
+    protected GiftMgtTag giftMgtTag;
+    @Autowired
+    protected CustMgtTag custMgtTag;
+    @Autowired
     protected FreeMarkerViewResolver freeMarkerViewResolver;
 
     /**
@@ -35,7 +41,10 @@ public class FreeMarkerConfig {
      */
     @PostConstruct
     public void setSharedVariable() {
+
+        configuration.setSharedVariable("custMgtTag", custMgtTag);
         configuration.setSharedVariable("customTag", customTagDirective);
+        configuration.setSharedVariable("giftMgtTag", giftMgtTag);
         //shiro标签
         configuration.setSharedVariable("shiro", new ShiroTags());
 

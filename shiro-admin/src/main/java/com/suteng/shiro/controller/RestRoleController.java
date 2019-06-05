@@ -1,5 +1,7 @@
 package com.suteng.shiro.controller;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.suteng.shiro.business.entity.Role;
 import com.suteng.shiro.business.enums.ResponseStatus;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 系统角色管理
@@ -87,7 +87,6 @@ public class RestRoleController {
     public ResponseVO get(@PathVariable Long id) {
         return ResultUtil.success(null, this.roleService.getByPrimaryKey(id));
     }
-
     @RequiresPermissions("role:edit")
     @PostMapping("/edit")
     public ResponseVO edit(Role role) {

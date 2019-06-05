@@ -49,7 +49,7 @@
                 <div>
                     <form id="formSearch" class="form-horizontal">
                         <div class="form-group" style="margin-top:15px">
-                            <label class="control-label col-sm-1" for="txt_search_title">名称</label>
+                            <label class="control-label col-sm-1" for="txt_search_title">客户名称</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="name" name="name">
                             </div>
@@ -105,6 +105,31 @@
                                 <table class="table">
                                     <tbody>
                                     <tr>
+                                        <td class="title" style="vertical-align:middle"><span
+                                                class="control-label title">客户名称: </span></td>
+                                        <td style="vertical-align:middle">
+                                            <select id="personId" name="personId" style="width: 200px;float: left" class="form-control"
+                                                    required="required">
+                                                <option value="">请选择</option>
+                                            <@custMgtTag method="person" userId="${user.id}">
+                                                <#if persons?? && persons?size gt 0>
+                                                    <#list persons as item>
+                                                        <option value="${item.id?if_exists}">${item.name?if_exists}</option>
+                                                    </#list>
+                                                <#else>
+                                                    <option value="">无</option>
+                                                </#if>
+                                            </@custMgtTag>
+                                            </select>
+                                        </td>
+                                        <td class="title" ><span
+                                                class="control-label title">开销费用: </span></td>
+                                        <td style="vertical-align:middle">
+                                            <input type="text" style="width: 200px" class="form-control" name="expenses"
+                                                   id="expenses"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="title" style="padding-left: 40px;"><span
                                                 class="control-label title">会面时间:</span>
                                         </td>
@@ -130,18 +155,6 @@
                                     </tr>
                                     <tr>
                                         <td class="title" ><span
-                                                class="control-label title">活动方式:</span></td>
-                                        <td><input type="text" style="width: 200px" class="form-control" name="activityMode"
-                                                   id="activityMode"/></td>
-                                        <td class="title" ><span
-                                                class="control-label title">开销费用: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="expenses"
-                                                   id="expenses"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title" ><span
                                                 class="control-label title">参与人员:</span></td>
                                         <td><input type="text" style="width: 200px" class="form-control"
                                                    name="participant" id="participant"/></td>
@@ -151,6 +164,12 @@
                                             <input type="text" style="width: 200px" class="form-control"
                                                    name="peopleNum" id="peopleNum"/>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title" ><span
+                                                class="control-label title">活动方式:</span></td>
+                                        <td colspan="3"><input type="text" style="width: 200px" class="form-control" name="activityMode"
+                                                   id="activityMode"/></td>
                                     </tr>
                                     <tr>
                                         <td class="title" >
@@ -213,9 +232,22 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="title" style="vertical-align:middle;padding-left: 15px;text-align: right;">
+                                            <span class="control-label title">客户名称:  </span>
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            <span class="form-control-static" id="personName"></span>
+                                        </td>
+                                        <td class="title" style="vertical-align:middle;width: 10%;padding-left: 15px;text-align: right;">
+                                            <span class="control-label title">客户职位:</span>
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            <span class="form-control-static" id="personPost"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="title" style="width: 18%;">
                                             <span class="control-label title">会面时间:</span>
-
                                         </td>
                                         <td>
                                             <span class="form-control-static" id="meetTime"></span>
@@ -289,9 +321,10 @@
             var trUserId = row.register;
             var id=row.id;
             var operateBtn = [
-                '<@shiro.hasPermission name="custmgt:contact:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>编辑</a></@shiro.hasPermission>'
+
             ];
             if (currentUserId == trUserId) {
+                operateBtn.push('<@shiro.hasPermission name="custmgt:contact:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>编辑</a></@shiro.hasPermission>');
                 operateBtn.push('<@shiro.hasPermission name="custmgt:contact:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>删除</a></@shiro.hasPermission>');
             }
             return operateBtn.join('');
@@ -299,7 +332,7 @@
 
         $(function () {
             var options = {
-                url: "/custmgt/contact/list",
+                url: "/custmgt/contact/list"+"?custContactEntity.register="+${user.id},
                 getInfoUrl: "/custmgt/contact/get/{id}",
                 updateUrl: "/custmgt/contact/edit",
                 removeUrl: "/custmgt/contact/remove",
@@ -324,6 +357,22 @@
                         editable: false,
                         width: 60
                     }, {
+                        field: 'person.name',
+                        title: '客户名称',
+                        editable: false,
+                        width: 60,
+                        formatter: function (data, row) {
+                            if(row.person!=null){
+                                return '<a href="javascript:;" onclick="viewPerson(' + row.person.id + ')">' + data + '</a>'
+                            }
+                           return data;
+                        }
+                    }, {
+                        field: 'person.post',
+                        title: '客户职位',
+                        editable: false,
+                        width: 60
+                    }, {
                         field: 'meetTime',
                         title: '会面时间',
                         width: 80
@@ -339,7 +388,7 @@
                         field: 'peopleNum',
                         title: '人数',
                         editable: false,
-                        width: 50
+                        width: 30
                     }, {
                         field: 'participant',
                         title: '参与人员',
@@ -371,6 +420,7 @@
                 toolbar: '#toolbar',                //工具按钮用哪个容器
                 striped: true,                      //是否显示行间隔色
                 cache: true,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                showToggle:true,
                 contentType: "application/x-www-form-urlencoded", // 发送到服务器的数据编码类型, application/x-www-form-urlencoded为了实现post方式提交
                 sortable: true,                     //是否启用排序
                 sortOrder: "asc",                   //排序方式
@@ -385,46 +435,27 @@
                 search: false,                       //是否启用搜索框 根据sidePagination选择从前后台搜索
                 strictSearch: false,                 //设置为 true启用 全匹配搜索，否则为模糊搜索
                 searchOnEnterKey: false,            // 设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
-                minimumCountColumns: 1,             //最少允许的列数
+                minimumCountColumns: 12,             //最少允许的列数
                 showRefresh: false,
-                onEditableSave: function (field, row, oldValue, $el) {
-                    alert(row.post);
-                    return;
-                    $.ajax({
-                        type: "post",
-                        url: "/Editable/Edit",
-                        data: row,
-                        dataType: 'JSON',
-                        success: function (data, status) {
-                            if (status == "success") {
-                                alert('提交数据成功');
-                            }
-                        },
-                        error: function () {
-                            alert('编辑失败');
-                        },
-                        complete: function () {
-                        }
+                columns: options.columns,
+//                detailView: true,
+//                detailFormatter: function (index, row) {
+//                    return '11111';
+//                    }
                 });
-            },
-                columns: options.columns
-            });
 
             $("#btn_add").click(function () {
-//                var _data = {
-//                    "name" : name
-//                    }
-//                $("#tablelist").bootstrapTable('prepend', _data);
                 resetForm();
                 $("#addOrUpdateModal").modal('show');
                 $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("添加" + options.modalName);
                 $(".addOrUpdateBtn").unbind('click');
                 $(".addOrUpdateBtn").click(function () {
-                    var name = $('#addOrUpdateForm #meetTime').val();
-                    if(name==null||name==''){
+                    var meetTime = $('#addOrUpdateForm #meetTime').val();
+                    if(meetTime==null||meetTime==''){
                         alert('会面时间不能为空');
                         return;
                     }
+                    $(this).off();
                     $.ajax({
                         type: "post",
                         url: options.createUrl,
@@ -444,6 +475,7 @@
             $('#tablelist').on('click', '.btn-update', function () {
                 var $this = $(this);
                 var id = $this.attr("data-id");
+                $(this).off();
                 $.ajax({
                     type: "post",
                     url: options.getInfoUrl.replace("{id}", id),
@@ -455,7 +487,11 @@
 
                         $(".addOrUpdateBtn").unbind('click');
                         $(".addOrUpdateBtn").click(function () {
-                            if (validator.checkAll($("#addOrUpdateForm"))) {
+                            var meetTime = $('#addOrUpdateForm #meetTime').val();
+                            if(meetTime==null||meetTime==''){
+                                alert('会面时间不能为空');
+                                return;
+                            }
                                 $.ajax({
                                     type: "post",
                                     url: options.updateUrl,
@@ -467,7 +503,6 @@
                                     },
                                     error: $.tool.ajaxError
                                 });
-                            }
                         });
                     },
                     error: $.tool.ajaxError
@@ -517,6 +552,9 @@
                 error: $.tool.ajaxError
             });
         }
+        function viewPerson(id) {
+            window.open("/custmgt/person/view/"+id);
+        }
 
         //日期空间init
 
@@ -531,8 +569,8 @@
         function queryParams(params) {
             params = $.extend({}, params);
             //获取搜索框的值
-            var title = {'projectMgt.title': $("#title").val()};
-            params = $.extend(params, title);
+            var name = {'personName': $("#formSearch #name").val()};
+            params = $.extend(params, name);
             return params;
         }
 
@@ -557,7 +595,15 @@
                 $this.iCheck(((thisValue== $this.val())) ? 'check' : 'uncheck')
             } else if (type == 'checkbox') {
                 $this.iCheck((thisValue || thisValue == 1) ? 'check' : 'uncheck');
-            } else {
+            } else if (thisName == 'personName') {
+                if(info.person!=null){
+                    $this.html(info.person.name);
+                }
+            }  else if (thisName == 'personPost') {
+                if(info.person!=null){
+                    $this.html(info.person.post);
+                }
+            }else {
                 $this.html(thisValue);
             }
         }
@@ -575,9 +621,8 @@
                     $this.iCheck(((thisValue== $this.val())) ? 'check' : 'uncheck')
                 } else if (type == 'checkbox') {
                     $this.iCheck((thisValue || thisValue == 1) ? 'check' : 'uncheck');
-                }else if (thisName == 'pm') {
+                }else if (thisName == 'personId') {
                     $this.val(thisValue);
-                    $this.selectPageRefresh();
                 } else {
                     if (thisName != 'password') {
                         $this.val(thisValue);
@@ -610,5 +655,9 @@
                 $modal.next('.modal-backdrop.in').addClass('hidden').css('zIndex', modalZIndex - 1);
             });
             $('.modal.in:visible:last').focus().next('.modal-backdrop.in').removeClass('hidden');
+        }
+
+        function viewContact(id) {
+            window.open("/custmgt/contact/view/"+id);
         }
     </script>

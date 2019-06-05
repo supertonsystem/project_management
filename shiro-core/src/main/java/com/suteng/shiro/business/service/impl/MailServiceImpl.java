@@ -1,6 +1,7 @@
 package com.suteng.shiro.business.service.impl;
 
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import com.suteng.shiro.business.service.MailService;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -44,6 +46,34 @@ public class MailServiceImpl implements MailService {
         Configuration configuration = freeMarkerConfigurer.getConfiguration();
         try {
             Template template = configuration.getTemplate("mail/projectRemindMail.ftl");
+            StringWriter writer = new StringWriter();
+            template.process(dataModel, writer);
+            emailContent = writer.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MimeMessage message = mailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(emailContent, true);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendPersonVisitRemind(String to, String subject, String personName, Date visitTime) {
+        String emailContent = "";
+        Map<String, String> dataModel = new HashMap();
+        dataModel.put("personName", personName);
+        dataModel.put("visitTime", DateFormatUtils.format(visitTime,"yyyy-MM-dd"));
+        Configuration configuration = freeMarkerConfigurer.getConfiguration();
+        try {
+            Template template = configuration.getTemplate("mail/personVisitRemindMail.ftl");
             StringWriter writer = new StringWriter();
             template.process(dataModel, writer);
             emailContent = writer.toString();

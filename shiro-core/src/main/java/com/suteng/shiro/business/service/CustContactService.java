@@ -22,4 +22,11 @@ public interface CustContactService extends AbstractService<CustContactEntity, L
      */
     PageInfo<CustContactEntity> findPageBreakByCondition(CustContactConditionVo vo);
 
+    PageInfo<CustContactEntity>  findPageChooseContact(CustContactConditionVo vo);
+
+    /**
+     * 删除关联
+     */
+    void deletePersonRelation(Long personId);
+
 }

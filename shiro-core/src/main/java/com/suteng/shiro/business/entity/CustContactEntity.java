@@ -3,6 +3,7 @@ package com.suteng.shiro.business.entity;
 import java.util.Date;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.suteng.shiro.business.util.PersonUtil;
 import com.suteng.shiro.business.util.UserUtil;
 import com.suteng.shiro.persistence.beans.CustContact;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -134,5 +135,18 @@ public class CustContactEntity {
 
     public void setUpdateTime(Date updateTime) {
         this.custContact.setUpdateTime(updateTime);
+    }
+    public Long getPersonId() {
+        return custContact.getPersonId();
+    }
+
+    public void setPersonId(Long personId) {
+        this.custContact.setPersonId(personId);
+    }
+    public CustPersonEntity getPerson(){
+        if(custContact.getPersonId()==null){
+            return null;
+        }
+        return PersonUtil.getCustPerson(custContact.getPersonId());
     }
 }

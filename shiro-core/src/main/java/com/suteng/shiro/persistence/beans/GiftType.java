@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import lombok.Data;
 
 /**
- * 联系信息
+ * 礼品类别
  * @Author:louyi
  * @Description：
  * @Date:Create in 9:19 2019/5/17

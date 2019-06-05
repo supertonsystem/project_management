@@ -17,4 +17,13 @@ public class UserConditionVO extends BaseConditionVO {
         this.user=new User();
     }
     private User user;
+    private String userIds;
+
+    public String getUserIds() {
+        return userIds;
+    }
+
+    public void setUserIds(String userIds) {
+        this.userIds = userIds;
+    }
 }

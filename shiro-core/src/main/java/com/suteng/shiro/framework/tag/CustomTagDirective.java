@@ -1,19 +1,23 @@
 package com.suteng.shiro.framework.tag;
 
-import com.suteng.shiro.business.entity.Resources;
-import com.suteng.shiro.business.service.SysDepartmentService;
-import com.suteng.shiro.business.service.SysResourcesService;
-import freemarker.core.Environment;
-import freemarker.template.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import com.suteng.shiro.business.entity.Resources;
+import com.suteng.shiro.business.service.SysDepartmentService;
+import com.suteng.shiro.business.service.SysResourcesService;
+import freemarker.core.Environment;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapperBuilder;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * 自定义的freemarker标签
@@ -35,7 +39,7 @@ public class CustomTagDirective implements TemplateDirectiveModel {
             String method = map.get(METHOD_KEY).toString();
             switch (method) {
                 case "availableMenus":
-                    // 获取所有可用的菜单资源
+
                     environment.setVariable("availableMenus", builder.build().wrap(resourcesService.listAllAvailableMenu()));
                     break;
                 case "availableDepartments":
@@ -43,6 +47,9 @@ public class CustomTagDirective implements TemplateDirectiveModel {
                     environment.setVariable("availableDepartments", builder.build().wrap(sysDepartmentService.listAllAvailableMenu()));
                     break;
                 case "menus":
+                    // 获取所有可用的菜单资源
+                    //Subject currentUser = SecurityUtils.getSubject();
+                    //boolean hasRole=currentUser.hasRole("role:custmgt");
                     Integer userId = null;
                     if (map.containsKey("userId")) {
                         String userIdStr = map.get("userId").toString();

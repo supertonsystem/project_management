@@ -14,6 +14,7 @@ public interface SysUserRoleService extends AbstractService<UserRole, Long> {
 
     /**
      * 添加用户角色
+     * 删除后再添加
      *
      * @param userId
      * @param roleIds
@@ -26,4 +27,16 @@ public interface SysUserRoleService extends AbstractService<UserRole, Long> {
      * @param userId
      */
     void removeByUserId(Long userId);
+
+    /**
+     * 根据id和角色id删除
+     * @param roleId
+     */
+    void removeByRoleId(Long roleId);
+
+    /**
+     * 添加角色
+     * @param roleId
+     */
+    void addAllUserRole(Long roleId);
 }

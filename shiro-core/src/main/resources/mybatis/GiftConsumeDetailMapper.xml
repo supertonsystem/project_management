@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.GiftConsumeDetailMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.GiftConsumeDetail">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="consumeId" jdbcType="BIGINT" column="consume_id"/>
+		<result property="personId" jdbcType="BIGINT" column="person_id"/>
+		<result property="projectId" jdbcType="BIGINT" column="project_id"/>
+		<result property="repertoryId" jdbcType="BIGINT" column="repertory_id"/>
+		<result property="num" jdbcType="INTEGER" column="num"/>
+		<result property="amount" jdbcType="DECIMAL" column="amount"/>
+		<result property="sendTime" jdbcType="TIMESTAMP" column="send_time"/>
+		<result property="sendSite" jdbcType="VARCHAR" column="send_site"/>
+		<result property="status" jdbcType="TINYINT" column="status"/>
+		<result property="drawStatus" jdbcType="TINYINT" column="draw_status"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<result property="remark" jdbcType="VARCHAR" column="remark"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.GiftConsumeDetailConditionVo" resultMap="rm">
+		SELECT
+			gcd.*
+		FROM
+			gift_consume_detail gcd LEFT JOIN cust_project cp
+		on gcd.project_id=cp.id
+		left JOIN cust_person cs
+		on gcd.person_id= cs.id
+		WHERE
+			1 = 1
+		<if test="personName!=null and personName!=''">
+			and cs.name LIKE CONCAT('%',#{personName , jdbcType=VARCHAR},'%')
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			and cp.name LIKE CONCAT('%',#{projectName , jdbcType=VARCHAR},'%')
+		</if>
+		<if test="giftConsumeDetailEntity != null">
+			<if test="giftConsumeDetailEntity.register!=null">
+				AND gcd.register = #{giftConsumeDetailEntity.register}
+			</if>
+		</if>
+		ORDER BY
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				gcd.create_time ${sortOrder},
+			</if>
+		</if>
+			gcd.id desc
+	</select>
+
+	<delete id="removeByConsumeId" parameterType="Long">
+		DELETE FROM gift_consume_detail WHERE consume_id = #{consumeId}
+	</delete>
+	
+	
+	<select id="findOperabilityCountByConsumeId" parameterType="Long" resultType="java.lang.Long">
+			select count(id) from gift_consume_detail WHERE consume_id = #{consumeId} and (status=0 or draw_status=0)
+	</select>
+</mapper>
+

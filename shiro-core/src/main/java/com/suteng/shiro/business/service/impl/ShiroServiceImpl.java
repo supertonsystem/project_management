@@ -1,5 +1,9 @@
 package com.suteng.shiro.business.service.impl;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.suteng.shiro.business.entity.Resources;
 import com.suteng.shiro.business.entity.User;
 import com.suteng.shiro.business.service.ShiroService;
@@ -20,10 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Shiro-权限相关的业务处理
@@ -119,7 +119,6 @@ public class ShiroServiceImpl implements ShiroService {
         subject.runAs(principals);
         shiroRealm.getAuthorizationCache().remove(subject.getPrincipals());
         subject.releaseRunAs();
-
         log.info("用户[{}]的权限更新成功！！", user.getUsername());
 
     }

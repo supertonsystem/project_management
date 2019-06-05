@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.suteng.shiro.persistence.mapper.GiftConsumeMapper">
+	<resultMap id="rm" type="com.suteng.shiro.persistence.beans.GiftConsume">
+		<result property="id" jdbcType="BIGINT" column="id"/>
+		<result property="register" jdbcType="BIGINT" column="register"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+		<result property="num" jdbcType="INTEGER" column="num"/>
+		<result property="amount" jdbcType="DECIMAL" column="amount"/>
+		<result property="title" jdbcType="VARCHAR" column="title"/>
+		<result property="backNum" jdbcType="INTEGER" column="back_num"/>
+		<result property="backMoney" jdbcType="BIGINT" column="back_money"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<result property="status" jdbcType="TINYINT" column="status"/>
+	</resultMap>
+
+	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.GiftConsumeConditionVo" resultMap="rm">
+		SELECT
+			gc.*
+		FROM
+			gift_consume gc
+		WHERE
+			1 = 1
+		<if test="giftConsumeEntity != null">
+			<if test="giftConsumeEntity.id!=null">
+				AND gc.id = #{giftConsumeEntity.id}
+			</if>
+			<if test="giftConsumeEntity.register!=null">
+				AND gc.register = #{giftConsumeEntity.register}
+			</if>
+			<if test="giftConsumeEntity.title!=null">
+				AND gc.title = #{giftConsumeEntity.title}
+			</if>
+		</if>
+		ORDER BY
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				gc.create_time ${sortOrder},
+			</if>
+		</if>
+			gc.id desc
+	</select>
+</mapper>
+

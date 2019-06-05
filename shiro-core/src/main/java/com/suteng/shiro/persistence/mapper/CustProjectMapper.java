@@ -22,4 +22,18 @@ public interface CustProjectMapper extends BaseMapper<CustProject> {
      * @return
      */
     List<CustProject> findPageBreakByCondition(CustProjectConditionVo vo);
+
+    /**
+     * 過濾ids的项目
+     * @param vo
+     * @return
+     */
+    List<CustProject> findPageChooseProject(CustProjectConditionVo vo);
+
+    /**
+     * 关联的项目
+     * @param personId
+     * @return
+     */
+    List<CustProject> findProjectRelationList(Long personId);
 }

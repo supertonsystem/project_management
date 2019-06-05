@@ -27,6 +27,7 @@ CREATE TABLE `cust_person` (
   `source` VARCHAR(30)  DEFAULT NULL,
   `credit` VARCHAR(30)  DEFAULT NULL,
   `remark` VARCHAR(255)  DEFAULT NULL,
+  `visit_time` Date DEFAULT null,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
@@ -55,10 +56,18 @@ CREATE TABLE `cust_project` (
   `owner` VARCHAR(10)  DEFAULT NULL,
   `department` BIGINT(20)  DEFAULT NULL,
   `pm` BIGINT(20)  DEFAULT NULL,
-  `person_id` BIGINT(20)  DEFAULT NULL,
   PRIMARY KEY (`id`)  USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
+
+DROP TABLE IF EXISTS `cust_project_relation`;
+
+CREATE TABLE `cust_project_relation` (
+  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `person_id` BIGINT(20) NOT NULL,
+  `project_id` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 -- ---
 -- Table 'cust_contact'
 -- 客户联系
@@ -70,30 +79,32 @@ CREATE TABLE `cust_contact` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT ,
   `register` BIGINT(20) NOT NULL ,
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
-   `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `meet_time` DATETIME  DEFAULT NULL,
-  `meet_address` VARCHAR(30)  DEFAULT NULL,
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `meet_time` DATE  DEFAULT NULL,
+  `meet_address` VARCHAR(100)  DEFAULT NULL,
+  `activity_mode` VARCHAR(100)  DEFAULT NULL,
   `expenses` DECIMAL(19,2)  DEFAULT NULL,
   `participant` VARCHAR(100)  DEFAULT NULL,
-  `num_people` int(4) DEFAULT NULL,
-  `Chat` VARCHAR(252) DEFAULT NULL,
+  `people_num` int(4) DEFAULT NULL,
+  `chat` VARCHAR(252) DEFAULT NULL,
   `remark` VARCHAR(255) DEFAULT NULL,
+  `person_id` BIGINT(20)  DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
--- ---
--- Table 'cust_contact_relation'
--- 联系与客户关系表
--- ---
-
-DROP TABLE IF EXISTS `cust_contact_relation`;
-
-CREATE TABLE `cust_contact_relation` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `contact_id` BIGINT(20) NOT NULL,
-  `person_id` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+-- -- ---
+-- -- Table 'cust_contact_relation'
+-- -- 联系与客户关系表
+-- -- ---
+--
+-- DROP TABLE IF EXISTS `cust_contact_relation`;
+--
+-- CREATE TABLE `cust_contact_relation` (
+--   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+--   `contact_id` BIGINT(20) NOT NULL,
+--   `person_id` BIGINT(20) NOT NULL,
+--   PRIMARY KEY (`id`) USING BTREE
+-- ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- ---
 -- Table 'cust_info_relation'
@@ -122,13 +133,12 @@ CREATE TABLE `gift_repertory` (
   `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `name` VARCHAR(30) DEFAULT NULL,
-  `type` SMALLINT DEFAULT NULL,
-  `total` INT  DEFAULT NULL,
+  `type_id` INT(10) DEFAULT NULL,
+  `sum` BIGINT(20)  DEFAULT NULL,
   `repertory` INT  DEFAULT NULL,
-  `total_money` DECIMAL(10,2)  DEFAULT NULL,
-  `unit_money` DECIMAL(10,2)  DEFAULT NULL,
-  `explain` VARCHAR(100)  DEFAULT NULL,
-  `remark` VARCHAR(100)  DEFAULT NULL,
+  `amount` DECIMAL(10,2)  DEFAULT NULL,
+  `unit` DECIMAL(10,2)  DEFAULT NULL,
+  `description` VARCHAR(100)  DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
@@ -141,7 +151,7 @@ DROP TABLE IF EXISTS `gift_type`;
 
 CREATE TABLE `gift_type` (
   `id` INT(10) NOT NULL AUTO_INCREMENT,
-  `type` INT(10) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
@@ -154,15 +164,16 @@ DROP TABLE IF EXISTS `gift_consume`;
 
 CREATE TABLE `gift_consume` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `apply_time` DATETIME  DEFAULT NULL,
-  `apply_userId` BIGINT(20)  DEFAULT NULL,
-  `gift_id` BIGINT  DEFAULT NULL,
+  `register` BIGINT(20) NOT NULL,
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `title` VARCHAR(100)  DEFAULT NULL,
   `num` INT  DEFAULT NULL,
-  `gift_money` DECIMAL(10,2)  DEFAULT NULL,
+  `amount` DECIMAL(10,2)  DEFAULT NULL,
   `back_num` INT  DEFAULT NULL,
   `back_money` DECIMAL(10,2)  DEFAULT NULL,
-  `explain` VARCHAR(100)  DEFAULT NULL,
-  `remark` VARCHAR(100)  DEFAULT NULL,
+  `description` VARCHAR(100)  DEFAULT NULL,
+  `status` TINYINT  DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
 )  ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
@@ -175,15 +186,20 @@ DROP TABLE IF EXISTS `gift_consume_detail`;
 
 CREATE TABLE `gift_consume_detail` (
   `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
+  `register` BIGINT(20) NOT NULL,
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `consume_id` BIGINT(20)  DEFAULT NULL,
-  `cust_id` BIGINT(20)  DEFAULT NULL,
-  `proj_id` BIGINT(20)  DEFAULT NULL,
-  `explain` VARCHAR(255)  DEFAULT NULL,
+  `person_id` BIGINT(20)  DEFAULT NULL,
+  `project_id` BIGINT(20)  DEFAULT NULL,
+  `repertory_id` BIGINT(20)  DEFAULT NULL,
+  `description` VARCHAR(255)  DEFAULT NULL,
   `num` INT  DEFAULT NULL,
-  `money` INTEGER  DEFAULT NULL,
-  `send_time` DATETIME  DEFAULT NULL,
+  `amount` DECIMAL(10,2) DEFAULT NULL,
+  `send_time` DATE  DEFAULT NULL,
   `send_site` VARCHAR(100)  DEFAULT NULL,
-  `status` TINYINT  DEFAULT NULL,
+  `status` TINYINT  DEFAULT 0,
+  `draw_status` TINYINT  DEFAULT 0,
   `remark` VARCHAR(100)  DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;

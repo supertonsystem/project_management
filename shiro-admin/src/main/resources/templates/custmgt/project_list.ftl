@@ -47,7 +47,7 @@
                 <div>
                     <form id="formSearch" class="form-horizontal">
                         <div class="form-group" style="margin-top:15px">
-                            <label class="control-label col-sm-1" for="txt_search_title">名称</label>
+                            <label class="control-label col-sm-1" for="txt_search_title">项目名称</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="name" name="name">
                             </div>
@@ -80,6 +80,23 @@
     </div>
 </div>
 <#include "/layout/footer.ftl"/>
+<div class="modal fade" style="width: 1000px;height: 500px;border-radius: 5px"  tabindex="-1" role="dialog" id="choose_list" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+<script>
+    var addPersonList = [];
+    $('#choose_list').on('show.bs.modal', function (e) {
+        var modalWidth = $("#choose_list").width();
+        var modalHeight = $("#choose_list").height();
+        var left=($(window).width()- parseInt(modalWidth))/2+ "px";
+        var top=($(window).height()- parseInt(modalHeight))/2+ "px";
+        $("#choose_list").css({"margin-left":left,"margin-top":top});
+    });
+</script>
 <!--项目新增/编辑弹框-->
 <div class="modal fade" id="addOrUpdateModal" tabindex="-1" role="dialog"
      style="overflow: auto" data-backdrop="static">
@@ -105,15 +122,18 @@
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
                                             <span class="control-label title">编&nbsp;&nbsp;&nbsp;&nbsp;号:</span></td>
-                                        <td>
-                                            <input type="text" style="width: 200px;float: left;" class="form-control"
+                                        <td colspan="3">
+                                            <input type="text" style="width: 581px;float: left;" class="form-control"
                                                    name="number" id="number"/>
                                             <em style="color: red;float: left;padding-left: 5px;padding-top: 12px;">*<em/>
                                         </td>
-                                        <td class="title_td" style="vertical-align:middle;width: 10%"><span
+                                    </tr>
+                                    <tr>
+                                        <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
+                                            <span
                                                 class="control-label title">名&nbsp;&nbsp;&nbsp;&nbsp;称: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px;float: left;" class="form-control" name="name"
+                                        <td style="vertical-align:middle" colspan="3">
+                                            <input type="text" style="width: 581px;float: left;" class="form-control" name="name"
                                                    id="name"/>
                                             <em style="color: red;float: left;padding-left: 5px;padding-top: 12px;">*<em/>
                                         </td>
@@ -217,12 +237,6 @@
                                                 class="control-label title">项目经理:</span></td>
                                         <td><input type="text" style="width: 200px" class="form-control" name="pm"
                                                    id="pm"/></td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">关联客户: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <input type="text" style="width: 200px" class="form-control" name="personId"
-                                                   id="personId"/>
-                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -231,154 +245,192 @@
                     </div>
                 </div>
             </div>
+        <@shiro.hasRole name="role:custmgt">
+            <div class="panel-group" id="accordion" style="padding: 0px 15px">
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
+                         href="#collapseOne">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseOne">
+                                关联客户
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body" style="padding: 0px 5px;">
+                            <#include "/custmgt/project_person_addUpdate.ftl"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </@shiro.hasRole>
         </div>
     </div>
 </div>
 <!--项目查看弹框-->
 
-<div class="modal fade" id="viewModal" tabindex="-1" role="dialog"
-     style="overflow: auto">
-    <div class="modal-dialog" style="width: 850px; " role="document">
-        <div class="modal-content">
-            <div class="modal-header" style="padding: 5px">
-                <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
-                        data-dismiss="modal">返回
-                </button>
-            </div>
-                <div class="tab-content">
-                <div class="tab-pane fade in active" id="info">
-                    <div class="modal-body" style="padding-top: 0px;">
-                        <form id="viewForm">
-                            <input type="hidden" name="id" id="id">
-                            <div class="table-responsive">
-                                <h3 align="center">项目信息</h3>
-                                <table class="table">
-                                    <tbody>
-                                    <tr id="tr_registerInfo">
-                                        <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
-                                            <span class="control-label title">登记时间:</span>
-                                        </td>
-                                        <td style="width: 30%">
-                                            <span class="form-control-static" id="createTime"></span>
-                                        </td>
-                                        <td class="title_td" style="padding-left: 15px;text-align: right;padding-right: 9px;">
-                                            <span class="control-label title">登记人:&nbsp;&nbsp;&nbsp; </span>
-                                        </td>
-                                        <td style="width: 30%">
-                                            <span class="form-control-static" id="registerUserName"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">
-                                            <span class="control-label title">编&nbsp;&nbsp;&nbsp;&nbsp;号:&nbsp;&nbsp;&nbsp;</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="number"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;width: 10%;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">名&nbsp;&nbsp;&nbsp;&nbsp;称:&nbsp;&nbsp;&nbsp; </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="name"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">公司名称:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="companyName"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">区&nbsp;&nbsp;&nbsp;&nbsp;域: &nbsp;&nbsp; </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="area"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">省&nbsp;&nbsp;&nbsp;&nbsp;份:&nbsp;&nbsp;&nbsp;</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="province"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">地&nbsp;&nbsp;&nbsp;&nbsp;址:&nbsp;&nbsp;&nbsp;</span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="address"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">开工日期:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="startTime"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">完工日期: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="endTime"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">工&nbsp;&nbsp;&nbsp;&nbsp;期:&nbsp;&nbsp;&nbsp;</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="period"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">甲方部门: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="ownerDepartment"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">甲方负责人:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="owner"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">部&nbsp;&nbsp;&nbsp;&nbsp;门： </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="departmentName"></span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">项目经理:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="pmName"></span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">关联客户:  </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="personId"></span>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<#--<div class="modal fade" id="viewModal" tabindex="-1" role="dialog"-->
+     <#--style="overflow: auto">-->
+    <#--<div class="modal-dialog" style="width: 850px; " role="document">-->
+        <#--<div class="modal-content">-->
+            <#--<div class="modal-header" style="padding: 5px">-->
+                <#--<button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"-->
+                        <#--data-dismiss="modal">返回-->
+                <#--</button>-->
+            <#--</div>-->
+                <#--<div class="tab-content">-->
+                <#--<div class="tab-pane fade in active" id="info">-->
+                    <#--<div class="modal-body" style="padding-top: 0px;">-->
+                        <#--<form id="viewForm">-->
+                            <#--<input type="hidden" name="id" id="id">-->
+                            <#--<div class="table-responsive">-->
+                                <#--<h3 align="center">项目信息</h3>-->
+                                <#--<table class="table">-->
+                                    <#--<tbody>-->
+                                    <#--<tr id="tr_registerInfo">-->
+                                        <#--<td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">-->
+                                            <#--<span class="control-label title">登记时间:</span>-->
+                                        <#--</td>-->
+                                        <#--<td style="width: 30%">-->
+                                            <#--<span class="form-control-static" id="createTime"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="padding-left: 15px;text-align: right;padding-right: 9px;">-->
+                                            <#--<span class="control-label title">登记人:&nbsp;&nbsp;&nbsp; </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="width: 30%">-->
+                                            <#--<span class="form-control-static" id="registerUserName"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;width: 18%;text-align: right">-->
+                                            <#--<span class="control-label title">编&nbsp;&nbsp;&nbsp;&nbsp;号:&nbsp;&nbsp;&nbsp;</span>-->
+                                        <#--</td>-->
+                                        <#--<td colspan="3">-->
+                                            <#--<span class="form-control-static" id="number"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;width: 10%;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">名&nbsp;&nbsp;&nbsp;&nbsp;称:&nbsp;&nbsp;&nbsp; </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle" colspan="3">-->
+                                            <#--<span class="form-control-static" id="name"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">公司名称:</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="companyName"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">区&nbsp;&nbsp;&nbsp;&nbsp;域: &nbsp;&nbsp; </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="area"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">省&nbsp;&nbsp;&nbsp;&nbsp;份:&nbsp;&nbsp;&nbsp;</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="province"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">地&nbsp;&nbsp;&nbsp;&nbsp;址:&nbsp;&nbsp;&nbsp;</span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="address"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">开工日期:</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="startTime"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">完工日期: </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="endTime"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">工&nbsp;&nbsp;&nbsp;&nbsp;期:&nbsp;&nbsp;&nbsp;</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="period"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">甲方部门: </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="ownerDepartment"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">甲方负责人:</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="owner"></span>-->
+                                        <#--</td>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">-->
+                                            <#--<span class="control-label title">部&nbsp;&nbsp;&nbsp;&nbsp;门： </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="departmentName"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">项目经理:</span>-->
+                                        <#--</td>-->
+                                        <#--<td>-->
+                                            <#--<span class="form-control-static" id="pmName"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--<tr>-->
+                                        <#--<td class="title_td" style="vertical-align:middle;text-align: right">-->
+                                            <#--<span class="control-label title">客户名称:  </span>-->
+                                        <#--</td>-->
+                                        <#--<td style="vertical-align:middle">-->
+                                            <#--<span class="form-control-static" id="personName"></span>-->
+                                        <#--</td>-->
+                                    <#--</tr>-->
+                                    <#--</tbody>-->
+                                <#--</table>-->
+                            <#--</div>-->
+                        <#--</form>-->
+                    <#--</div>-->
+                <#--</div>-->
+            <#--</div>-->
+        <#--</div>-->
+    <#--</div>-->
+<#--</div>-->
 
 
 <script>
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+    $(function () { $('#collapseTwo').collapse('hide')});
 
     $('#pm').selectPage({
         showField: 'nickname',
@@ -404,9 +456,10 @@
             var trUserId = row.register;
             var id=row.id;
             var operateBtn = [
-                '<@shiro.hasPermission name="custmgt:project:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>&nbsp;编辑</a></@shiro.hasPermission>'
+
             ];
             if (currentUserId == trUserId) {
+                operateBtn.push('<@shiro.hasPermission name="custmgt:project:edit"><a class="btn btn-xs btn-primary btn-update" data-id="' + id + '"><i class="fa fa-edit"></i>&nbsp;编辑</a></@shiro.hasPermission>');
                 operateBtn.push('<@shiro.hasPermission name="custmgt:project:delete"><a class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>&nbsp;删除</a></@shiro.hasPermission>');
             }
             return operateBtn.join('');
@@ -414,7 +467,7 @@
 
         $(function () {
             var options = {
-                url: "/custmgt/project/list",
+                url: "/custmgt/project/list?custProjectEntity.register="+${user.id},
                 getInfoUrl: "/custmgt/project/get/{id}",
                 updateUrl: "/custmgt/project/edit",
                 removeUrl: "/custmgt/project/remove",
@@ -423,12 +476,15 @@
                     {
                         field: 'id',
                         title: '序号',
-                        editable: false,
-                        width: 40
-                    },{
-                        field: 'register',
-                        title: '登记人',
                         visible: false
+                    }, {
+                        field: 'number',
+                        title: '编号',
+                        width: 50
+                    },{
+                        field: 'registerUserName',
+                        title: '登记人',
+                        width: 50
                     }, {
                         field: 'createTime',
                         title: '登记时间',
@@ -436,33 +492,17 @@
                         editable: false,
                         width: 60
                     }, {
-                        field: 'number',
-                        title: '编号',
-                        width: 50,
-                        formatter: function (data,row) {
-                            return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
-                        }
-                    }, {
                         field: 'name',
-                        title: '名称',
+                        title: '项目名称',
                         width: 50,
                         formatter: function (data,row) {
-                            return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
+                            return '<a href="javascript:;" onclick="viewPorject('+row.id+')">'+data+'</a>'
                         }
                     }, {
                         field: 'companyName',
                         title: '公司名称',
                         editable: false,
                         width: 120
-                    }, {
-                        field: 'address',
-                        title: '公司地址',
-                        editable: false,
-                        width: 120,
-                        formatter: function (data) {
-                            var html = "<div style='width: 110px' class='colStyle' title='" + data + "'>" + data + "</div>";
-                            return html;
-                        }
                     }, {
                         field: 'startTime',
                         title: '开工日期',
@@ -484,7 +524,7 @@
                         editable: false,
                         width: 50
                     }, {
-                        field: 'pm',
+                        field: 'pmName',
                         title: '项目经理',
                         editable: false,
                         width: 50
@@ -508,7 +548,9 @@
                 contentType: "application/x-www-form-urlencoded", // 发送到服务器的数据编码类型, application/x-www-form-urlencoded为了实现post方式提交
                 sortable: true,                     //是否启用排序
                 sortOrder: "asc",                   //排序方式
-                sortStable: true,                   // 设置为 true 将获得稳定的排序
+                sortStable: true,
+                showToggle:true,
+                // 设置为 true 将获得稳定的排序
                 queryParams: queryParams,//传递参数（*）
                 queryParamsType: '',
                 pagination: true,                   //是否显示分页（*）
@@ -521,35 +563,14 @@
                 searchOnEnterKey: false,            // 设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                 minimumCountColumns: 1,             //最少允许的列数
                 showRefresh: false,
-                onEditableSave: function (field, row, oldValue, $el) {
-                    alert(row.post);
-                    return;
-                    $.ajax({
-                        type: "post",
-                        url: "/Editable/Edit",
-                        data: row,
-                        dataType: 'JSON',
-                        success: function (data, status) {
-                            if (status == "success") {
-                                alert('提交数据成功');
-                            }
-                        },
-                        error: function () {
-                            alert('编辑失败');
-                        },
-                        complete: function () {
-                        }
-                });
-            },
                 columns: options.columns
             });
 
             $("#btn_add").click(function () {
-//                var _data = {
-//                    "name" : name
-//                    }
-//                $("#tablelist").bootstrapTable('prepend', _data);
                 resetForm();
+            <@shiro.hasRole name="role:custmgt">
+                addUpdatePersonTable(-1,'');
+            </@shiro.hasRole>
                 $("#addOrUpdateModal").modal('show');
                 $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("添加" + options.modalName);
                 $(".addOrUpdateBtn").unbind('click');
@@ -564,9 +585,11 @@
                         alert('项目编号不能为空');
                         return;
                     }
+                    $(this).off();
                     $.ajax({
                         type: "post",
-                        url: options.createUrl,
+                        url: options.createUrl+"?addPersonIds="+addPersonList.join(","),
+                        traditional: true,
                         data: $("#addOrUpdateForm").serialize(),
                         success: function (json) {
                             $.tool.ajaxSuccess(json);
@@ -589,15 +612,29 @@
                     success: function (json) {
                         var info = json.data;
                         resetForm(info);
+                    <@shiro.hasRole name="role:custmgt">
+                        addUpdatePersonTable(id,'');
+                    </@shiro.hasRole>
                         $("#addOrUpdateModal").modal('show');
                         $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("修改" + options.modalName);
 
                         $(".addOrUpdateBtn").unbind('click');
                         $(".addOrUpdateBtn").click(function () {
-                            if (validator.checkAll($("#addOrUpdateForm"))) {
+                                var name = $('#addOrUpdateForm #name').val();
+                                if(name==null||name==''){
+                                    alert('项目名称不能为空');
+                                    return;
+                                }
+                                var number = $('#addOrUpdateForm #number').val();
+                                if(number==null||number==''){
+                                    alert('项目编号不能为空');
+                                    return;
+                                }
+                            $(this).off();
                                 $.ajax({
                                     type: "post",
-                                    url: options.updateUrl,
+                                    url: options.updateUrl+"?addPersonIds="+addPersonList.join(","),
+                                    traditional: true,
                                     data: $("#addOrUpdateForm").serialize(),
                                     success: function (json) {
                                         $.tool.ajaxSuccess(json);
@@ -606,7 +643,6 @@
                                     },
                                     error: $.tool.ajaxError
                                 });
-                            }
                         });
                     },
                     error: $.tool.ajaxError
@@ -643,20 +679,13 @@
             });
         });
 
-        function view(id) {
-            $.ajax({
-                type: "post",
-                async: false,
-                url: "/custmgt/project/get/"+id,
-                success: function (json) {
-                    var data = json.data;
-                    resetViewForm(data);
-                    $("#viewModal").modal('show');
-                },
-                error: $.tool.ajaxError
-            });
+        function viewPorject(id) {
+            window.open("/custmgt/project/view/"+id);
         }
 
+        function viewPerson(id) {
+            window.open("/custmgt/person/view/"+id);
+        }
         //日期空间init
         $('#startTime_datetimepicker').datetimepicker({
             format: 'YYYY-MM-DD',
@@ -676,35 +705,17 @@
         function queryParams(params) {
             params = $.extend({}, params);
             //获取搜索框的值
-            var title = {'projectMgt.title': $("#title").val()};
-            params = $.extend(params, title);
+            var name = {'custProjectEntity.name': $("#formSearch #name").val()};
+            params = $.extend(params, name);
             return params;
         }
 
-        function resetViewForm(info) {
-            $("#viewModal form span,#viewModal form textarea").each(function () {
-                var $this = $(this);
-                viewText($this, this.type, info);
-            });
-        }
 
         function resetForm(info) {
             $("#addOrUpdateModal form input,#addOrUpdateModal form select,#addOrUpdateModal form textarea").each(function () {
                 var $this = $(this);
                 clearText($this, this.type, info);
             });
-        }
-
-        function viewText($this, type, info) {
-            var thisName = $this.attr("id");
-            var thisValue = info[thisName];
-            if (type == 'radio') {
-                $this.iCheck(((thisValue== $this.val())) ? 'check' : 'uncheck')
-            } else if (type == 'checkbox') {
-                $this.iCheck((thisValue || thisValue == 1) ? 'check' : 'uncheck');
-            } else {
-                $this.html(thisValue);
-            }
         }
 
         function clearText($this, type, info) {

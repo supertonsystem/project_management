@@ -70,11 +70,6 @@ public class CustProject extends AbstractDO {
      * 项目经理
      */
     private Long pm;
-    /**
-     * 关联客户
-     */
-    private Long personId;
-
 
 }
 

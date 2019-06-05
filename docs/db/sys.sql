@@ -203,6 +203,15 @@ INSERT INTO `sys_department` VALUES ('2', '总经理', '0', '2','2018-01-05 18:2
 INSERT INTO `sys_department` VALUES ('3', '副经理', '2', '1','2018-01-02 10:47:27', '2018-01-02 10:47:27');
 
 
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL COMMENT '名称',
+  `code` varchar(100)  DEFAULT NULL COMMENT 'code',
+  `value` varchar(100)  DEFAULT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
-
-
+INSERT INTO `sys_config` VALUES ('1', '客户管理控制', 'globalCustMgtControl', '0','2018-01-02 10:47:27', '2018-01-02 10:47:27');

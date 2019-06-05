@@ -77,11 +77,11 @@ public class RenderController {
         return new ModelAndView("projectmgt/list", model);
     }
 
-    @RequiresPermissions("custmgt:persons")
-    @GetMapping("/custmgt/persons")
-    public ModelAndView custPersons() {
-        return ResultUtil.view("custmgt/person_list");
-    }
+    //@RequiresPermissions("custmgt:persons")
+    //@GetMapping("/custmgt/persons")
+    //public ModelAndView custPersons() {
+    //    return ResultUtil.view("custmgt/person_list");
+    //}
 
     @RequiresPermissions("custmgt:projects")
     @GetMapping("/custmgt/projects")
@@ -118,4 +118,6 @@ public class RenderController {
     public ModelAndView giftConsumeDetails() {
         return ResultUtil.view("giftmgt/consume_detail_list");
     }
+
+
 }

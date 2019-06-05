@@ -41,7 +41,7 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <ol class="breadcrumb">
             <li><a href="/">首页</a></li>
-            <li class="active">联系列表</li>
+            <li class="active">礼品类别</li>
         </ol>
         <div class="x_panel">
             <div class="x_content">
@@ -73,7 +73,7 @@
             var id=row.id;
             if(id==null||id==''){
                 operateBtn.push("<@shiro.hasPermission name='giftmgt:type:add'><a class='btn btn-xs btn-success' javascript:;' onclick='btnSaveRow("+JSON.stringify(row)+","+index+");'><i class='fa fa-save'></i>&nbsp;保存</a></@shiro.hasPermission>");
-                operateBtn.push("<@shiro.hasPermission name='giftmgt:type:add'><a class='btn btn-xs btn-danger' javascript:;' onclick='btnRemoveRow("+index+");'><i class='fa fa-trash-o'></i>&nbsp;删除</a></@shiro.hasPermission>");
+                operateBtn.push("<@shiro.hasPermission name='giftmgt:type:add'><a class='btn btn-xs btn-danger' javascript:;' onclick='btnRemoveRow("+row.rowcount+");'><i class='fa fa-trash-o'></i>&nbsp;删除</a></@shiro.hasPermission>");
             }else{
                 operateBtn.push('<@shiro.hasPermission name="giftmgt:type:delete"><a id="btn-remove" class="btn btn-xs btn-danger btn-remove" data-id="' + id + '"><i class="fa fa-trash-o"></i>&nbsp;删除</a></@shiro.hasPermission>');
             }
@@ -90,15 +90,17 @@
                 columns: [
                     {
                         field: 'id',
-                        title: '序号',
+                        title: '唯一标识',
                         editable: false,
+                        visible: false,
                         width: 40
                     },{
-                        field: 'rowindex',
-                        title: 'rowindex',
-                        visible: false,
+                        field: 'rowId',
+                        title: '序号',
+                        width: 40,
                         formatter:function(value,row,index){
-                            return index;
+                            row.rowId=index;
+                            return index+1;
                         }
                     },{
                         field: 'type',
@@ -141,7 +143,7 @@
                 onEditableSave: function (field, row, oldValue, $el) {
                     if(row.id==null||row.id==''){
                         $("#tablelist").bootstrapTable('updateCell', {
-                            index: row.rowindex,       //行索引
+                            index: row.rowId,       //行索引
                             field: field,       //列名
                             value: row[field]        //cell值
                         });
@@ -165,17 +167,6 @@
             },
                 columns: options.columns
             });
-            $("#btn_add").click(function () {
-                var count = $('#tablelist').bootstrapTable('getData').length;
-                var row = {index:count,row:{
-                            "id":"",
-                            "type" : "",
-                            "rowindex":count,
-                            "operate":""
-                        }};
-                $("#tablelist").bootstrapTable('insertRow', row);
-            });
-
 
             /* 删除 */
             $('#tablelist').on('click', '#btn-remove', function () {
@@ -207,6 +198,19 @@
             });
         });
 
+        var newcount = 0;
+        $("#btn_add").click(function () {
+            newcount = newcount + 1;
+            var count = $('#tablelist').bootstrapTable('getData').length;
+            var row = {index:count,row:{
+                "id":"",
+                "type" : "",
+                "rowId" :"",
+                "rowcount":newcount,
+                "operate":""
+            }};
+            $("#tablelist").bootstrapTable('insertRow', row);
+        });
         //保存行
         function btnSaveRow(row, index) {
             if(row.type==null||row.type==''){
@@ -234,14 +238,13 @@
             });
         }
         //删除行
-        function btnRemoveRow(index) {
+        function btnRemoveRow(code) {
             var ids = [];//定义一个数组
-            ids.push(index);//将要删除的id存入数组
-            $("#tablelist").bootstrapTable('remove', {field: 'rowindex', values: ids});
+            ids.push(code);//将要删除的id存入数组
+            $("#tablelist").bootstrapTable('remove', {field: 'rowcount', values: ids});
         }
 
         //日期空间init
-
         $('#meetTime_datetimepicker').datetimepicker({
             format: 'YYYY-MM-DD',
             showClear: true,

@@ -1,5 +1,7 @@
 package com.suteng.shiro.business.service;
 
+import java.util.Date;
+
 /**
  * 邮箱
  *
@@ -14,6 +16,13 @@ public interface MailService{
      * @param text
      */
     void sendProjectRemind(String to,String subject,String text);
+    /**
+     * 客户拜访提醒
+     * @param to
+     * @param subject
+     * @param personName
+     */
+    void sendPersonVisitRemind(String to, String subject, String personName, Date visitTime);
     /**
      * 项目管理完成提醒
      * @param to

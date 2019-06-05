@@ -8,6 +8,7 @@
 		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
 		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
 		<result property="number" jdbcType="VARCHAR" column="number"/>
+		<result property="name" jdbcType="VARCHAR" column="name"/>
 		<result property="companyName" jdbcType="VARCHAR" column="company_name"/>
 		<result property="area" jdbcType="VARCHAR" column="area"/>
 		<result property="province" jdbcType="VARCHAR" column="province"/>
@@ -19,6 +20,7 @@
 		<result property="ownerDepartment" jdbcType="VARCHAR" column="ownerDepartment"/>
 		<result property="department" jdbcType="BIGINT" column="department"/>
 		<result property="pm" jdbcType="BIGINT" column="pm"/>
+		<result property="personId" jdbcType="BIGINT" column="person_id"/>
 	</resultMap>
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustProjectConditionVo" resultMap="rm">
@@ -28,21 +30,67 @@
 			cust_project cp
 		WHERE
 			1 = 1
-		<if test="keywords != null and keywords != '' ">
-			AND
-			(
-			cp.name LIKE CONCAT('%',#{keywords , jdbcType=VARCHAR},'%')
-			)
+		<if test="deptId!=null and deptId!=0 ">
+			AND cp.register in (select id from sys_user where dep_id=#{deptId})
 		</if>
-
 		<if test="custProjectEntity != null">
 			<if test="custProjectEntity.id!=null">
 				AND cp.id = #{custProjectEntity.id}
 			</if>
+			<if test="custProjectEntity.name!=null and custProjectEntity.name != '' ">
+				and cp.name LIKE CONCAT('%',#{custProjectEntity.name , jdbcType=VARCHAR},'%')
+			</if>
+			<if test="custProjectEntity.register!=null">
+				AND cp.register = #{custProjectEntity.register}
+			</if>
 		</if>
 		ORDER BY
-			cp.id ASC,
+		<if test="sortName != null">
+			<if test="sortName=='createTime'">
+				cp.create_time ${sortOrder},
+			</if>
+		</if>
+			cp.id desc,
 			cp.create_time DESC
+	</select>
+
+	<select id="findPageChooseProject" parameterType="com.suteng.shiro.business.vo.CustProjectConditionVo" resultMap="rm">
+		SELECT
+		cp.*
+		FROM
+		cust_project cp
+		WHERE
+		1 = 1
+		<if test="deptId!=null and deptId!=0 ">
+			AND cp.register in (select id from sys_user where dep_id=#{deptId})
+		</if>
+		<if test="personId != null and personId != '' ">
+			and cp.id not in (select project_id from cust_project_relation where person_id=#{personId})
+		</if>
+		<if test="custProjectEntity != null">
+			<if test="custProjectEntity.name!=null and custProjectEntity.name != '' ">
+				and cp.name LIKE CONCAT('%',#{custProjectEntity.name , jdbcType=VARCHAR},'%')
+			</if>
+			<if test="custProjectEntity.register!=null">
+				AND cp.register = #{custProjectEntity.register}
+			</if>
+		</if>
+		<if test="excludeIds != null and excludeIds != '' ">
+			AND cp.id not in
+			<foreach item="item" index="index" collection="excludeIds.split(',')"  open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY
+		cp.id ASC,
+		cp.create_time DESC
+	</select>
+
+	<select id="findProjectRelationList" resultMap="rm"  parameterType="Long">
+		SELECT
+		cp.*
+		FROM
+		cust_project cp where id in (select project_id from cust_project_relation where person_id=#{personId})
 	</select>
 </mapper>
 
