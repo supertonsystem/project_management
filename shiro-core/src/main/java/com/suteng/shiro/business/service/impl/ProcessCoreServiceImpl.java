@@ -45,7 +45,7 @@ public class ProcessCoreServiceImpl implements ProcessCoreService {
         //获取历史任务的Activity
         ActivityImpl hisActivity = definition.findActivity(hisTask.getTaskDefinitionKey());
         //实现跳转
-        managementService.executeCommand(new JumpCmd(instance.getId(), hisActivity.getId()));
+        managementService.executeCommand(new JumpCmd(true,instance.getId(), hisActivity.getId()));
         return hisTask.getProcessInstanceId();
     }
 }

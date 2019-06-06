@@ -14,9 +14,11 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 public class JumpCmd implements Command<ExecutionEntity> {
     private String processInstanceId;
     private String activityId;
+    private boolean rollBack;
     public static final String REASION_DELETE = "deleted";
 
-    public JumpCmd(String processInstanceId, String activityId) {
+    public JumpCmd(boolean rollBack,String processInstanceId, String activityId) {
+        this.rollBack=rollBack;
         this.processInstanceId = processInstanceId;
         this.activityId = activityId;
     }
@@ -28,7 +30,9 @@ public class JumpCmd implements Command<ExecutionEntity> {
         ProcessDefinitionImpl processDefinition = executionEntity.getProcessDefinition();
         ActivityImpl activity = processDefinition.findActivity(activityId);
         String name= (String) activity.getProperty("name");
-        activity.setProperty("name",name+"(退回)");
+        if(rollBack&&!name.contains("退回")){
+            activity.setProperty("name",name+"(退回)");
+        }
         executionEntity.executeActivity(activity);
         return executionEntity;
     }
