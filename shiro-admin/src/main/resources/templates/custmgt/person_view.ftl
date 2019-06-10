@@ -40,6 +40,10 @@
          style="overflow: auto">
         <div class="modal-dialog" style="width: 1000px; " role="document">
             <div class="modal-content">
+                <div class="modal-header" style="padding: 5px">
+                    <button id="closeCur" type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default">关闭
+                    </button>
+                </div>
                 <div class="tab-content">
                     <div class="tab-pane fade in active" id="info">
                         <div class="modal-body" style="padding-top: 0px;">
@@ -299,4 +303,8 @@
     addUpdateProjectTable(id,'view');
     addUpdateContactTable(id,'view');
     addUpdatePersonTable(id,'view');
+
+    $("#closeCur").click(function () {
+        window.close();
+    });
 </script>

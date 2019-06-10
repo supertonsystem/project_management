@@ -216,7 +216,7 @@
 
     $(function () {
         var options = {
-            url: "/giftmgt/consume/list"+"?custContactEntity.register="+${user.id},
+            url: "/giftmgt/consume/list"+"?giftConsumeEntity.register="+${user.id},
             getInfoUrl: "/giftmgt/consume/get/{id}",
             updateUrl: "/giftmgt/consume/edit",
             removeUrl: "/giftmgt/consume/remove",
@@ -342,6 +342,8 @@
             resetForm();
             $("#addOrUpdateModal").modal('show');
             options.saveUrl=options.createUrl;
+            addOrUpdateBtn();
+            submitBtn();
         });
 
         function detailFormatter(index, row, element) {
@@ -415,6 +417,8 @@
                     options.saveUrl=options.updateUrl;
                     $("#addOrUpdateModal").modal('show');
                     $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("修改" + options.modalName);
+                    addOrUpdateBtn();
+                    submitBtn();
                 },
                 error: $.tool.ajaxError
             });
@@ -434,14 +438,69 @@
                     resetForm(info);
                     $("#addOrUpdateModal").modal('show');
                     $("#addOrUpdateModal").find(".modal-dialog .modal-content .modal-header h4.modal-title").html("修改" + options.modalName);
+
                 },
                 error: $.tool.ajaxError
             });
         });
-        //保存操作
-        $(".addOrUpdateBtn").unbind('click');
-        $(".addOrUpdateBtn").click(function () {
-            if (validator.checkAll($("#addOrUpdateForm"))) {
+        
+        function addOrUpdateBtn() {
+            //保存操作
+            $(".addOrUpdateBtn").unbind('click');
+            $(".addOrUpdateBtn").click(function () {
+                if (validator.checkAll($("#addOrUpdateForm"))) {
+                    var title = $('#addOrUpdateForm #title').val();
+                    if(title==null||title==''){
+                        alert('标题不能为空');
+                        return;
+                    }
+                    if(addDetailList.length==0&&tempRepertoryRecord.length==0){
+                        alert('送礼记录不能为空');
+                        return;
+                    }
+                    for (var i = 0; i < addDetailList.length; i++) {
+                        var addDetail=addDetailList[i];
+                        if(addDetail.personId==''){
+                            alert('送礼明细【客户名称】不能为空');
+                            return;
+                        }
+                        if(addDetail.projectId==''){
+                            alert('送礼明细【项目名称】不能为空');
+                            return;
+                        }
+                        if(addDetail.num==null||addDetail.num==''){
+                            alert('送礼明细【份数】不能为空');
+                            return;
+                        }
+                    }
+                    $(this).off();
+                    $.ajax({
+                        type: "post",
+                        url: options.saveUrl,
+                        data: $("#addOrUpdateForm").serialize()+"&detailList="+JSON.stringify(addDetailList),
+                        success: function (json) {
+                            if(json!=null){
+                                if(json.status==500){
+                                    $.tool.ajaxSuccess(json);
+                                    $.tableUtil.refresh();
+                                }else{
+                                    $.tool.ajaxSuccess(json);
+                                    $("#addOrUpdateModal").modal('hide');
+                                    $.tableUtil.refresh();
+                                }
+                            }
+                        },
+                        error: $.tool.ajaxError
+                    });
+                }
+            });
+        }
+
+        
+        function submitBtn() {
+            //提交操作
+            $(".submitBtn").unbind('click');
+            $(".submitBtn").click(function () {
                 var title = $('#addOrUpdateForm #title').val();
                 if(title==null||title==''){
                     alert('标题不能为空');
@@ -469,7 +528,7 @@
                 $(this).off();
                 $.ajax({
                     type: "post",
-                    url: options.saveUrl,
+                    url: options.submitUrl,
                     data: $("#addOrUpdateForm").serialize()+"&detailList="+JSON.stringify(addDetailList),
                     success: function (json) {
                         if(json!=null){
@@ -485,56 +544,9 @@
                     },
                     error: $.tool.ajaxError
                 });
-            }
-        });
-
-        //提交操作
-        $(".submitBtn").unbind('click');
-        $(".submitBtn").click(function () {
-            var title = $('#addOrUpdateForm #title').val();
-            if(title==null||title==''){
-                alert('标题不能为空');
-                return;
-            }
-            if(addDetailList.length==0&&tempRepertoryRecord.length==0){
-                alert('送礼记录不能为空');
-                return;
-            }
-            for (var i = 0; i < addDetailList.length; i++) {
-                var addDetail=addDetailList[i];
-                if(addDetail.personId==''){
-                    alert('送礼明细【客户名称】不能为空');
-                    return;
-                }
-                if(addDetail.projectId==''){
-                    alert('送礼明细【项目名称】不能为空');
-                    return;
-                }
-                if(addDetail.num==null||addDetail.num==''){
-                    alert('送礼明细【份数】不能为空');
-                    return;
-                }
-            }
-            $(this).off();
-            $.ajax({
-                type: "post",
-                url: options.submitUrl,
-                data: $("#addOrUpdateForm").serialize()+"&detailList="+JSON.stringify(addDetailList),
-                success: function (json) {
-                    if(json!=null){
-                        if(json.status==500){
-                            $.tool.ajaxSuccess(json);
-                            $.tableUtil.refresh();
-                        }else{
-                            $.tool.ajaxSuccess(json);
-                            $("#addOrUpdateModal").modal('hide');
-                            $.tableUtil.refresh();
-                        }
-                    }
-                },
-                error: $.tool.ajaxError
             });
-        });
+        }
+
 
         /* 删除 */
         $('#tablelist').on('click', '.btn-remove', function () {

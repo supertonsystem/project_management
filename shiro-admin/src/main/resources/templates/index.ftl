@@ -31,7 +31,9 @@
                         </div>
                     </div>
                 </div>
-                 <#include "custmgt/person_visit_dashboard.ftl"/>
+                        <@shiro.hasPermission name="custmgt:persons">
+                             <#include "custmgt/person_visit_dashboard.ftl"/>
+                         </@shiro.hasPermission>
             </div>
         </div>
     </div>
@@ -41,7 +43,9 @@
     $(function () {
         //进入页面先执行一次
         statistics();
+    <@shiro.hasPermission name="custmgt:persons">
         visitPersonList();
+    </@shiro.hasPermission>
     });
 
     window.setInterval(statistics,30000);

@@ -38,6 +38,10 @@
      style="overflow: auto">
     <div class="modal-dialog" style="width: 850px; " role="document">
         <div class="modal-content">
+            <div class="modal-header" style="padding: 5px">
+                <button id="closeCur" type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default">关闭
+                </button>
+            </div>
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="info">
                     <div class="modal-body" style="padding-top: 0px;">
@@ -159,14 +163,8 @@
                                         <td class="title_td" style="vertical-align:middle;text-align: right">
                                             <span class="control-label title">项目经理:</span>
                                         </td>
-                                        <td>
+                                        <td colspan="3">
                                             <span class="form-control-static" id="pmName">${projectEntity.pmName}</span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">客户名称:</span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="personName">${projectEntity.personName}</span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -206,4 +204,8 @@
     });
     var id='${projectEntity.id}';
     addUpdatePersonTable(id,'view');
+
+    $("#closeCur").click(function () {
+        window.close();
+    });
 </script>

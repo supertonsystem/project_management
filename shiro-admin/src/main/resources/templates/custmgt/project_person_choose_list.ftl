@@ -1,4 +1,5 @@
-        <div class="x_panel" style="height: 500px;">
+        <div class="x_panel">
+        <h3 align="center">客户列表</h3>
             <div class="modal-header" style="padding: 5px">
                 <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
                         data-dismiss="modal">返回
@@ -153,7 +154,6 @@
             var count = $('#person_tablelist').bootstrapTable('getData').length;
             var row = {index:count,row:{
                 "id":s.id,
-                "rowId" :"",
                 "name" : s.name,
                 "sex" : s.sex,
                 "post" : s.post,

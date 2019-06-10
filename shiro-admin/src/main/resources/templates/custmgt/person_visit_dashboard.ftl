@@ -1,19 +1,11 @@
 <div class="col-md-4 col-sm-4 col-xs-12" style="height: 400px;overflow-y: auto;">
     <div class="x_title">
-        <h2>待拜访客户(近一个月)</h2>
+        <h2>待拜访(近一个月)</h2>
         <div class="clearfix"></div>
     </div>
     <ul id="visitPersonList" class="list-unstyled top_profiles scroll-view">
         <li class="media event">
-            <a class="pull-left border-aero profile_thumb">
-                <i class="fa fa-user aero"></i>
-            </a>
-            <div class="media-body">
-                <a class="title" href="#">Ms. Mary Jane</a>
-                <p><strong>$2300. </strong> Agent Avarage Sales </p>
-                <p> <small>12 Sales Today</small>
-                </p>
-            </div>
+            暂无
         </li>
     </ul>
 </div>

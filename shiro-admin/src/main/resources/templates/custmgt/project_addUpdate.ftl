@@ -32,22 +32,16 @@
                 },
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false,
-                    width: 40
-                },{
-                    field: 'rowId',
                     title: '序号',
-                    width: 40,
-                    formatter:function(value,row,index){
-                        row.rowId=index;
-                        return index+1;
-                    }
+                    editable: false,
+                    visible:false
                 }, {
                     field: 'number',
                     title: '编号',
-                    width: 50
+                    width: 50,
+                    formatter: function (data, row) {
+                        return '<a href="javascript:;" onclick="viewPorject(' + row.id + ')">' + data + '</a>'
+                    }
                 }, {
                     field: 'name',
                     title: '项目名称',
@@ -96,18 +90,9 @@
             project_options.columns=[
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false,
-                    width: 40
-                },{
-                    field: 'rowId',
                     title: '序号',
-                    width: 40,
-                    formatter:function(value,row,index){
-                        row.rowId=index;
-                        return index+1;
-                    }
+                    editable: false,
+                    visible:false
                 }, {
                     field: 'number',
                     title: '编号',

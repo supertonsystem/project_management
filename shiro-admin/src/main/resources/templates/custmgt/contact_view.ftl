@@ -39,8 +39,7 @@
     <div class="modal-dialog" style="width: 850px; " role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 5px">
-                <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
-                        data-dismiss="modal">返回
+                <button id="closeCur" type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default">关闭
                 </button>
             </div>
             <div class="tab-content">
@@ -156,4 +155,7 @@
 </div>
 <#include "/layout/simple_footer.ftl"/>
 <script>
+    $("#closeCur").click(function () {
+        window.close();
+    });
 </script>

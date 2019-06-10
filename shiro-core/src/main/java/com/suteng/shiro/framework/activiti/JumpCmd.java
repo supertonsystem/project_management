@@ -29,10 +29,10 @@ public class JumpCmd implements Command<ExecutionEntity> {
         executionEntity.destroyScope(REASION_DELETE);
         ProcessDefinitionImpl processDefinition = executionEntity.getProcessDefinition();
         ActivityImpl activity = processDefinition.findActivity(activityId);
-        String name= (String) activity.getProperty("name");
-        if(rollBack&&!name.contains("退回")){
-            activity.setProperty("name",name+"(退回)");
-        }
+        //String name= (String) activity.getProperty("name");
+        //if(rollBack&&!name.contains("退回")){
+        //    activity.setProperty("name",name+"(退回)");
+        //}
         executionEntity.executeActivity(activity);
         return executionEntity;
     }

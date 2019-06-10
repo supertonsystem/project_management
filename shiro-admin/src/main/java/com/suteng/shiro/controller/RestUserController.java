@@ -13,6 +13,7 @@ import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.PasswordUtil;
 import com.suteng.shiro.util.ResultUtil;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -134,4 +136,24 @@ public class RestUserController {
         return ResultUtil.success(ResponseStatus.SUCCESS);
     }
 
+    @PostMapping(value = "/updatePwd")
+    public ResponseVO updatePwd(@RequestParam(name = "oldPwd")String oldPwd, @RequestParam(name = "newPwd")String newPwd) {
+        Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+        User u = userService.getByPrimaryKey(userId);
+        if (u == null) {
+            return ResultUtil.error("该用户名不存在！");
+        }
+        try {
+            String encryptPwd=PasswordUtil.encrypt(oldPwd, u.getUsername());
+            if(!encryptPwd.equals(u.getPassword())){
+                return ResultUtil.error("原密码不正确");
+            }
+            u.setPassword(newPwd);
+            userService.updateSelective(u);
+            return ResultUtil.success("成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error("error");
+        }
+    }
 }

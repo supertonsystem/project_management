@@ -342,7 +342,7 @@
                         field: 'id',
                         title: '序号',
                         editable: false,
-                        width: 40,
+                        width: 35,
                         formatter: function (data,row) {
                             return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
                         }
@@ -355,7 +355,7 @@
                         title: '登记时间',
                         sortable: true,
                         editable: false,
-                        width: 60
+                        width: 50
                     }, {
                         field: 'person.name',
                         title: '客户名称',
@@ -375,7 +375,7 @@
                     }, {
                         field: 'meetTime',
                         title: '会面时间',
-                        width: 80
+                        width: 50
                     }, {
                         field: 'meetAddress',
                         title: '会面地址',
@@ -388,21 +388,12 @@
                         field: 'peopleNum',
                         title: '人数',
                         editable: false,
-                        width: 30
+                        width: 40
                     }, {
                         field: 'participant',
                         title: '参与人员',
                         editable: false,
                         width: 120
-                    }, {
-                        field: 'remark',
-                        title: '备注',
-                        editable: false,
-                        width: 150,
-                        formatter: function (data) {
-                            var html = "<div style='width: 140px' class='colStyle' title='" + data + "'>" + data + "</div>";
-                            return html;
-                        }
                     }, {
                         field: 'operate',
                         title: '操作',
@@ -437,11 +428,7 @@
                 searchOnEnterKey: false,            // 设置为 true时，按回车触发搜索方法，否则自动触发搜索方法
                 minimumCountColumns: 12,             //最少允许的列数
                 showRefresh: false,
-                columns: options.columns,
-//                detailView: true,
-//                detailFormatter: function (index, row) {
-//                    return '11111';
-//                    }
+                columns: options.columns
                 });
 
             $("#btn_add").click(function () {
@@ -454,6 +441,26 @@
                     if(meetTime==null||meetTime==''){
                         alert('会面时间不能为空');
                         return;
+                    }
+                    var peopleNum = $('#addOrUpdateForm #peopleNum').val();
+                    if(peopleNum!=null||peopleNum!=''){
+                        if (isNaN(peopleNum)){
+                            alert('人数必须是数字');
+                            return;
+                        }
+                        var n = parseInt(peopleNum);
+                        if (n <= 0){
+                            alert('人数必须是正整数');
+                            return;
+                        }
+                    }
+
+                    var expenses = $('#addOrUpdateForm #expenses').val();
+                    if(expenses!=null||expenses!=''){
+                        if (isNaN(expenses)){
+                            alert('开销费用必须是数字');
+                            return ;
+                        }
                     }
                     $(this).off();
                     $.ajax({

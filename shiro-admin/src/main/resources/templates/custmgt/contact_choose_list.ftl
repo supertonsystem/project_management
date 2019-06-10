@@ -1,4 +1,5 @@
-        <div class="x_panel" style="height: 500px;">
+        <div class="x_panel">
+            <h3 align="center">联系列表</h3>
             <div class="modal-header" style="padding: 5px">
                 <button type="button" style="margin-bottom:0px;margin-right:0px" class="btn btn-default"
                         data-dismiss="modal">返回
@@ -131,7 +132,6 @@
             var count = $('#contact_tablelist').bootstrapTable('getData').length;
             var row = {index:count,row:{
                 "id":s.id,
-                "rowId" :"",
                 "meetTime" : s.meetTime,
                 "meetAddress" : s.meetAddress,
                 "peopleNum" : s.peopleNum,
@@ -144,19 +144,6 @@
         $('#choose_list').modal('hide');
     });
 
-//    function view(id) {
-//        $.ajax({
-//            type: "post",
-//            async: false,
-//            url: "/custmgt/contact/get/" + id,
-//            success: function (json) {
-//                var data = json.data;
-//                resetViewForm(data);
-//                $("#viewModal").modal('show');
-//            },
-//            error: $.tool.ajaxError
-//        });
-//    }
 
     function contactqueryParams(params) {
         params = $.extend({}, params);

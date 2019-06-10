@@ -32,18 +32,11 @@
                 },
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false,
-                    width: 40
-                },{
-                    field: 'rowId',
                     title: '序号',
+                    editable: false,
                     width: 40,
                     formatter:function(value,row,index){
-                        row.rowId=index;
-                        var i=index+1;
-                        return '<a href="javascript:;" onclick="viewContact('+row.id+')">'+i+'</a>';
+                        return '<a href="javascript:;" onclick="viewContact('+value+')">'+value+'</a>';
                     }
                 }, {
                     field: 'meetTime',
@@ -84,18 +77,11 @@
             contact_options.columns=[
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false,
-                    width: 40
-                },{
-                    field: 'rowId',
                     title: '序号',
+                    editable: false,
                     width: 40,
                     formatter:function(value,row,index){
-                        row.rowId=index;
-                        var i=index+1;
-                        return '<a href="javascript:;" onclick="viewContact('+row.id+')">'+i+'</a>';
+                        return '<a href="javascript:;" onclick="viewContact('+value+')">'+value+'</a>';
                     }
                 }, {
                     field: 'meetTime',

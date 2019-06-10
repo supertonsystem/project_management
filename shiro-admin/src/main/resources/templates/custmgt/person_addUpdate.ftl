@@ -32,17 +32,9 @@
                 },
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false
-                },{
-                    field: 'rowId',
                     title: '序号',
                     width: 40,
-                    formatter:function(value,row,index){
-                        row.rowId=index;
-                        return index+1;
-                    }
+                    editable: false
                 }, {
                     field: 'name',
                     title: '姓名',
@@ -93,17 +85,9 @@
             person_options.columns=[
                 {
                     field: 'id',
-                    title: '唯一标识',
-                    editable: false,
-                    visible: false
-                },{
-                    field: 'rowId',
                     title: '序号',
-                    width: 40,
-                    formatter:function(value,row,index){
-                        row.rowId=index;
-                        return index+1;
-                    }
+                    editable: false,
+                    width: 40
                 }, {
                     field: 'name',
                     title: '姓名',

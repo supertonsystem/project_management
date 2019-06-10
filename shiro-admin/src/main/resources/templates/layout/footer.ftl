@@ -41,10 +41,43 @@
 <script src="/assets/js/validator/zh_CN.js"></script>
 <script src="/assets/js/x-editable/bootstrap-editable.js"></script>
 <script src="/assets/js/x-editable/bootstrap-table-editable.js"></script>
-<script src="/assets/js/jquery/jquery-ui.min.js"></script>
 <!--[if lt IE 9]>
     <script src="/assets/js/html5shiv.js"></script>
     <script src="/assets/js/respond.min.js"></script>
 <![endif]-->
 </body>
 </html>
+
+<script>
+    function updatePwd() {
+        $("#updatePwdModal").modal('show');
+    }
+
+    $('.updatePwdBtn').on('click', function () {
+        var oldPwd=$('#oldPwd').val();
+        if(oldPwd==null||oldPwd==''){
+            alert('旧密码不能为空');
+            return;
+        }
+        var newPwd=$('#newPwd').val();
+        if(newPwd==null||newPwd==''){
+            alert('新密码不能为空');
+            return;
+        }
+        $.ajax({
+            type: "post",
+            url: '/user/updatePwd',
+            data: {'oldPwd': oldPwd,'newPwd':newPwd},
+            success: function (json) {
+                if(json.status==200){
+                    $.tool.alert(json.message,3000,function () {
+                        window.location.href='/passport/logout';
+                    });
+                }else{
+                    $.tool.ajaxSuccess(json);
+                }
+            },
+            error: $.tool.ajaxError
+        });
+    });
+</script>
