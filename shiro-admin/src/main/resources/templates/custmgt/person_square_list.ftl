@@ -518,7 +518,7 @@
     //查询
     $('#search').on('click', function () {
         var name=$('#search_name').val();
-        window.location.href='http://192.168.0.52:8080/custmgt/persons'+"?custPersonEntity.name="+name;
+        window.location.href='/custmgt/persons'+"?custPersonEntity.name="+name;
     });
 
     function view(id) {
