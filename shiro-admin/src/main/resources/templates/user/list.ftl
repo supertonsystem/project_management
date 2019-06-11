@@ -251,10 +251,16 @@
                 success: function (json) {
                     var data = json.data;
                     var setting = {
+                            view: {
+                            selectedMulti : true,
+                                showIcon:true,  //设置是否显示节点图标
+                                showLine:true,  //设置是否显示节点与节点之间的连线
+                                showTitle:true  //设置是否显示节点的title提示信息
+                         },
                         check: {
                             enable: true,
-                            chkboxType: {"Y": "ps", "N": "ps"},
-                            chkStyle: "radio"
+                            chkboxType: {"Y": "ps", "N": "ps"}
+                           // chkStyle: "radio"
                         },
                         data: {
                             simpleData: {
