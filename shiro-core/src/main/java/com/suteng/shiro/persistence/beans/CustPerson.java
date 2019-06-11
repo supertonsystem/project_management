@@ -95,5 +95,9 @@ public class CustPerson extends AbstractDO {
      * 拜访日期
      */
     private Date visitTime;
+    /**
+     * 头像
+     */
+    private String icon;
 }
 

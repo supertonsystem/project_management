@@ -1,4 +1,23 @@
 <#include "/layout/header.ftl"/>
+<style>
+    .fileInputContainer{
+        height:90px;
+        background:url(upfile.png);
+        position:relative;
+        width: 125px;
+    }
+    .fileInput{
+        height:90px;
+        width: 125px;
+        overflow: hidden;
+        position:absolute;
+        right:0;
+        top:0;
+        opacity: 0;
+        filter:alpha(opacity=0);
+        cursor:pointer;
+    }
+</style>
 <div class="clearfix"></div>
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -6,90 +25,94 @@
             <li><a href="/">首页</a></li>
             <li class="active">客户列表</li>
         </ol>
-            <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_content">
-                        <div class="row">
-                            <div style="padding-left: 10px">
-                            <@shiro.hasPermission name="custmgt:person:add">
-                                <button id="btn_add" type="button" class="btn btn-default" title="新增客户">
-                                    <i class="fa fa-plus"></i> 新增
-                                </button>
-                            </@shiro.hasPermission>
-                                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="search_name" style="float: right;width: 200px" placeholder="Search for...">
-                                        <span class="input-group-btn" >
+        <div class="col-md-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <div class="row">
+                        <div style="padding-left: 10px">
+                        <@shiro.hasPermission name="custmgt:person:add">
+                            <button id="btn_add" type="button" class="btn btn-default" title="新增客户">
+                                <i class="fa fa-plus"></i> 新增
+                            </button>
+                        </@shiro.hasPermission>
+                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="search_name" style="float: right;width: 200px" placeholder="Search for..." value="${name}">
+                                    <span class="input-group-btn" >
                                           <button class="btn btn-default" id="search" type="button">搜索</button>
                                         </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    <#list persons as person>
+                        <div class="col-md-4 col-sm-4 col-xs-12 profile_details text-center">
+                            <div class="well profile_view" style="padding: 0px 0px">
+                                <div class="col-sm-12 ">
+                                    <div class="left col-xs-8" style="margin-top:1px;text-align: left">
+                                        <h2><a href="javascript:;" onclick="view(${person.id})">${person.name}</a></h2>
+                                        <br/>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fa fa-tag"></i><span style="margin-left: 5px;">职位: ${person.post}</span></li>
+                                            <li><i class="fa fa-building"></i><span style="margin-left: 5px;">公司名称: ${person.companyName}</span></li>
+                                            <li><i class="fa fa-phone-square"></i><span style="margin-left: 5px;">联系电话: ${person.phone}</span></li>
+                                            <li><i class="fa fa-envelope"></i><span style="margin-left: 4px;">电子邮箱: ${person.email}</span></li>
+                                            <li><i class="fa fa-bell"></i><span style="margin-left: 5px;">拜访日期:<#if person.visitTime??>
+                                            ${person.visitTime?string("yyyy-MM-dd")}
+                                            <#else>
+                                            </#if>
+                                                    </span></li>
+                                        </ul>
+                                    </div>
+                                    <div class="right col-xs-4 text-center fileInputContainer">
+                                        <input class="fileInput" name="${person.id}" onchange="uploadPersonIcon(this)" data-id="${person.id}" type="file" accept="image/jpeg,image/png,image/jpg">
+                                        <img onerror='this.src="/assets/images/user.png"' style="height: 120px;width: 200px" src="/person/icon/${person.icon}" id="img_${person.id}" alt="" class="img-circle img-responsive">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 bottom text-center">
+                                    <div class="col-xs-12 col-sm-6 emphasis">
+                                        <p class="ratings">
+                                            <a>信用</a>
+                                            <a href="#"><span class="fa fa-star"></span></a>
+                                            <#if person.credit==0>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                            <#elseif person.credit==1>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                            <#elseif person.credit==2>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                            <#elseif person.credit==3>
+                                                <a href="#"><span class="fa fa-star"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                                <a href="#"><span class="fa fa-star-o"></span></a>
+                                            </#if>
+
+                                        </p>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6 emphasis" style="text-align: right;">
+                                        <#if user.id==person.register>
+                                            <a class="btn btn-xs btn-primary btn-update" data-id="${person.id}"><i class="fa fa-edit"></i>&nbsp;编辑</a>
+                                            <a class="btn btn-xs btn-danger btn-remove" data-id="${person.id}"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                                        </#if>
                                     </div>
                                 </div>
                             </div>
-                            <div class="clearfix"></div>
-                            <#list persons as person>
-                                <div class="col-md-4 col-sm-4 col-xs-12 profile_details text-center">
-                                    <div class="well profile_view" style="padding: 0px 0px">
-                                        <div class="col-sm-12 ">
-                                            <div class="left col-xs-8" style="margin-top:1px;text-align: left">
-                                                <h2><a href="javascript:;" onclick="view(${person.id})">${person.name}</a></h2>
-                                                <br/>
-                                                <ul class="list-unstyled">
-                                                    <li><i class="fa fa-tag"></i><span style="margin-left: 5px;">职位: ${person.post}</span></li>
-                                                    <li><i class="fa fa-building"></i><span style="margin-left: 5px;">公司名称: ${person.companyName}</span></li>
-                                                    <li><i class="fa fa-home"></i><span style="margin-left: 5px;">公司地址: ${person.companyAddress}</span></li>
-                                                    <li><i class="fa fa-phone-square"></i><span style="margin-left: 5px;">联系电话: ${person.phone}</span></li>
-                                                    <li><i class="fa fa-envelope"></i><span style="margin-left: 4px;">电子邮箱: ${person.email}</span></li>
-                                                </ul>
-                                            </div>
-                                            <div class="right col-xs-4 text-center">
-                                                <img src="/assets/images/user.png" alt="" class="img-circle img-responsive">
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-12 bottom text-center">
-                                            <div class="col-xs-12 col-sm-6 emphasis">
-                                                <p class="ratings">
-                                                    <a>信用</a>
-                                                    <a href="#"><span class="fa fa-star"></span></a>
-                                                    <#if person.credit==0>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                    <#elseif person.credit==1>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                    <#elseif person.credit==2>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                    <#elseif person.credit==3>
-                                                        <a href="#"><span class="fa fa-star"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                        <a href="#"><span class="fa fa-star-o"></span></a>
-                                                    </#if>
-
-                                                </p>
-                                            </div>
-                                            <div class="col-xs-12 col-sm-6 emphasis" style="text-align: right;">
-                                                <#if user.id==person.register>
-                                                    <a class="btn btn-xs btn-primary btn-update" data-id="${person.id}"><i class="fa fa-edit"></i>&nbsp;编辑</a>
-                                                    <a class="btn btn-xs btn-danger btn-remove" data-id="${person.id}"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
-                                                </#if>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </#list>
-
                         </div>
+                    </#list>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 <#include "/layout/footer.ftl"/>
 <div class="modal fade" style="width: 1000px;height: 500px;border-radius: 5px"  tabindex="-1" role="dialog" id="choose_list" >
@@ -335,6 +358,43 @@
     </div>
 </div>
 <script>
+    function uploadPersonIcon(data) {
+        var file = $(data)[0].files[0];
+        if (typeof (file) == "undefined" || file.size <= 0) {
+            alert("请选择图片");
+            return;
+        }
+        if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
+            alert('只支持上传png图片!');
+            return;
+        }
+        //判断文件大小
+        var size = file.size;
+        if(size >= 5*1024*1024){
+            alert('文件不能大于5M!');
+            return false;
+        }
+        var id=$(data).attr("data-id");
+        var formData = new FormData();
+        formData.append("file",file);
+        formData.append("id",id);
+
+        $.ajax({
+            type: "post",
+            url: "/custmgt/person/uploadIcon",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (json) {
+                $.tool.ajaxSuccess(json);
+                if(json.status==200){
+                    $('#img_'+id).attr('src',URL.createObjectURL($(data)[0].files[0]));
+                }
+            },
+            error: $.tool.ajaxError
+        });
+    }
+
     Array.prototype.indexOf = function (val) {
         for (var i = 0; i < this.length; i++) {
             if (this[i] == val) return i;
@@ -471,6 +531,7 @@
         showClose: true,
         focusOnShow: true,
         locale: moment.locale('zh-cn'),
+        minDate: new Date(),
         widgetPositioning: { horizontal: 'right', vertical: 'top'}
     });
     function resetForm(info) {

@@ -22,9 +22,8 @@
                         var html=[];
                         for(var i=0;i<data.length;i++){
                             var d=data[i];
-                            html.push(' <li class="media event">');
-                            html.push(' <a class="pull-left border-aero profile_thumb">');
-                            html.push(' <i class="fa fa-user aero"></i></a>');
+                            html.push(' <li class="media event" style="background: #ffffff">');
+                            html.push("<div style='float: left;margin-right: 10px;margin-top: 6px'><img onerror='this.src=\"/assets/images/user.png\"' style='height: 45px;width: 50px' src='/person/icon/"+d.icon+"'></div>");
                             html.push(' <div class="media-body">');
                             html.push(' <a class="title" href="javascript:;" onclick="viewPerson('+d.id+')">'+d.name+'</a>');
                             html.push(' <p><strong>联系电话: '+d.phone+'</strong></p>');

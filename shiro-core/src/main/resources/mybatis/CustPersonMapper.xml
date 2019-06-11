@@ -26,6 +26,7 @@
 		<result property="remark" jdbcType="VARCHAR" column="remark"/>
 		<result property="sourceId" jdbcType="BIGINT" column="sourceId"/>
 		<result property="visitTime" jdbcType="TIMESTAMP" column="visit_time"/>
+		<result property="icon" jdbcType="VARCHAR" column="icon"/>
 	</resultMap>
 
 	<select id="findPageBreakByCondition" parameterType="com.suteng.shiro.business.vo.CustPersonConditionVo" resultMap="rm">
@@ -152,6 +153,7 @@
 		FROM
 		cust_person cp where register=#{userId}
 		 <![CDATA[ and cp.visit_time <=date_add(NOW(), interval 30 day) and to_days(cp.visit_time)>=to_days(NOW())]]>
+		order by cp.visit_time ASC
 	</select>
 
 </mapper>

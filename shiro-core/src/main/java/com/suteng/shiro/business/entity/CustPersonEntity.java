@@ -223,6 +223,7 @@ public class CustPersonEntity {
         this.getCustPerson().setSource(source);
     }
 
+
     public Integer getCredit() {
         return this.getCustPerson().getCredit();
     }
@@ -267,5 +268,14 @@ public class CustPersonEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     public void setVisitTime(Date visitTime) {
         this.getCustPerson().setVisitTime(visitTime);
+    }
+
+
+    public String getIcon() {
+        return this.getCustPerson().getIcon();
+    }
+
+    public void setIcon(String icon) {
+        this.getCustPerson().setIcon(icon);
     }
 }

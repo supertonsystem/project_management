@@ -28,7 +28,7 @@
                 <h4 class="modal-title" id="addroleLabel">修改密码</h4>
             </div>
             <div class="modal-body">
-                <form id="addOrUpdateForm" class="form-horizontal form-label-left" novalidate>
+                <form id="updatePwdForm" class="form-horizontal form-label-left" novalidate>
                     <div class="item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">旧密码: <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 col-xs-12">

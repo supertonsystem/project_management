@@ -22,4 +22,7 @@ public class CommonConst {
      */
     public static final int DEFAULT_SUCCESS_CODE = 200;
 
+
+    public static final String PERSON_ICON_PATCH="/person/icon/";
+
 }

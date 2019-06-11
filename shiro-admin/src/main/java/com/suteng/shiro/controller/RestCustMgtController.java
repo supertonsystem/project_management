@@ -1,5 +1,7 @@
 package com.suteng.shiro.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +35,14 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -49,6 +54,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 @RequestMapping("/custmgt")
 public class RestCustMgtController {
+    @Value("${web.person-icon-upload-Uri}")
+    private String path;
     @Autowired
     private CustPersonService custPersonService;
     @Autowired
@@ -61,6 +68,34 @@ public class RestCustMgtController {
     private CustProjectRelationService custProjectRelationService;
     @Autowired
     private SysUserService userService;
+
+    @RequestMapping("/person/uploadIcon")
+    public ResponseVO uploadIcon(@RequestParam("file") MultipartFile file,@RequestParam("id") Long id) {
+        try{
+            if (file.isEmpty()) {
+               return ResultUtil.error("文件为空");
+            }
+            String fileName = file.getOriginalFilename();  // 文件名
+            String suffixName = fileName.substring(fileName.lastIndexOf(".")+1);  // 后缀名
+            if(!suffixName.equals("jpg")&&!suffixName.equals("png")&&!suffixName.equals("jpeg")){
+                return ResultUtil.error("图片格式不支持");
+            }
+            File dest = new File(path + id+"."+suffixName);
+            try {
+                file.transferTo(dest);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            CustPersonEntity entity=new CustPersonEntity();
+            entity.setId(id);
+            entity.setIcon(id+"."+suffixName);
+            custPersonService.updateSelective(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(ResponseStatus.ERROR);
+        }
+        return ResultUtil.success(ResponseStatus.SUCCESS);
+    }
 
     @RequiresPermissions("custmgt:persons")
     @PostMapping("/person/list")
@@ -119,7 +154,12 @@ public class RestCustMgtController {
             vo.getCustPersonEntity().setRegister(userId);
         }
         PageInfo<CustPersonEntity> persons=custPersonService.findPageBreakByCondition(vo);
+        //List<List<CustPersonEntity>> list=null;
+        //if(persons!=null){
+        //  List<List<CustPersonEntity>> list=ListUtils.partition(persons.getList(),3);
+        //}
         model.put("persons",persons==null?null:persons.getList());
+        model.put("name",vo.getCustPersonEntity().getName());
         return new ModelAndView("/custmgt/person_square_list", model);
     }
 
@@ -577,4 +617,6 @@ public class RestCustMgtController {
         object.put("globalCustMgtControl",config);
         return ResultUtil.view("custmgt/config",object);
     }
+
+
 }
