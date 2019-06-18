@@ -4,6 +4,7 @@
         <div class="x_panel">
             <div role="main">
                 <div class="">
+<@shiro.hasPermission name="projectmgt:add">
                     <div class="row top_tiles">
                         <div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
                             <div class="tile-stats">
@@ -16,7 +17,7 @@
                         <div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
                             <div id="agenda" class="tile-stats">
                                 <div class="icon"><i class="fa fa-list-ol"></i></div>
-                                <div class="count"><a id="agendaCount" href="/projectmgt/agenda" >0</a></div>
+                                <div class="count"><a id="agendaCount">0</a></div>
                                 <h3>待办</h3>
                                 <p>待处理的项目.</p>
                             </div>
@@ -30,6 +31,7 @@
                             </div>
                         </div>
                     </div>
+</@shiro.hasPermission>
                 </div>
                         <@shiro.hasPermission name="custmgt:persons">
                              <#include "custmgt/person_visit_dashboard.ftl"/>
@@ -42,14 +44,16 @@
 <script>
     $(function () {
         //进入页面先执行一次
+<@shiro.hasPermission name="projectmgt:add">
         statistics();
+</@shiro.hasPermission>
     <@shiro.hasPermission name="custmgt:persons">
         visitPersonList();
     </@shiro.hasPermission>
     });
-
+<@shiro.hasPermission name="projectmgt:add">
     window.setInterval(statistics,30000);
-
+</@shiro.hasPermission>
     function statistics() {
         $.ajax({
             type: "post",
@@ -69,8 +73,9 @@
             }
         });
     }
-
+<@shiro.hasPermission name="projectmgt:add">
     $("#agenda").on("click",function(){
         window.location.href = "/projectmgt/agenda";
     });
+</@shiro.hasPermission>
 </script>

@@ -270,7 +270,7 @@
                     }
                 }, {
                     field: 'status',
-                    title: '状态',
+                    title: '送礼状态',
                     editable: false,
                     width: 50,
                     formatter: function (data) {
@@ -286,7 +286,7 @@
                     }
                 }, {
                     field: 'drawStatus',
-                    title: '状态',
+                    title: '使用状态',
                     editable: false,
                     width: 50,
                     formatter: function (data) {
@@ -405,7 +405,8 @@
         showClear: true,
         showClose: true,
         focusOnShow: true,
-        locale: moment.locale('zh-cn')
+        locale: moment.locale('zh-cn'),
+        widgetPositioning: { horizontal: 'right', vertical: 'top'}
     });
 
     function queryParams(params) {

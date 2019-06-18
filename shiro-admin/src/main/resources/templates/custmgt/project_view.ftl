@@ -107,30 +107,7 @@
                                             <span class="form-control-static" id="address">${projectEntity.address}</span>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right">
-                                            <span class="control-label title">开工日期:</span>
-                                        </td>
-                                        <td>
-                                            <span class="form-control-static" id="startTime">
-                                            <#if projectEntity.startTime??>
-                                             ${projectEntity.startTime?string("yyyy-MM-dd")}
-                                            <#else>
-                                            </#if>
-                                            </span>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
-                                            <span class="control-label title">完工日期: </span>
-                                        </td>
-                                        <td style="vertical-align:middle">
-                                            <span class="form-control-static" id="endTime">
-                                            <#if projectEntity.endTime??>
-                                             ${projectEntity.endTime?string("yyyy-MM-dd")}
-                                            <#else>
-                                            </#if>
-                                            </span>
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right">
                                             <span class="control-label title">工&nbsp;&nbsp;&nbsp;&nbsp;期:&nbsp;&nbsp;&nbsp;</span>
@@ -157,6 +134,30 @@
                                         </td>
                                         <td style="vertical-align:middle">
                                             <span class="form-control-static" id="departmentName">${projectEntity.departmentName}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title_td" style="vertical-align:middle;text-align: right">
+                                            <span class="control-label title">开工日期:</span>
+                                        </td>
+                                        <td>
+                                            <span class="form-control-static" id="startTime">
+                                            <#if projectEntity.startTime??>
+                                             ${projectEntity.startTime?string("yyyy-MM-dd")}
+                                            <#else>
+                                            </#if>
+                                            </span>
+                                        </td>
+                                        <td class="title_td" style="vertical-align:middle;padding-left: 15px;text-align: right;">
+                                            <span class="control-label title">完工日期: </span>
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            <span class="form-control-static" id="endTime">
+                                            <#if projectEntity.endTime??>
+                                             ${projectEntity.endTime?string("yyyy-MM-dd")}
+                                            <#else>
+                                            </#if>
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>

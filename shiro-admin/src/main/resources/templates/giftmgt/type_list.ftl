@@ -250,7 +250,8 @@
             showClear: true,
             showClose: true,
             focusOnShow: true,
-            locale: moment.locale('zh-cn')
+            locale: moment.locale('zh-cn'),
+            widgetPositioning: { horizontal: 'right', vertical: 'top'}
         });
 
         function queryParams(params) {

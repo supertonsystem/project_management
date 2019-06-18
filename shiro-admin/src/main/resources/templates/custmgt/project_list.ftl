@@ -162,36 +162,7 @@
                                                    id="address"/>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
-                                                class="control-label title">开工日期:</span></td>
-                                        <td>
-                                            <div style="width: 200px;">
-                                                <div class="form-group" style="margin-bottom:0px;">
-                                                    <div class='input-group date' id='startTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
-                                                        <input type='text' class="form-control" name="startTime" id="startTime" />
-                                                        <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="title_td" style="vertical-align:middle"><span
-                                                class="control-label title">完工日期: </span></td>
-                                        <td style="vertical-align:middle">
-                                            <div style="width: 200px;">
-                                                <div class="form-group" style="margin-bottom:0px;">
-                                                    <div class='input-group date' id='endTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
-                                                        <input type='text' class="form-control"  name="endTime" id="endTime"/>
-                                                        <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right"><span
                                                 class="control-label title">工&nbsp;&nbsp;&nbsp;&nbsp;期:</span></td>
@@ -234,6 +205,36 @@
                                     </tr>
                                     <tr>
                                         <td class="title_td" style="vertical-align:middle;text-align: right"><span
+                                                class="control-label title">开工日期:</span></td>
+                                        <td>
+                                            <div style="width: 200px;">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class='input-group date' id='startTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
+                                                        <input type='text' class="form-control" name="startTime" id="startTime" />
+                                                        <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="title_td" style="vertical-align:middle"><span
+                                                class="control-label title">完工日期: </span></td>
+                                        <td style="vertical-align:middle">
+                                            <div style="width: 200px;">
+                                                <div class="form-group" style="margin-bottom:0px;">
+                                                    <div class='input-group date' id='endTime_datetimepicker' style="margin-bottom: 0px;vertical-align:middle">
+                                                        <input type='text' class="form-control"  name="endTime" id="endTime"/>
+                                                        <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title_td" style="vertical-align:middle;text-align: right"><span
                                                 class="control-label title">项目经理:</span></td>
                                         <td colspan="3"><input type="text" style="width: 200px" class="form-control" name="pm"
                                                    id="pm"/></td>
@@ -242,29 +243,30 @@
                                 </table>
                             </div>
                         </form>
-                    </div>
-                </div>
-            </div>
-        <@shiro.hasRole name="role:custmgt">
-            <div class="panel-group" id="accordion" style="padding: 0px 15px">
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
-                         href="#collapseOne">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion"
-                               href="#collapseOne">
-                                关联客户
-                            </a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
-                        <div class="panel-body" style="padding: 0px 5px;">
-                            <#include "/custmgt/project_person_addUpdate.ftl"/>
+                    <@shiro.hasRole name="role:custmgt">
+                        <div class="panel-group" id="accordion" style="padding: 0px 15px">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion"
+                                     href="#collapseOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           href="#collapseOne">
+                                            关联客户
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in">
+                                    <div class="panel-body" style="padding: 0px 5px;">
+                                        <#include "/custmgt/project_person_addUpdate.ftl"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </@shiro.hasRole>
                     </div>
                 </div>
             </div>
-        </@shiro.hasRole>
+
         </div>
     </div>
 </div>
@@ -544,14 +546,16 @@
             showClear: true,
             showClose: true,
             focusOnShow: true,
-            locale: moment.locale('zh-cn')
+            locale: moment.locale('zh-cn'),
+            widgetPositioning: { horizontal: 'right', vertical: 'top'}
         });
         $('#endTime_datetimepicker').datetimepicker({
             format: 'YYYY-MM-DD',
             showClear: true,
             showClose: true,
             focusOnShow: true,
-            locale: moment.locale('zh-cn')
+            locale: moment.locale('zh-cn'),
+            widgetPositioning: { horizontal: 'left', vertical: 'top'}
         });
 
         function queryParams(params) {
