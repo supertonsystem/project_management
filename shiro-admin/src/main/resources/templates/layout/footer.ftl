@@ -41,6 +41,7 @@
 <script src="/assets/js/validator/zh_CN.js"></script>
 <script src="/assets/js/x-editable/bootstrap-editable.js"></script>
 <script src="/assets/js/x-editable/bootstrap-table-editable.js"></script>
+<script src="https://cdn.bootcss.com/Swiper/4.5.0/js/swiper.js"></script>
 <!--[if lt IE 9]>
     <script src="/assets/js/html5shiv.js"></script>
     <script src="/assets/js/respond.min.js"></script>

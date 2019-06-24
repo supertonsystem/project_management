@@ -17,6 +17,9 @@
         filter:alpha(opacity=0);
         cursor:pointer;
     }
+    .swiper-container {
+        height: 750px;
+    }
 </style>
 <div class="clearfix"></div>
 <div class="row">
@@ -45,10 +48,14 @@
                             </div>
                         </div>
                         <div class="clearfix"></div>
-                    <#list persons as person>
-                        <div class="col-md-4 col-sm-4 col-xs-12 profile_details text-center">
+                    <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                    <#list persons as p>
+                    <div class="swiper-slide">
+                            <#list p as person>
+                        <div class="col-md-4 col-sm-4 col-xs-12 profile_details text-center" >
                             <div class="well profile_view" style="padding: 0px 0px">
-                                <div class="col-sm-12 ">
+                                <div class="col-sm-12" >
                                     <div class="left col-xs-8" style="margin-top:1px;text-align: left">
                                         <h2><a href="javascript:;" onclick="view(${person.id})">${person.name}</a></h2>
                                         <br/>
@@ -66,7 +73,7 @@
                                     </div>
                                     <div class="right col-xs-4 text-center fileInputContainer">
                                         <input class="fileInput" name="${person.id}" onchange="uploadPersonIcon(this)" data-id="${person.id}" type="file" accept="image/jpeg,image/png,image/jpg">
-                                        <img onerror='this.src="/assets/images/user.png"' style="height: 120px;width: 200px" src="/person/icon/${person.icon}" id="img_${person.id}" alt="" class="img-circle img-responsive">
+                                        <img onerror='this.src="/assets/images/user.jpg"' style="height: 120px;width: 200px" src="/person/icon/${person.icon}" id="img_${person.id}" alt="" class="img-circle img-responsive">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 bottom text-center">
@@ -95,7 +102,6 @@
                                                 <a href="#"><span class="fa fa-star-o"></span></a>
                                                 <a href="#"><span class="fa fa-star-o"></span></a>
                                             </#if>
-
                                         </p>
                                     </div>
                                     <div class="col-xs-12 col-sm-6 emphasis" style="text-align: right;">
@@ -107,7 +113,15 @@
                                 </div>
                             </div>
                         </div>
+                        </#list>
+                    </div>
                     </#list>
+                    </div>
+                        <!-- 如果需要导航按钮 -->
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
                     </div>
                 </div>
             </div>
@@ -358,6 +372,29 @@
     </div>
 </div>
 <script>
+    $(function () {
+        var mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal', // 垂直切换选项
+            loop: false, // 循环模式选项
+
+            // 如果需要分页器
+            pagination: {
+                el: '.swiper-pagination',
+            },
+
+            // 如果需要前进后退按钮
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+
+            // 如果需要滚动条
+            scrollbar: {
+                el: '.swiper-scrollbar',
+            }
+        })
+
+    });
     function uploadPersonIcon(data) {
         var file = $(data)[0].files[0];
         if (typeof (file) == "undefined" || file.size <= 0) {

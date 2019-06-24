@@ -30,6 +30,7 @@ import com.suteng.shiro.business.vo.CustProjectConditionVo;
 import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.ResultUtil;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -154,11 +155,12 @@ public class RestCustMgtController {
             vo.getCustPersonEntity().setRegister(userId);
         }
         PageInfo<CustPersonEntity> persons=custPersonService.findPageBreakByCondition(vo);
-        //List<List<CustPersonEntity>> list=null;
-        //if(persons!=null){
-        //  List<List<CustPersonEntity>> list=ListUtils.partition(persons.getList(),3);
-        //}
-        model.put("persons",persons==null?null:persons.getList());
+        List<List<CustPersonEntity>> list=null;
+        if(persons!=null){
+          List<List<CustPersonEntity>> pList= ListUtils.partition(persons.getList(),9);
+            model.put("persons",pList);
+        }
+        //model.put("persons",persons==null?null:persons.getList());
         model.put("name",vo.getCustPersonEntity().getName());
         return new ModelAndView("/custmgt/person_square_list", model);
     }
