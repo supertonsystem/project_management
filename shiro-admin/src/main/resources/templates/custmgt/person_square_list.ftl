@@ -18,7 +18,7 @@
         cursor:pointer;
     }
     .swiper-container {
-        height: 750px;
+        min-height: 750px;
     }
 </style>
 <div class="clearfix"></div>
