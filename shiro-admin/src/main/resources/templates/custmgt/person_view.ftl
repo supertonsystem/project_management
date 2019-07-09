@@ -299,11 +299,12 @@
         });
         $('.modal.in:visible:last').focus().next('.modal-backdrop.in').removeClass('hidden');
     }
+<@shiro.hasRole name="role:custmgt">
     var id='${personEntity.id}';
     addUpdateProjectTable(id,'view');
     addUpdateContactTable(id,'view');
     addUpdatePersonTable(id,'view');
-
+</@shiro.hasRole>
     $("#closeCur").click(function () {
         window.close();
     });
