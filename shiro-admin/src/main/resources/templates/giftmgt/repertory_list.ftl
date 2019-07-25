@@ -73,6 +73,9 @@
                             <i class="fa fa-trash-o"></i> 批量删除
                         </button>
                     </@shiro.hasPermission>
+                        <button type="button" id="exportExcel" class="btn btn-success" style=" margin-left: 5px;">
+                            Excel导出
+                        </button>
                     </div>
                     <table id="tablelist" style="word-break:break-all; word-wrap:break-all;table-layout:fixed">
                     </table>
@@ -663,6 +666,10 @@
             params = $.extend(params, name);
             return params;
         }
+        //excel导出
+        $("#exportExcel").click(function () {
+            window.location.href ="repertory/exportExcel";
+        });
 
         function resetViewForm(info) {
             $("#viewModal form span,#viewModal form textarea").each(function () {

@@ -2,9 +2,12 @@ package com.suteng.shiro.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.github.pagehelper.PageInfo;
 import com.suteng.shiro.business.entity.Config;
@@ -24,9 +27,16 @@ import com.suteng.shiro.business.service.SysConfigService;
 import com.suteng.shiro.business.service.SysRoleService;
 import com.suteng.shiro.business.service.SysUserRoleService;
 import com.suteng.shiro.business.service.SysUserService;
+import com.suteng.shiro.business.util.DepartmentUtil;
+import com.suteng.shiro.business.util.PersonUtil;
+import com.suteng.shiro.business.util.UserUtil;
 import com.suteng.shiro.business.vo.CustContactConditionVo;
 import com.suteng.shiro.business.vo.CustPersonConditionVo;
 import com.suteng.shiro.business.vo.CustProjectConditionVo;
+import com.suteng.shiro.framework.easypoi.ExcelUtil;
+import com.suteng.shiro.framework.easypoi.bean.ContactExcel;
+import com.suteng.shiro.framework.easypoi.bean.PersonExcel;
+import com.suteng.shiro.framework.easypoi.bean.ProjectExcel;
 import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.ResultUtil;
@@ -35,6 +45,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -308,6 +319,51 @@ public class RestCustMgtController {
         }
         return ResultUtil.success("");
     }
+
+
+    @GetMapping("/person/exportExcel")
+    public void exportExcelByPerson(HttpServletResponse response) {
+        //这里不进行分页,取最大
+        CustPersonConditionVo vo=new CustPersonConditionVo();
+        vo.setPageSize(100000);
+        Map<String, Object> model = new HashMap<String, Object>();
+        Subject subject = SecurityUtils.getSubject();
+        //最高权限
+        boolean all=subject.isPermitted("custmgt:person:all");
+        //部门共享
+        boolean dept=subject.isPermitted("custmgt:person:dept");
+        if(all){
+            vo.getCustPersonEntity().setRegister(null);
+        }else if(dept){
+            Long userId = (Long) subject.getPrincipal();
+            User user= userService.getByPrimaryKey(userId);
+            if(user!=null&&user.getDepId()!=null){
+                vo.getCustPersonEntity().setRegister(null);
+                vo.setDeptId(user.getDepId().longValue());
+            }
+        }else {
+            Long userId = (Long) subject.getPrincipal();
+            vo.getCustPersonEntity().setRegister(userId);
+        }
+        PageInfo<CustPersonEntity> persons=custPersonService.findPageBreakByCondition(vo);
+        List<PersonExcel> excelList = new ArrayList<>();
+        if(persons!=null&&persons.getList()!=null){
+            for(CustPersonEntity person:persons.getList()){
+                PersonExcel p=new PersonExcel();
+                try {
+                    BeanUtils.copyProperties(person.getCustPerson(), p);
+                    excelList.add(p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //导出操作
+        ExcelUtil.exportExcel(excelList, PersonExcel.class, "客户信息.xls", response);
+    }
+
+
+
     /****              项目信息开始                   **/
     @RequiresPermissions("custmgt:projects")
     @PostMapping("/project/list")
@@ -453,6 +509,50 @@ public class RestCustMgtController {
         return ResultUtil.success("");
     }
 
+    @GetMapping("/project/exportExcel")
+    public void exportExcelByProject(HttpServletResponse response) {
+        CustProjectConditionVo vo=new CustProjectConditionVo();
+        vo.setPageSize(100000);
+        Subject subject = SecurityUtils.getSubject();
+        //最高权限
+        boolean all=subject.isPermitted("custmgt:project:all");
+        //部门共享
+        boolean dept=subject.isPermitted("custmgt:project:dept");
+        if(all){
+            vo.getCustProjectEntity().setRegister(null);
+        }else if(dept){
+            Long userId = (Long) subject.getPrincipal();
+            User user= userService.getByPrimaryKey(userId);
+            if(user!=null&&user.getDepId()!=null){
+                vo.getCustProjectEntity().setRegister(null);
+                vo.setDeptId(user.getDepId().longValue());
+            }
+        }else{
+            Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+            vo.getCustProjectEntity().setRegister(userId);
+        }
+        PageInfo<CustProjectEntity> pageInfo = custProjectService.findPageBreakByCondition(vo);
+        List<ProjectExcel> excelList = new ArrayList<>();
+        if(pageInfo!=null&&pageInfo.getList()!=null){
+            for(CustProjectEntity projectEntity:pageInfo.getList()){
+                ProjectExcel p=new ProjectExcel();
+                try {
+                    BeanUtils.copyProperties(projectEntity.getCustProject(), p);
+                    if(projectEntity.getDepartment()!=null){
+                        p.setDepartmentName(DepartmentUtil.getDepartmentName(projectEntity.getDepartment()));
+                    }
+                    if(projectEntity.getPm()!=null){
+                        p.setPmName(UserUtil.getUserNickName(projectEntity.getPm()));
+                    }
+                    excelList.add(p);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //导出操作
+        ExcelUtil.exportExcel(excelList, ProjectExcel.class, "项目信息.xls", response);
+    }
 
 
     /****              联系信息开始                   **/
@@ -558,7 +658,31 @@ public class RestCustMgtController {
         return ResultUtil.success("");
     }
 
-
+    @GetMapping("/contact/exportExcel")
+    public void exportExcelByContact(HttpServletResponse response) {
+        Subject subject = SecurityUtils.getSubject();
+        Long userId = (Long) subject.getPrincipal();
+        CustContactEntity entity=new CustContactEntity();
+        entity.setRegister(userId);
+        List<CustContactEntity> contacts=custContactService.listByEntity(entity);
+        List<ContactExcel> excelList = new ArrayList<>();
+        if(contacts!=null){
+            for(CustContactEntity contactEntity:contacts){
+                ContactExcel c=new ContactExcel();
+                try {
+                    BeanUtils.copyProperties(contactEntity.getCustContact(), c);
+                    if(contactEntity.getPersonId()!=null){
+                        c.setPersonName(PersonUtil.getCustPersonName(contactEntity.getPersonId()));
+                    }
+                    excelList.add(c);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //导出操作
+        ExcelUtil.exportExcel(excelList, ContactExcel.class, "联系信息.xls", response);
+    }
     /**                    config 相关                   **/
     @Autowired
     private SysUserRoleService sysUserRoleService;

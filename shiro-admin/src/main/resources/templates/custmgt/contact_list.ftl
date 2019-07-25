@@ -73,6 +73,9 @@
                             <i class="fa fa-trash-o"></i> 批量删除
                         </button>
                     </@shiro.hasPermission>
+                        <button type="button" id="exportExcel" class="btn btn-success" style=" margin-left: 5px;">
+                            Excel导出
+                        </button>
                     </div>
                     <table id="tablelist" style="word-break:break-all; word-wrap:break-all;table-layout:fixed">
                     </table>
@@ -667,4 +670,9 @@
         function viewContact(id) {
             window.open("/custmgt/contact/view/"+id);
         }
+
+        //excel导出
+        $("#exportExcel").click(function () {
+            window.location.href ="contact/exportExcel";
+        });
     </script>

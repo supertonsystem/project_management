@@ -1,8 +1,11 @@
 package com.suteng.shiro.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.github.pagehelper.PageInfo;
 import com.suteng.shiro.business.entity.GiftConsumeDetailEntity;
@@ -14,10 +17,15 @@ import com.suteng.shiro.business.service.GiftConsumeDetailService;
 import com.suteng.shiro.business.service.GiftConsumeService;
 import com.suteng.shiro.business.service.GiftRepertoryService;
 import com.suteng.shiro.business.service.GiftTypeService;
+import com.suteng.shiro.business.util.PersonUtil;
+import com.suteng.shiro.business.util.ProjectUtil;
 import com.suteng.shiro.business.vo.GiftConsumeConditionVo;
 import com.suteng.shiro.business.vo.GiftConsumeDetailConditionVo;
 import com.suteng.shiro.business.vo.GiftRepertoryConditionVo;
 import com.suteng.shiro.business.vo.GiftTypeConditionVo;
+import com.suteng.shiro.framework.easypoi.ExcelUtil;
+import com.suteng.shiro.framework.easypoi.bean.GiftConsumeDetailExcel;
+import com.suteng.shiro.framework.easypoi.bean.GiftRepertoryExcel;
 import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.FastJsonUtil;
@@ -26,6 +34,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -136,13 +145,13 @@ public class RestGiftMgtController {
 
     @RequiresPermissions("giftmgt:repertory:add")
     @PostMapping(value = "/repertory/addRepertoryNum")
-    public ResponseVO repertoryAdd(Long id,Long repertoryNum) {
+    public ResponseVO repertoryAdd(Long id, Long repertoryNum) {
         try {
-            GiftRepertoryEntity entity=giftRepertoryService.getByPrimaryKey(id);
-            entity.setRepertory(entity.getRepertory()+repertoryNum);
-            entity.setSum(entity.getSum()+repertoryNum);
-            Double addAmount=repertoryNum*entity.getUnit();
-            entity.setAmount(entity.getAmount()+addAmount);
+            GiftRepertoryEntity entity = giftRepertoryService.getByPrimaryKey(id);
+            entity.setRepertory(entity.getRepertory() + repertoryNum);
+            entity.setSum(entity.getSum() + repertoryNum);
+            Double addAmount = repertoryNum * entity.getUnit();
+            entity.setAmount(entity.getAmount() + addAmount);
             giftRepertoryService.updateSelective(entity);
             return ResultUtil.success("成功", entity);
         } catch (Exception e) {
@@ -189,6 +198,32 @@ public class RestGiftMgtController {
         return ResultUtil.success(ResponseStatus.SUCCESS);
     }
 
+    @RequiresPermissions("giftmgt:repertorys")
+    @GetMapping("/repertory/exportExcel")
+    public void exportExcelByRepertory(HttpServletResponse response) {
+        List<GiftRepertoryEntity> repertorys = giftRepertoryService.listAll();
+        List<GiftRepertoryExcel> excelList = new ArrayList<>();
+        if (repertorys != null) {
+            for (GiftRepertoryEntity giftRepertoryEntity : repertorys) {
+                GiftRepertoryExcel g = new GiftRepertoryExcel();
+                try {
+                    BeanUtils.copyProperties(giftRepertoryEntity.getGiftRepertory(), g);
+                    if (giftRepertoryEntity.getTypeId() != null) {
+                        GiftTypeEntity gifttype = giftTypeService.getByPrimaryKey(giftRepertoryEntity.getTypeId());
+                        if (gifttype != null) {
+                            g.setTypeName(gifttype.getType());
+                        }
+                    }
+                    excelList.add(g);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //导出操作
+        ExcelUtil.exportExcel(excelList, GiftRepertoryExcel.class, "库存信息.xls", response);
+    }
+
     /****              礼品领用开始                   **/
 
     @Autowired
@@ -199,8 +234,8 @@ public class RestGiftMgtController {
     public PageResult consumeList(GiftConsumeConditionVo vo) {
         Subject subject = SecurityUtils.getSubject();
         //如果没审核权限 则只显示自己创建的记录
-        boolean auditPerm=subject.isPermitted("giftmgt:consume:audit");
-        if(auditPerm){
+        boolean auditPerm = subject.isPermitted("giftmgt:consume:audit");
+        if (auditPerm) {
             vo.getGiftConsumeEntity().setRegister(null);
         }
         PageInfo<GiftConsumeEntity> pageInfo = giftConsumeService.findPageBreakByCondition(vo);
@@ -227,6 +262,7 @@ public class RestGiftMgtController {
 
     /**
      * 提交 状态修改至“申请中”
+     *
      * @param entity
      * @param detailList
      * @return
@@ -304,10 +340,10 @@ public class RestGiftMgtController {
     public PageResult consumeDetailList(GiftConsumeDetailConditionVo vo) {
 
         Subject subject = SecurityUtils.getSubject();
-        boolean perm=subject.isPermitted("giftmgt:consumeDetail:all");
-        if(perm){
+        boolean perm = subject.isPermitted("giftmgt:consumeDetail:all");
+        if (perm) {
             vo.getGiftConsumeDetailEntity().setRegister(null);
-        }else {
+        } else {
             Long userId = (Long) subject.getPrincipal();
             vo.getGiftConsumeDetailEntity().setRegister(userId);
         }
@@ -380,7 +416,7 @@ public class RestGiftMgtController {
     }
 
     @RequestMapping("/consumeDetail/updateStatus")
-    public ResponseVO updateConsumeDetailStatus(Long consumeId,Long[] ids,Integer status) {
+    public ResponseVO updateConsumeDetailStatus(Long consumeId, Long[] ids, Integer status) {
         if (null == ids) {
             return ResultUtil.error(500, "请至少选择一条记录");
         }
@@ -388,20 +424,20 @@ public class RestGiftMgtController {
             return ResultUtil.error(500, "请选择状态");
         }
         for (Long id : ids) {
-            if(status==2){
+            if (status == 2) {
                 //退回比较特殊，涉及库存变动
-                giftConsumeDetailService.updateDrawStatusByLock(id,true);
-            }else{
-                GiftConsumeDetailEntity entity=new GiftConsumeDetailEntity();
+                giftConsumeDetailService.updateDrawStatusByLock(id, true);
+            } else {
+                GiftConsumeDetailEntity entity = new GiftConsumeDetailEntity();
                 entity.setId(id);
                 entity.setStatus(status);
                 giftConsumeDetailService.updateSelective(entity);
             }
         }
-        Long count=giftConsumeDetailService.findOperabilityCountByConsumeId(consumeId);
+        Long count = giftConsumeDetailService.findOperabilityCountByConsumeId(consumeId);
         //更新状态为已完成
-        if(count==0){
-            GiftConsumeEntity entity=new GiftConsumeEntity();
+        if (count == 0) {
+            GiftConsumeEntity entity = new GiftConsumeEntity();
             entity.setStatus(2);
             entity.setId(consumeId);
             giftConsumeService.updateSelective(entity);
@@ -409,24 +445,71 @@ public class RestGiftMgtController {
         return ResultUtil.success(ResponseStatus.SUCCESS);
     }
 
+    @RequiresPermissions("giftmgt:consumeDetails")
+    @GetMapping("/consumeDetail/exportExcel")
+    public void exportExcelByConsumeDetail(HttpServletResponse response) {
+        GiftConsumeDetailConditionVo vo = new GiftConsumeDetailConditionVo();
+        vo.setPageSize(100000);
+        Subject subject = SecurityUtils.getSubject();
+        boolean perm = subject.isPermitted("giftmgt:consumeDetail:all");
+        if (perm) {
+            vo.getGiftConsumeDetailEntity().setRegister(null);
+        } else {
+            Long userId = (Long) subject.getPrincipal();
+            vo.getGiftConsumeDetailEntity().setRegister(userId);
+        }
+        PageInfo<GiftConsumeDetailEntity> pageInfo = giftConsumeDetailService.findPageBreakByCondition(vo);
+        List<GiftConsumeDetailExcel> excelList = new ArrayList<>();
+        if (pageInfo != null && pageInfo.getList() != null) {
+            for (GiftConsumeDetailEntity consumeDetailEntity : pageInfo.getList()) {
+                GiftConsumeDetailExcel g = new GiftConsumeDetailExcel();
+                try {
+                    BeanUtils.copyProperties(consumeDetailEntity.getGiftConsumeDetail(), g);
+                    if (consumeDetailEntity.getConsumeId() != null) {
+                        GiftConsumeEntity entity = giftConsumeService.getByPrimaryKey(consumeDetailEntity.getConsumeId());
+                        if (entity != null) {
+                            g.setConsumeName(entity.getTitle());
+                        }
+                    }
+                    if (consumeDetailEntity.getPersonId() != null) {
+                        g.setPersonName(PersonUtil.getCustPersonName(consumeDetailEntity.getPersonId()));
+                    }
+                    if (consumeDetailEntity.getProjectId() != null) {
+                        g.setProjectName(ProjectUtil.getCustProjectName(consumeDetailEntity.getProjectId()));
+                    }
+                    if (consumeDetailEntity.getRepertoryId() != null) {
+                        GiftRepertoryEntity repertoryEntity= giftRepertoryService.getByPrimaryKey(consumeDetailEntity.getRepertoryId());
+                        g.setRepertoryName(repertoryEntity.getName());
+                    }
+                    excelList.add(g);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //导出操作
+        ExcelUtil.exportExcel(excelList, GiftConsumeDetailExcel.class, "送礼信息.xls", response);
+    }
+
     /**
      * 确认领用
      * 单向
+     *
      * @param ids
      * @return
      */
     @RequestMapping("/consumeDetail/updateDrawStatus")
-    public ResponseVO updateConsumeDetailDrawStatus(Long consumeId,Long[] ids) {
+    public ResponseVO updateConsumeDetailDrawStatus(Long consumeId, Long[] ids) {
         if (null == ids) {
             return ResultUtil.error(500, "请至少选择一条记录");
         }
         for (Long id : ids) {
-            giftConsumeDetailService.updateDrawStatusByLock(id,false);
+            giftConsumeDetailService.updateDrawStatusByLock(id, false);
         }
-        Long count=giftConsumeDetailService.findOperabilityCountByConsumeId(consumeId);
+        Long count = giftConsumeDetailService.findOperabilityCountByConsumeId(consumeId);
         //更新状态为已完成
-        if(count==0){
-            GiftConsumeEntity entity=new GiftConsumeEntity();
+        if (count == 0) {
+            GiftConsumeEntity entity = new GiftConsumeEntity();
             entity.setStatus(2);
             entity.setId(consumeId);
             giftConsumeService.updateSelective(entity);

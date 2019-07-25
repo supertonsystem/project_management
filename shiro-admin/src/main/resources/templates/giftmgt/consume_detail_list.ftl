@@ -66,6 +66,11 @@
             </div>
             <div class="x_content">
                 <div class="<#--table-responsive-->">
+                    <div class="btn-group hidden-xs" id="toolbar">
+                    <button type="button" id="exportExcel" class="btn btn-success" style=" margin-left: 5px;">
+                        Excel导出
+                    </button>
+                    </div>
                     <table id="tablelist" style="word-break:break-all; word-wrap:break-all;table-layout:fixed">
                     </table>
                 </div>
@@ -307,7 +312,7 @@
         $('#tablelist').bootstrapTable({
             url: options.url,
             method: 'post',                      //请求方式（*）
-            toolbar: '',                //工具按钮用哪个容器
+            toolbar: '#toolbar',                 //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
             cache: true,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             contentType: "application/x-www-form-urlencoded", // 发送到服务器的数据编码类型, application/x-www-form-urlencoded为了实现post方式提交
@@ -377,7 +382,10 @@
             $("#tablelist").bootstrapTable('refresh', {url: options.url});
         });
     });
-
+    //excel导出
+    $("#exportExcel").click(function () {
+        window.location.href ="consumeDetail/exportExcel";
+    });
     function view(id) {
         $.ajax({
             type: "post",

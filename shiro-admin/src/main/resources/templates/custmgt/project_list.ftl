@@ -71,6 +71,9 @@
                             <i class="fa fa-trash-o"></i> 批量删除
                         </button>
                     </@shiro.hasPermission>
+                        <button type="button" id="exportExcel" class="btn btn-success" style=" margin-left: 5px;">
+                            Excel导出
+                        </button>
                     </div>
                     <table id="tablelist" style="word-break:break-all; word-wrap:break-all;table-layout:fixed">
                     </table>
@@ -540,6 +543,12 @@
         function viewPerson(id) {
             window.open("/custmgt/person/view/"+id);
         }
+
+        //excel导出
+        $("#exportExcel").click(function () {
+            window.location.href ="repertory/exportExcel";
+        });
+
         //日期空间init
         $('#startTime_datetimepicker').datetimepicker({
             format: 'YYYY-MM-DD',

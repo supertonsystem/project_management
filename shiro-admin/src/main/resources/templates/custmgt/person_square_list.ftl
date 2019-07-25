@@ -38,6 +38,9 @@
                                 <i class="fa fa-plus"></i> 新增
                             </button>
                         </@shiro.hasPermission>
+                            <button type="button" id="exportExcel" class="btn btn-success" style=" margin-right: 5px;">
+                                Excel导出
+                            </button>
                             <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="search_name" style="float: right;width: 200px" placeholder="Search for..." value="${name}">
@@ -552,6 +555,12 @@
 
         }, 5000);
     }
+
+    //excel导出
+    $("#exportExcel").click(function () {
+        window.location.href ="person/exportExcel";
+    });
+
     //查询
     $('#search').on('click', function () {
         var name=$('#search_name').val();
