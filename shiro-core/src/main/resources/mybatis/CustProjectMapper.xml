@@ -17,7 +17,7 @@
 		<result property="endTime" jdbcType="TIMESTAMP" column="end_time"/>
 		<result property="period" jdbcType="VARCHAR" column="period"/>
 		<result property="owner" jdbcType="VARCHAR" column="owner"/>
-		<result property="ownerDepartment" jdbcType="VARCHAR" column="ownerDepartment"/>
+		<result property="ownerDepartment" jdbcType="VARCHAR" column="owner_department"/>
 		<result property="department" jdbcType="BIGINT" column="department"/>
 		<result property="pm" jdbcType="BIGINT" column="pm"/>
 		<result property="personId" jdbcType="BIGINT" column="person_id"/>
