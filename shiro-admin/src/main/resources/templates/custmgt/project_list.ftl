@@ -546,7 +546,7 @@
 
         //excel导出
         $("#exportExcel").click(function () {
-            window.location.href ="repertory/exportExcel";
+            window.location.href ="project/exportExcel";
         });
 
         //日期空间init
