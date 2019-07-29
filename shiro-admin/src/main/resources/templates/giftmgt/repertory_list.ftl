@@ -180,7 +180,7 @@
                                             <span class="control-label title">库存记录:</span>
                                         </td>
                                         <td colspan="3">
-                                            <textarea style="max-height: 200px;min-height: 100px;width: 600px;" class="control-label" id="remark" name="remark" readonly="readonly"></textarea>
+                                            <textarea style="max-height: 200px;min-height: 200px;width: 600px;" class="control-label" id="remark" name="remark" readonly="readonly"></textarea>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -282,7 +282,7 @@
                                             <span class="control-label title">库存记录:</span>
                                         </td>
                                         <td colspan="3">
-                                            <textarea style="max-height: 200px;min-height: 100px;width: 500px;" class="control-label" id="remark" readonly="readonly"></textarea>
+                                            <textarea style="max-height: 200px;min-height: 200px;width: 500px;" class="control-label" id="remark" readonly="readonly"></textarea>
                                         </td>
                                     </tr>
                                     </tbody>

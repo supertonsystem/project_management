@@ -151,11 +151,13 @@ public class RestGiftMgtController {
     public ResponseVO repertoryAdd(Long id, Long repertoryNum) {
         try {
             GiftRepertoryEntity entity = giftRepertoryService.getByPrimaryKey(id);
-            entity.setRepertory(entity.getRepertory() + repertoryNum);
+            Long tempRepertoryNum=entity.getRepertory();
+            entity.setRepertory(tempRepertoryNum + repertoryNum);
             entity.setSum(entity.getSum() + repertoryNum);
             Double addAmount = repertoryNum * entity.getUnit();
             entity.setAmount(entity.getAmount() + addAmount);
             StringBuilder str=new StringBuilder();
+            str.append("原库存数:"+tempRepertoryNum+",");
             str.append("新增库存数:"+repertoryNum+",");
             str.append("时间:"+ DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss")+",");
             Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
