@@ -1,6 +1,7 @@
 package com.suteng.shiro.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import com.suteng.shiro.business.service.GiftRepertoryService;
 import com.suteng.shiro.business.service.GiftTypeService;
 import com.suteng.shiro.business.util.PersonUtil;
 import com.suteng.shiro.business.util.ProjectUtil;
+import com.suteng.shiro.business.util.UserUtil;
 import com.suteng.shiro.business.vo.GiftConsumeConditionVo;
 import com.suteng.shiro.business.vo.GiftConsumeDetailConditionVo;
 import com.suteng.shiro.business.vo.GiftRepertoryConditionVo;
@@ -30,6 +32,7 @@ import com.suteng.shiro.framework.object.PageResult;
 import com.suteng.shiro.framework.object.ResponseVO;
 import com.suteng.shiro.util.FastJsonUtil;
 import com.suteng.shiro.util.ResultUtil;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -152,6 +155,13 @@ public class RestGiftMgtController {
             entity.setSum(entity.getSum() + repertoryNum);
             Double addAmount = repertoryNum * entity.getUnit();
             entity.setAmount(entity.getAmount() + addAmount);
+            StringBuilder str=new StringBuilder();
+            str.append("新增库存数:"+repertoryNum+",");
+            str.append("时间:"+ DateFormatUtils.format(new Date(),"yyyy-MM-dd HH:mm:ss")+",");
+            Long userId = (Long) SecurityUtils.getSubject().getPrincipal();
+            String nickName=UserUtil.getUserNickName(userId);
+            str.append("执行人:"+ nickName+"\r\n");
+            entity.setRemark(entity.getRemark()+str.toString());
             giftRepertoryService.updateSelective(entity);
             return ResultUtil.success("成功", entity);
         } catch (Exception e) {

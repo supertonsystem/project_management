@@ -177,10 +177,10 @@
                                     </tr>
                                     <tr>
                                         <td class="title" >
-                                            <span class="control-label title">备&nbsp;&nbsp;&nbsp;&nbsp;注:</span>
+                                            <span class="control-label title">库存记录:</span>
                                         </td>
                                         <td colspan="3">
-                                            <textarea style="max-height: 200px;min-height: 100px;width: 600px;" class="control-label" id="remark" name="remark"></textarea>
+                                            <textarea style="max-height: 200px;min-height: 100px;width: 600px;" class="control-label" id="remark" name="remark" readonly="readonly"></textarea>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -279,7 +279,7 @@
                                     </tr>
                                     <tr>
                                         <td class="title">
-                                            <span class="control-label title">备注:</span>
+                                            <span class="control-label title">库存记录:</span>
                                         </td>
                                         <td colspan="3">
                                             <textarea style="max-height: 200px;min-height: 100px;width: 500px;" class="control-label" id="remark" readonly="readonly"></textarea>
@@ -342,6 +342,7 @@
                         $('#addOrUpdateModal #sum').val(result.sum);
                         $('#addOrUpdateModal #amount').val(result.amount);
                         $('#addOrUpdateModal #repertory').val(result.repertory);
+                        $('#addOrUpdateModal #remark').val(result.remark);
                         $('#addOrUpdateModal #addRepertory').popover('hide');
                     },
                     error: $.tool.ajaxError
@@ -745,7 +746,10 @@
                     //  $this.iCheck('uncheck');
                 } else {
                     $this.val('');
-                    $this.attr('readonly',false);
+                    var thisName = $this.attr("id");
+                    if(thisName!='remark'){
+                        $this.attr('readonly',false);
+                    }
                     if(type=='select-one'){
                         $this.removeAttr('disabled');
                     }
