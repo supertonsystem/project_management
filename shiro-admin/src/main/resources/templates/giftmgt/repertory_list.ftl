@@ -373,11 +373,17 @@
                 columns: [
                     {
                         field: 'id',
-                        title: '序号',
+                        title: '唯一标识',
                         editable: false,
-                        width: 35,
-                        formatter: function (data,row) {
-                            return '<a href="javascript:;" onclick="view('+row.id+')">'+data+'</a>'
+                        visible: false,
+                        width: 40
+                    },{
+                        field: 'rowId',
+                        title: '序号',
+                        width: 40,
+                        formatter:function(value,row,index){
+                            row.rowId=index;
+                            return index+1;
                         }
                     },{
                         field: 'register',
